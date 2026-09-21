@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+
+# Databases & Runtime
+backend/data/*.db
+backend/data/*.db-journal
+backend/data/*.sqlite
+!backend/data/.gitkeep
+
+# Logs & temp
+*.log
+logs/
+temp/
+tmp/
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/*.iml
+android/.idea/
+android/captures/
+*.apk
+*.aab
+
+# Flutter
+mobile/.dart_tool/
+mobile/.packages
+mobile/.pub/
+mobile/build/
+
+# Tools & Archives
+tools/
+*.zip

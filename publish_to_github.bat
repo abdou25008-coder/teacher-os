@@ -77,7 +77,7 @@ echo [*] ربط المستودع بالرابط: %REPO_URL%
 %GIT_CMD% branch -M main
 
 echo [*] جاري رفع الكود إلى GitHub...
-echo (ملاحظة: إذا طلب منك GitHub تسجيل الدخول، سجّل الدخول بحسابك في النافذة المنبثقة)
+echo (ملاحظة: إذا ظهر خطأ صلاحيات 403، يرجى التأكد من تسجيل الدخول بحساب صاحب المستودع أو إضافة الحساب كـ Collaborator)
 echo.
 %GIT_CMD% push -u origin main
 
@@ -91,14 +91,19 @@ if %errorlevel% equ 0 (
     echo 2. لتفعيل رابط المعاينة السحابي المجاني (GitHub Pages):
     echo    - ادخل على إعدادات المستودع (Settings) ➔ Pages
     echo    - من Build and deployment اختر: GitHub Actions
-    echo    - سيتم نشر الرابط فورياً ليكون: https://^<username^>.github.io/teacher-os/
+    echo    - سيتم نشر الرابط فورياً ليكون: https://abdou25008-coder.github.io/teacher-os/
     echo.
     echo 3. لتحميل تطبيق أندرويد (APK):
     echo    - ادخل على تبويب Actions في المستودع وستجد الـ APK تم بناؤه تلقائياً!
     echo ====================================================================
 ) else (
     echo.
-    echo [!] حدث خطأ أثناء الرفع. تأكد من صحة الرابط وصلاحيات حسابك على GitHub.
+    echo [!] إذا طلب منك Token أو ظهر خطأ 403:
+    echo     يمكنك إدخال GitHub Personal Access Token (يبدأ بـ ghp_):
+    set /p GH_TOKEN=">> الصق الـ Token هنا (أو اضغط Enter للمحاولة لاحقاً): "
+    if not "%GH_TOKEN%"=="" (
+        %GIT_CMD% push https://%GH_TOKEN%@github.com/abdou25008-coder/teacher-os.git main
+    )
 )
 
 echo.
