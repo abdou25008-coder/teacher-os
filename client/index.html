@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TEACHER OS — نظام تشغيل المعلم الذكي</title>
+  <meta name="theme-color" content="#2563EB">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css?v=20260907_3">
+</head>
+<body>
+
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+
+  <!-- App Layout Container (Sidebar + Main Content) -->
+  <div class="app-layout-container">
+
+    <!-- 1. Right Sidebar (SRMS Navigation) -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo-icon">⚡</div>
+        <div class="brand-info">
+          <div class="brand-name">TEACHER OS</div>
+          <div class="brand-subtext">نظام تشغيل المعلم الذكي</div>
+        </div>
+        <button class="sidebar-close-btn" onclick="toggleSidebar(false)">&times;</button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">القوائم الرئيسية</div>
+        <button class="sidebar-item active" id="side-item-my-day" onclick="switchTeacherTab('tab-my-day')">
+          <span class="side-icon">📊</span>
+          <span class="side-label">لوحة التحكم (Dashboard)</span>
+          <span class="side-badge">يومي</span>
+        </button>
+        <button class="sidebar-item" id="side-item-students" onclick="switchTeacherTab('tab-students')">
+          <span class="side-icon">👥</span>
+          <span class="side-label">الطلاب والمجموعات</span>
+        </button>
+        <button class="sidebar-item" id="side-item-knowledge" onclick="switchTeacherTab('tab-knowledge')">
+          <span class="side-icon">📚</span>
+          <span class="side-label">خزينة المذكرات والمراجع</span>
+        </button>
+        <button class="sidebar-item" id="side-item-ai-studio" onclick="switchTeacherTab('tab-ai-studio')">
+          <span class="side-icon">🤖</span>
+          <span class="side-label">استوديو الذكاء الاصطناعي</span>
+          <span class="side-badge side-badge-ai">AI</span>
+        </button>
+        <button class="sidebar-item" id="side-item-assessments" onclick="switchTeacherTab('tab-assessments')">
+          <span class="side-icon">📝</span>
+          <span class="side-label">الامتحانات والمصحح</span>
+        </button>
+        <button class="sidebar-item" id="side-item-gaps" onclick="switchTeacherTab('tab-gaps')">
+          <span class="side-icon">📈</span>
+          <span class="side-label">رادار الفجوات المفاهيمية</span>
+        </button>
+        <button class="sidebar-item" id="side-item-zoom" onclick="switchTeacherTab('tab-zoom')">
+          <span class="side-icon">🎥</span>
+          <span class="side-label">حصص الزووم المباشرة</span>
+          <span class="side-badge side-badge-live">مباشر</span>
+        </button>
+        <button class="sidebar-item" id="side-item-business" onclick="switchTeacherTab('tab-business')">
+          <span class="side-icon">💼</span>
+          <span class="side-label">الحسابات والاشتراكات</span>
+        </button>
+        <button class="sidebar-item" id="side-item-community" onclick="switchTeacherTab('tab-community')">
+          <span class="side-icon">🌐</span>
+          <span class="side-label">مجتمع التعليم والتواصل</span>
+          <span class="side-badge" style="background:#059669; color:white;">جديد</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user-card">
+          <div class="user-avatar-circle">👨‍🏫</div>
+          <div class="user-meta">
+            <div class="user-full-name">أ/ طارق الشناوي</div>
+            <div class="user-tier-pill">👑 باقة المحترف (Pro)</div>
+          </div>
+        </div>
+        <div class="sidebar-footer-actions">
+          <button class="btn-sidebar-footer" onclick="openModal('modal-upgrade-tier')">✨ الترقية</button>
+          <button class="btn-sidebar-footer" onclick="openModal('modal-auth')">🔑 تبديل</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 2. Main Content Wrapper -->
+    <div class="app-main-wrapper">
+
+      <!-- Top Bar -->
+      <header class="app-topbar">
+        <div class="topbar-right">
+          <button class="btn-hamburger" onclick="toggleSidebar(true)" aria-label="القائمة">
+            <span class="hamburger-icon">☰</span>
+          </button>
+          <div class="topbar-page-info">
+            <div class="topbar-page-title" id="topbar-page-title">لوحة التحكم الرئيسية</div>
+            <div class="topbar-greeting-crumb">نظام إدارة وتدريس المناهج الذكي</div>
+          </div>
+        </div>
+
+        <div class="topbar-center">
+          <div class="global-search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="global-search-input" class="global-search-input" placeholder="ابحث عن طالب، مجموعة، امتحان، أو مذكرة..." oninput="handleGlobalSearch(this.value)">
+          </div>
+        </div>
+
+        <div class="topbar-left">
+          <!-- Notification Bell -->
+          <div class="notification-wrap">
+            <button class="btn-icon-topbar" id="btn-notifications" onclick="toggleNotificationsMenu(event)">
+              🔔
+              <span class="notification-badge-count" id="notif-count">3</span>
+            </button>
+            <div class="notification-dropdown" id="notification-dropdown">
+              <div class="notif-dropdown-header">
+                <span>الإشعارات والتنبيهات</span>
+                <span class="badge badge-primary">3 جديدة</span>
+              </div>
+              <div class="notif-list">
+                <div class="notif-item unread" onclick="switchTeacherTab('tab-gaps')">
+                  <span class="notif-icon">⚡</span>
+                  <div>
+                    <div class="notif-title">أولوية تعليمية: فجوة توصيل المقاومات</div>
+                    <div class="notif-time">مجموعة السبت - نسبة الخطأ 66%</div>
+                  </div>
+                </div>
+                <div class="notif-item unread" onclick="switchTeacherTab('tab-business')">
+                  <span class="notif-icon">⚠️</span>
+                  <div>
+                    <div class="notif-title">تنبيه سداد: انتهاء مهلة اشتراك طالبين</div>
+                    <div class="notif-time">سلمى إبراهيم، عمر أحمد</div>
+                  </div>
+                </div>
+                <div class="notif-item unread" onclick="switchTeacherTab('tab-zoom')">
+                  <span class="notif-icon">🎥</span>
+                  <div>
+                    <div class="notif-title">حصة زووم قادمة اليوم 4:00 عصراً</div>
+                    <div class="notif-time">تم إرسال روابط الحضور على واتساب</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Persona Switcher -->
+          <div class="persona-switcher">
+            <button class="persona-btn active" id="persona-btn-teacher" onclick="switchPortal('teacher')">👨‍🏫 المعلم</button>
+            <button class="persona-btn" id="persona-btn-student" onclick="switchPortal('student')">🎓 الطالب</button>
+            <button class="persona-btn" id="persona-btn-parent" onclick="switchPortal('parent')">👨‍👩‍👧 ولي الأمر</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- App Body Content -->
+      <main class="app-body-content">
+
+        <!-- TEACHER PORTAL -->
+        <section id="portal-teacher" class="portal-view active">
+
+          <!-- 1. TAB: MY INTELLIGENT DAY (SRMS DASHBOARD) -->
+          <div id="tab-my-day" class="tab-pane active">
+            
+            <!-- Hero Greeting Banner (SRMS Style) -->
+            <div class="srms-hero-banner">
+              <div class="hero-banner-content">
+                <div class="hero-badge-badge">⚡ منظومة تدريس الفيزياء والعلوم الذكية</div>
+                <h1 class="hero-greeting-title">صباح الخير، يا مستر طارق الشناوي! 👋</h1>
+                <p class="hero-greeting-sub">تابع أداء طلابك اليوم، جدول الحصص المباشرة، ونقاط القوة والضعف في مجموعاتك التعليمية بكل يسر وسهولة.</p>
+                <div class="hero-actions-row">
+                  <button id="btn-remediation-action" class="btn btn-accent" onclick="trigger1ClickRemediation()">⚡ تفعيل خطة المراجعة الفورية (1-Click)</button>
+                  <button class="btn btn-primary" onclick="openModal('modal-add-zoom')">🎥 بدء حصة الزووم القادمة (4:00م)</button>
+                  <button class="btn btn-outline" onclick="openModal('modal-add-student')">➕ تسجيل طالب جديد</button>
+                </div>
+              </div>
+              <div class="hero-illustration-box">
+                <span>📚</span>
+              </div>
+            </div>
+
+            <!-- Special Offer 2027 Golden Ribbon -->
+            <div id="promo-2027-banner" style="background: linear-gradient(135deg, #3730A3 0%, #4F46E5 50%, #7C3AED 100%); color: white; border-radius: 12px; padding: 0.9rem 1.4rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);">
+              <div style="display: flex; align-items: center; gap: 0.8rem;">
+                <span style="font-size: 1.6rem;">🎉</span>
+                <div>
+                  <div style="font-weight: 800; font-size: 0.96rem;">عرض العام المجاني الاستثنائي: باقة المعلم المحترف (Pro) مجاناً لمدة 365 يوماً!</div>
+                  <div style="font-size: 0.82rem; opacity: 0.92;">اكتب برومو كود <code style="background: rgba(255,255,255,0.22); padding: 2px 7px; border-radius: 4px; font-weight: 800; letter-spacing: 1px;">2027</code> ووفر 6,000 ج.م سنوياً مع تفعيل زووم والمصحح الضوئي الكامل.</div>
+                </div>
+              </div>
+              <button class="btn btn-sm" style="background: #FFFFFF; color: #4F46E5; font-weight: 800; border-radius: 8px; border: none; padding: 0.45rem 1.15rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onclick="openModal('modal-upgrade-tier')">تفعيل العرض السنوي الآن ⚡</button>
+            </div>
+
+            <!-- 5 KPI Metric Stat Cards (SRMS Style) -->
+            <div class="kpi-metrics-row">
+              <div class="kpi-card">
+                <div class="kpi-icon-wrap kpi-icon-blue">👥</div>
+                <div class="kpi-details">
+                  <div class="kpi-label">إجمالي الطلاب</div>
+                  <div id="metric-total-students" class="kpi-value">14</div>
+                  <div class="kpi-sub">مقيدين بالمجموعات</div>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon-wrap kpi-icon-green">🏫</div>
+                <div class="kpi-details">
+                  <div class="kpi-label">المجموعات النشطة</div>
+                  <div class="kpi-value">3</div>
+                  <div class="kpi-sub">السبت، الإثنين، الأربعاء</div>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon-wrap kpi-icon-purple">🎥</div>
+                <div class="kpi-details">
+                  <div class="kpi-label">حصص اليوم</div>
+                  <div class="kpi-value">1</div>
+                  <div class="kpi-sub">حصة السبت (4:00م)</div>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon-wrap kpi-icon-amber">📝</div>
+                <div class="kpi-details">
+                  <div class="kpi-label">امتحانات مصححة</div>
+                  <div class="kpi-value">28</div>
+                  <div class="kpi-sub">عبر المصحح الضوئي</div>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon-wrap kpi-icon-gold">💰</div>
+                <div class="kpi-details">
+                  <div class="kpi-label">إيرادات الشهر</div>
+                  <div class="kpi-value">12,400 <span style="font-size: 0.8rem; font-weight: 500;">ج.م</span></div>
+                  <div class="kpi-sub">نسبة التحصيل: 85%</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Widgets Row 1: Recent Results Table & Notice Board -->
+            <div class="grid-2">
+              <!-- Recent Results Card (SRMS Table) -->
+              <div class="card">
+                <div class="card-title">
+                  <span>📋 أحدث نتائج وتقييمات الطلاب (Recent Results)</span>
+                  <a class="card-title-link" onclick="switchTeacherTab('tab-assessments')">عرض كافة النتائج ←</a>
+                </div>
+                <div class="table-responsive">
+                  <table class="table-roster">
+                    <thead>
+                      <tr>
+                        <th>اسم الطالب</th>
+                        <th>المجموعة</th>
+                        <th>موضوع الاختبار</th>
+                        <th>الدرجة</th>
+                        <th>التقدير</th>
+                        <th>التاريخ</th>
+                      </tr>
+                    </thead>
+                    <tbody id="recent-results-tbody">
+                      <tr>
+                        <td><strong>سلمى إبراهيم</strong></td>
+                        <td>ثانوية عامة (السبت)</td>
+                        <td>قانون أوم وتوصيل المقاومات</td>
+                        <td><strong>48 / 50</strong></td>
+                        <td><span class="grade-chip grade-a-plus">A+ ممتاز</span></td>
+                        <td>7 سبتمبر 2026</td>
+                      </tr>
+                      <tr>
+                        <td><strong>أحمد محمود</strong></td>
+                        <td>مجموعة النخبة</td>
+                        <td>تجزئة التيار والمقاومة المكافئة</td>
+                        <td><strong>45 / 50</strong></td>
+                        <td><span class="grade-chip grade-a">A جيد جداً</span></td>
+                        <td>5 سبتمبر 2026</td>
+                      </tr>
+                      <tr>
+                        <td><strong>عمر أحمد</strong></td>
+                        <td>ثانوية عامة (السبت)</td>
+                        <td>الدوائر الكهربية وقانونا كيرشوف</td>
+                        <td><strong>38 / 50</strong></td>
+                        <td><span class="grade-chip grade-b">B+ جيد</span></td>
+                        <td>3 سبتمبر 2026</td>
+                      </tr>
+                      <tr>
+                        <td><strong>مريم علي</strong></td>
+                        <td>مجموعة الأربعاء</td>
+                        <td>الطاقة والقدرة الكهربية</td>
+                        <td><strong>49 / 50</strong></td>
+                        <td><span class="grade-chip grade-a-plus">A+ ممتاز</span></td>
+                        <td>2 سبتمبر 2026</td>
+                      </tr>
+                      <tr>
+                        <td><strong>نور الدين حسن</strong></td>
+                        <td>ثانوية عامة (السبت)</td>
+                        <td>توصيل المقاومات على التوازي</td>
+                        <td><strong>32 / 50</strong></td>
+                        <td><span class="grade-chip" style="background:#FEE2E2; color:#B91C1C; border:1px solid #FCA5A5;">يحتاج دعم</span></td>
+                        <td>1 سبتمبر 2026</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Notice Board Card (SRMS Megaphone Alerts) -->
+              <div class="card">
+                <div class="card-title">
+                  <span>📢 لوحة التنبيهات والإعلانات (Notice Board)</span>
+                  <span class="badge badge-urgent">3 تنبيهات</span>
+                </div>
+                <div class="notice-board-list">
+                  <!-- Item 1: Urgent remediation -->
+                  <div class="notice-item notice-item-urgent">
+                    <div class="notice-icon-circle">⚡</div>
+                    <div class="notice-content">
+                      <div class="notice-heading">أولوية تعليمية: فجوة توصيل المقاومات</div>
+                      <div class="notice-desc">أظهر 66% من طلاب مجموعة السبت خطأً في تطبيق تجزئة التيار الكهربي.</div>
+                      <button class="notice-action-btn" style="background: var(--amber-500); color: #fff;" onclick="trigger1ClickRemediation()">تفعيل خطة المراجعة العلاجية ←</button>
+                    </div>
+                  </div>
+
+                  <!-- Item 2: Overdue payments -->
+                  <div class="notice-item notice-item-danger">
+                    <div class="notice-icon-circle">⚠️</div>
+                    <div class="notice-content">
+                      <div class="notice-heading">تنبيه إداري: متأخرات سداد الاشتراكات</div>
+                      <div class="notice-desc">انتهت مهلة السماح لطالبين (سلمى إبراهيم، عمر أحمد).</div>
+                      <button class="notice-action-btn" style="background: var(--ruby-500); color: #fff;" onclick="switchTeacherTab('tab-business')">إرسال إشعار واتساب ←</button>
+                    </div>
+                  </div>
+
+                  <!-- Item 3: Zoom today -->
+                  <div class="notice-item notice-item-info">
+                    <div class="notice-icon-circle">🎥</div>
+                    <div class="notice-content">
+                      <div class="notice-heading">حصة زووم مباشرة اليوم (4:00 عصراً)</div>
+                      <div class="notice-desc">مجموعة السبت — تم تجهيز غرفة الشرح التفاعلية وروابط الدخول.</div>
+                      <button class="notice-action-btn" style="background: var(--primary-500); color: #fff;" onclick="openModal('modal-zoom-live-room')">دخول القاعة الآن ←</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Widgets Row 2: Academic Calendar, Quick Access, Performance Overview -->
+            <div class="grid-3">
+              <!-- Calendar Widget -->
+              <div class="card">
+                <div class="card-title">
+                  <span>📅 التقويم الأكاديمي (Academic Calendar)</span>
+                  <span class="badge badge-primary">سبتمبر 2026</span>
+                </div>
+                <div class="calendar-widget">
+                  <div class="calendar-grid-days">
+                    <div class="calendar-day-name">سبت</div>
+                    <div class="calendar-day-name">أحد</div>
+                    <div class="calendar-day-name">إثنين</div>
+                    <div class="calendar-day-name">ثلاثاء</div>
+                    <div class="calendar-day-name">أربعاء</div>
+                    <div class="calendar-day-name">خميس</div>
+                    <div class="calendar-day-name">جمعة</div>
+
+                    <div class="calendar-day-num" style="color:#CBD5E1;">30</div>
+                    <div class="calendar-day-num" style="color:#CBD5E1;">31</div>
+                    <div class="calendar-day-num has-class">1</div>
+                    <div class="calendar-day-num">2</div>
+                    <div class="calendar-day-num has-class">3</div>
+                    <div class="calendar-day-num">4</div>
+                    <div class="calendar-day-num">5</div>
+
+                    <div class="calendar-day-num">6</div>
+                    <div class="calendar-day-num today has-class">7</div>
+                    <div class="calendar-day-num">8</div>
+                    <div class="calendar-day-num has-class">9</div>
+                    <div class="calendar-day-num">10</div>
+                    <div class="calendar-day-num">11</div>
+                    <div class="calendar-day-num">12</div>
+
+                    <div class="calendar-day-num has-class">13</div>
+                    <div class="calendar-day-num">14</div>
+                    <div class="calendar-day-num has-class">15</div>
+                    <div class="calendar-day-num">16</div>
+                    <div class="calendar-day-num">17</div>
+                    <div class="calendar-day-num">18</div>
+                    <div class="calendar-day-num">19</div>
+
+                    <div class="calendar-day-num has-class">20</div>
+                    <div class="calendar-day-num">21</div>
+                    <div class="calendar-day-num">22</div>
+                    <div class="calendar-day-num has-class">23</div>
+                    <div class="calendar-day-num">24</div>
+                    <div class="calendar-day-num">25</div>
+                    <div class="calendar-day-num">26</div>
+                  </div>
+                  <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 0.85rem; font-size: 0.72rem; color: var(--text-muted);">
+                    <div style="display:flex; align-items:center; gap:4px;"><span style="width:7px; height:7px; border-radius:50%; background:var(--primary-500);"></span> اليوم الحالي</div>
+                    <div style="display:flex; align-items:center; gap:4px;"><span style="width:7px; height:7px; border-radius:50%; background:var(--emerald-500);"></span> حصص السنتر والزووم</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Access Grid -->
+              <div class="card">
+                <div class="card-title">
+                  <span>⚡ الوصول السريع (Quick Access)</span>
+                </div>
+                <div class="quick-access-grid">
+                  <button class="quick-btn" onclick="openModal('modal-add-zoom')">
+                    <div class="quick-icon" style="background: var(--primary-50); color: var(--primary-600);">🎥</div>
+                    <div class="quick-label">بدء زووم</div>
+                  </button>
+                  <button class="quick-btn" onclick="openModal('modal-add-student')">
+                    <div class="quick-icon" style="background: var(--emerald-50); color: var(--emerald-600);">👤</div>
+                    <div class="quick-label">إضافة طالب</div>
+                  </button>
+                  <button class="quick-btn" onclick="openModal('modal-add-memo')">
+                    <div class="quick-icon" style="background: var(--amber-50); color: var(--amber-600);">📄</div>
+                    <div class="quick-label">رفع مذكرة</div>
+                  </button>
+                  <button class="quick-btn" onclick="switchTeacherTab('tab-ai-studio')">
+                    <div class="quick-icon" style="background: var(--purple-50); color: var(--purple-600);">🤖</div>
+                    <div class="quick-label">امتحان AI</div>
+                  </button>
+                  <button class="quick-btn" onclick="switchTeacherTab('tab-gaps')">
+                    <div class="quick-icon" style="background: var(--cyan-50); color: var(--cyan-600);">📊</div>
+                    <div class="quick-label">رادار الفجوات</div>
+                  </button>
+                  <button class="quick-btn" onclick="switchTeacherTab('tab-business')">
+                    <div class="quick-icon" style="background: var(--ruby-50); color: var(--ruby-600);">💳</div>
+                    <div class="quick-label">الحسابات</div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Performance Overview Donut Indicator -->
+              <div class="card">
+                <div class="card-title">
+                  <span>📈 مؤشر التحصيل والاستيعاب</span>
+                  <span class="badge badge-good">أداء ممتاز</span>
+                </div>
+                <div class="perf-overview-box">
+                  <div class="perf-donut-chart">
+                    <svg width="110" height="110" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F1F5F9" stroke-width="12" />
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#10B981" stroke-width="12" stroke-dasharray="150.8 251.3" stroke-dashoffset="0" stroke-linecap="round" />
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#2563EB" stroke-width="12" stroke-dasharray="50.2 251.3" stroke-dashoffset="-150.8" stroke-linecap="round" />
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" stroke-width="12" stroke-dasharray="30.1 251.3" stroke-dashoffset="-201" stroke-linecap="round" />
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#EF4444" stroke-width="12" stroke-dasharray="20.1 251.3" stroke-dashoffset="-231.1" stroke-linecap="round" />
+                    </svg>
+                    <div class="perf-donut-center">
+                      <div class="perf-donut-percent">84%</div>
+                      <div class="perf-donut-label">الاستيعاب</div>
+                    </div>
+                  </div>
+                  <div class="perf-legend-list">
+                    <div class="perf-legend-item">
+                      <span><span class="perf-legend-dot" style="background:#10B981;"></span> ممتاز (A+ / A)</span>
+                      <strong>60%</strong>
+                    </div>
+                    <div class="perf-legend-item">
+                      <span><span class="perf-legend-dot" style="background:#2563EB;"></span> جيد جداً (B+)</span>
+                      <strong>20%</strong>
+                    </div>
+                    <div class="perf-legend-item">
+                      <span><span class="perf-legend-dot" style="background:#F59E0B;"></span> متوسط (C)</span>
+                      <strong>12%</strong>
+                    </div>
+                    <div class="perf-legend-item">
+                      <span><span class="perf-legend-dot" style="background:#EF4444;"></span> يحتاج رعاية (D)</span>
+                      <strong>8%</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 1-Tap Attendance Taker -->
+            <div class="card">
+              <div class="card-title">
+                <span>⏱️ تسجيل حضور الحصة الحالية (1-Tap Attendance)</span>
+                <span class="badge badge-primary">مجموعة النخبة</span>
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+                تسجيل فوري لحضور الطلاب بنقرة واحدة، وتحديث سجل الطالب وإشعار ولي الأمر تلقائياً.
+              </p>
+              <div class="table-responsive">
+                <table class="table-roster">
+                  <thead>
+                    <tr>
+                      <th>كود الطالب</th>
+                      <th>اسم الطالب</th>
+                      <th>الحالة الحالية</th>
+                      <th>تغيير الحالة</th>
+                    </tr>
+                  </thead>
+                  <tbody id="quick-attendance-tbody">
+                    <tr>
+                      <td>STU-102931</td>
+                      <td><strong>أحمد محمود</strong></td>
+                      <td><span class="badge badge-good" id="att-badge-1">حاضر ✅</span></td>
+                      <td><button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.8rem;" onclick="toggleAttendanceStatus(1)">تبديل الحالة</button></td>
+                    </tr>
+                    <tr>
+                      <td>STU-884210</td>
+                      <td><strong>سلمى إبراهيم</strong></td>
+                      <td><span class="badge badge-good" id="att-badge-2">حاضر ✅</span></td>
+                      <td><button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.8rem;" onclick="toggleAttendanceStatus(2)">تبديل الحالة</button></td>
+                    </tr>
+                    <tr>
+                      <td>STU-992381</td>
+                      <td><strong>يوسف كريم</strong></td>
+                      <td><span class="badge badge-urgent" id="att-badge-3">غائب ❌</span></td>
+                      <td><button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.8rem;" onclick="toggleAttendanceStatus(3)">تبديل الحالة</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <button class="btn btn-accent" style="width: 100%; margin-top: 1rem;" onclick="saveDailyAttendance()">💾 حفظ وإشعار أولياء الأمور بنبض الحضور</button>
+            </div>
+
+          </div> <!-- /tab-my-day -->
+
+      <!-- 2. TAB: STUDENTS & GROUPS -->
+      <div id="tab-students" class="tab-pane">
+        
+        <div class="card">
+          <div class="card-title">
+            <span>👥 قائمة الطلاب المسجلين في كافة المجموعات</span>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-primary" onclick="openModal('modal-add-student')">➕ إضافة طالب جديد</button>
+              <button class="btn btn-outline" onclick="openModal('modal-add-group')">🏛️ إنشاء مجموعة جديدة</button>
+            </div>
+          </div>
+
+          <!-- Search filter -->
+          <div style="margin-bottom: 1rem;">
+            <input type="text" id="search-student-input" class="input-field" placeholder="🔍 ابحث باسم الطالب أو الكود أو رقم ولي الأمر..." onkeyup="filterStudentsTable()">
+          </div>
+
+          <div class="table-responsive">
+            <table class="table-roster">
+              <thead>
+                <tr>
+                  <th>كود الطالب</th>
+                  <th>اسم الطالب</th>
+                  <th>الصف الدراسي</th>
+                  <th>المجموعة</th>
+                  <th>تليفون ولي الأمر</th>
+                  <th>نسبة الحضور</th>
+                  <th>الاشتراك</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="all-students-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Groups Overview Cards -->
+        <div class="card">
+          <div class="card-title">
+            <span>🏛️ المجموعات التعليمية وسعة القاعات</span>
+          </div>
+          <div id="groups-cards-container" class="grid-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 3. TAB: KNOWLEDGE VAULT RAG -->
+      <div id="tab-knowledge" class="tab-pane">
+        
+        <div class="card">
+          <div class="card-title">
+            <span>📚 خزينة المذكرات والمراجع الخاصة بالمعلم (Knowledge Vault RAG)</span>
+            <button class="btn btn-primary" onclick="openModal('modal-add-memo')">➕ رفع مذكرة / مرجع جديد</button>
+          </div>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            يقوم الذكاء الاصطناعي بفهرسة مذكراتك وتقسيمها إلى متجهات رياضية دلالية (Semantic Embeddings). عند إنشاء أي امتحان أو مراجعة، يقتبس الذكاء الاصطناعي نصوصك وأمثلتك الخاصة مع الحفاظ التام على خصوصية مذكراتك.
+          </p>
+
+          <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+            <div style="font-weight: 700; margin-bottom: 0.5rem;">🔍 استرجاع وبحث دلالي في مذكراتك:</div>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+              <input type="text" id="vault-tab-search-input" class="input-field" style="margin-bottom: 0;" placeholder="اكتب سؤالاً أو مفهوماً للبحث في مذكراتك..." value="توصيل المصابيح في المنازل على التوازي">
+              <button class="btn btn-primary" onclick="searchTeacherVaultTab()">بحث واسترجاع 🔍</button>
+            </div>
+            <button class="btn btn-accent" onclick="generateRagQuizTab()">توليد اختبار ذكي مقتبس من مذكراتي 📑</button>
+            <div id="vault-tab-output" style="display: none; margin-top: 1rem; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;"></div>
+          </div>
+
+          <div style="font-weight: 700; margin-bottom: 0.75rem;">المذكرات والمراجع المفهرسة حالياً:</div>
+          <div class="table-responsive">
+            <table class="table-roster">
+              <thead>
+                <tr>
+                  <th>عنوان المذكرة / المرجع</th>
+                  <th>نوع الملف</th>
+                  <th>عدد الفقرات المفهرسة</th>
+                  <th>تاريخ الفهرسة</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="knowledge-docs-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 4. TAB: AI STUDIO -->
+      <div id="tab-ai-studio" class="tab-pane">
+        
+        <div class="grid-2">
+          <div>
+            <div class="card">
+              <div class="card-title">📄 مولد خطط الدروس التفاعلية (AI Lesson Builder)</div>
+              <label>الموضوع أو عنوان الدرس:</label>
+              <input type="text" id="lesson-topic-input" class="input-field" value="التيار الكهربي وقانون أوم للدائرة المغلقة">
+              
+              <label>الصف الدراسي:</label>
+              <select id="lesson-grade-select" class="input-field">
+                <option value="GRADE_12_SEC3">الصف الثالث الثانوي (ثانوية عامة)</option>
+                <option value="GRADE_11_SEC2">الصف الثاني الثانوي</option>
+                <option value="GRADE_10_SEC1">الصف الأول الثانوي</option>
+              </select>
+
+              <label>مدة الحصة (بالدقائق):</label>
+              <input type="number" id="lesson-duration-input" class="input-field" value="60">
+
+              <button class="btn btn-primary" style="width: 100%;" onclick="generateAiLesson()">✨ إعداد وتوليد خطة الدرس الذكية</button>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🎙️ محاكي المساعد الصوتي المصري (Egyptian Voice Assistant)</div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">تحدث بصوتك أو اكتب الأمر باللهجة المصرية الدارجة:</p>
+              <input type="text" id="voice-transcript-input" class="input-field" value="سجل غياب أحمد ومحمود في مجموعة السبت">
+              <button class="btn btn-outline" style="width: 100%;" onclick="simulateVoiceCommand()">🎙️ معالجة وتنفيذ الأمر الصوتي</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">📋 مخرجات استوديو الذكاء الاصطناعي</div>
+              <div id="ai-output-area" style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; min-height: 250px; font-size: 0.9rem;">
+                <em style="color: var(--text-muted);">اختر أحد الإجراءات لتوليد خطة الدرس أو الامتحان بالذكاء الاصطناعي...</em>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 5. TAB: ASSESSMENTS & OCR SCANNER -->
+      <div id="tab-assessments" class="tab-pane">
+        
+        <div class="grid-2">
+          <div>
+            <div class="card">
+              <div class="card-title">📷 مصحح الامتحانات الورقية الخطية (OCR Exam Scanner)</div>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+                تصوير أوراق إجابة الطلاب الخطية بالكاميرا، والتعرف الضوئي على خط اليد بالذكاء الاصطناعي، وتصحيح الامتحان وتحديث رادار الفجوات فورياً.
+              </p>
+              <button class="btn btn-accent" style="width: 100%;" onclick="simulateOcrScan()">📸 تصوير وتصحيح ورقة إجابة الطالب (مصطفى كمال)</button>
+              <div id="ocr-output" style="display: none; margin-top: 1rem; background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: var(--radius-md); padding: 1rem; font-size: 0.88rem;"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">📝 توليد اختبار متوازن (30/50/20)</div>
+              <label>عنوان الاختبار:</label>
+              <input type="text" id="quiz-title-input" class="input-field" value="اختبار تقييمي على قانون أوم وتوصيل المقاومات">
+              <label>عدد الأسئلة:</label>
+              <input type="number" id="quiz-count-input" class="input-field" value="5">
+              <button class="btn btn-primary" style="width: 100%;" onclick="generateAiAssessment()">🎯 توليد الاختبار بنموذج الإجابة وتوزيع بلوم</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 6. TAB: COGNITIVE GAPS -->
+      <div id="tab-gaps" class="tab-pane">
+        
+        <div class="card">
+          <div class="card-title">
+            <span>📊 محرك كشف الفجوات المفاهيمية وتحليل الأداء (Cognitive Gap Miner)</span>
+            <button class="btn btn-accent" onclick="trigger1ClickRemediation()">⚡ إنشاء تكليف علاجي فوري</button>
+          </div>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            يربط النظام كل سؤال في الامتحانات بمفهوم محدد في المنهج، ويحلل تراكم الغلطات لتحديد المفاهيم التي تحتاج إلى إعادة شرح قبل امتحانات الثانوية العامة.
+          </p>
+
+          <div id="gaps-detailed-container">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 7. TAB: BUSINESS OS & PAYMENTS -->
+      <div id="tab-business" class="tab-pane">
+        
+        <div class="card">
+          <div class="card-title">
+            <span>💼 إدارة الحسابات والاشتراكات (Teacher Business OS)</span>
+            <button class="btn btn-primary" onclick="openModal('modal-record-payment')">💳 تسجيل دفعة جديدة (InstaPay / Cash)</button>
+          </div>
+
+          <div class="grid-3" style="margin-bottom: 1.5rem;">
+            <div class="metric-stat-card">
+              <div class="metric-icon-box" style="background: var(--accent-100); color: var(--accent-700);">💰</div>
+              <div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">إجمالي الإيرادات المحصلة</div>
+                <div id="business-total-revenue" style="font-size: 1.4rem; font-weight: 800; color: var(--accent-600);">8,400 ج.م</div>
+              </div>
+            </div>
+
+            <div class="metric-stat-card">
+              <div class="metric-icon-box" style="background: var(--primary-100); color: var(--primary-700);">💳</div>
+              <div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">الاشتراكات السارية</div>
+                <div id="business-active-subs" style="font-size: 1.4rem; font-weight: 800; color: var(--text-main);">14 اشتراك</div>
+              </div>
+            </div>
+
+            <div class="metric-stat-card">
+              <div class="metric-icon-box" style="background: var(--danger-100); color: var(--danger-500);">⚠️</div>
+              <div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">اشتراكات تنتهي قريباً</div>
+                <div id="business-expiring-subs" style="font-size: 1.4rem; font-weight: 800; color: var(--danger-500);">2 طلاب</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-weight: 700; margin-bottom: 0.75rem;">سجل المقبوضات والتحويلات الأخيرة:</div>
+          <table class="table-roster">
+            <thead>
+              <tr>
+                <th>رقم الإيصال</th>
+                <th>اسم الطالب</th>
+                <th>المبلغ</th>
+                <th>طريقة الدفع</th>
+                <th>رقم المرجع / الملاحظات</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="payments-history-tbody">
+              <tr>
+                <td>REC-8841</td>
+                <td>منى توفيق</td>
+                <td>600 ج.م</td>
+                <td><span class="badge badge-primary">InstaPay</span></td>
+                <td>INSTA-TX-99881122</td>
+                <td><span class="badge badge-good">مكتمل ✅</span></td>
+              </tr>
+              <tr>
+                <td>REC-8842</td>
+                <td>أحمد محمود</td>
+                <td>600 ج.م</td>
+                <td><span class="badge badge-primary">فودافون كاش</span></td>
+                <td>VF-CASH-7711</td>
+                <td><span class="badge badge-good">مكتمل ✅</span></td>
+              </tr>
+              <tr>
+                <td>REC-8843</td>
+                <td>سلمى إبراهيم</td>
+                <td>600 ج.م</td>
+                <td><span class="badge badge-good">نقدي (Cash)</span></td>
+                <td>تحصيل بالسنتر</td>
+                <td><span class="badge badge-good">مكتمل ✅</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- 8. TAB: ZOOM & LIVE CLASSROOMS -->
+      <div id="tab-zoom" class="tab-pane">
+        
+        <!-- Live Active Zoom Banner -->
+        <div class="zoom-banner-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span class="badge badge-live"><span class="live-pulse-dot"></span> بث زووم مباشر الآن (Live Session)</span>
+            <span style="font-size: 0.85rem; background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px;">حضور متصل: <strong id="zoom-live-participants-count">1 طالب</strong></span>
+          </div>
+          <h2 id="zoom-live-topic" style="font-size: 1.35rem; margin-bottom: 0.4rem; color: #fff;">حصة أونلاين مباشرة: حل مسائل كيرشوف والدوائر المعقدة</h2>
+          <p id="zoom-live-details" style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 1.25rem;">
+            المجموعة: <strong id="zoom-live-group">مجموعة النخبة (ثانوية عامة)</strong> • رقم الاجتماع: <strong id="zoom-live-id">849 2019 4820</strong> • رمز المرور: <strong id="zoom-live-passcode">Physics2026</strong>
+          </p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+            <button class="btn btn-accent" onclick="startTeacherZoomRoom()">🚀 دخول الحصة كمعلم (Live Room)</button>
+            <button class="btn btn-primary" onclick="shareZoomWhatsApp()">📲 إرسال رابط الزووم للطلاب بالواتساب</button>
+            <button class="btn btn-danger" onclick="endCurrentZoomMeeting()">⏹️ إنهاء الحصة وتسجيل الحضور</button>
+          </div>
+        </div>
+
+        <!-- Zoom Meetings Table -->
+        <div class="card">
+          <div class="card-title">
+            <span>🎥 جدول وسجل حصص الزووم (Zoom Virtual Classrooms)</span>
+            <button class="btn btn-primary" onclick="openModal('modal-add-zoom')">➕ جدولة حصة زووم جديدة</button>
+          </div>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+            يتم إنشاء روابط Zoom مشفرة تلقائياً وتسجيل حضور الطلاب فور انضمامهم بدون الحاجة لكشوف ورقية، مع إمكانية إرسال رسائل التذكير على الواتساب بنقرة واحدة.
+          </p>
+
+          <div class="table-responsive">
+            <table class="table-roster">
+              <thead>
+                <tr>
+                  <th>عنوان الحصة</th>
+                  <th>المجموعة</th>
+                  <th>الموعد والمدة</th>
+                  <th>رقم الاجتماع (ID)</th>
+                  <th>كلمة المرور</th>
+                  <th>الحالة</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="zoom-meetings-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 9. TAB: EDUSOCIAL COMMUNITY (TEACHER HUB) -->
+        <div id="tab-community" class="tab-pane">
+          <!-- Community Header & Stats -->
+          <div class="srms-hero-banner" style="background: linear-gradient(135deg, #064E3B 0%, #059669 50%, #10B981 100%);">
+            <div class="hero-banner-content">
+              <div class="hero-badge-badge" style="background: rgba(255,255,255,0.25); color: #fff;">🌐 شبكة التواصل والتعليم التفاعلي (EduSocial Network)</div>
+              <h1 class="hero-greeting-title">مجتمعك الأكاديمي وجمهورك الطلابي 📣</h1>
+              <p class="hero-greeting-sub">انشر أسئلة اليوم، الكبسولات الصوتية المركزة، والخرائط الذهنية وتفاعل مباشرة مع الطلاب وأولياء الأمور لتعزيز علامتك الشخصية وزيادة الإقبال على مجموعاتك.</p>
+              <div class="hero-actions-row">
+                <button class="btn btn-accent" onclick="document.getElementById('teacher-post-title').focus()">✍️ نشر سؤال / كبسولة جديدة</button>
+                <button class="btn btn-outline" style="color: #fff; border-color: rgba(255,255,255,0.4);" onclick="fetchCommunityFeed('ALL')">🔄 تحديث الخلاصة التفاعلية</button>
+              </div>
+            </div>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: var(--radius-md); text-align: center; color: white;">
+              <div>
+                <div style="font-size: 1.4rem; font-weight: 800;" id="stat-followers-count">1,420</div>
+                <div style="font-size: 0.75rem; opacity: 0.9;">متابع في المجتمع</div>
+              </div>
+              <div style="border-right: 1px solid rgba(255,255,255,0.2); padding-right: 1rem;">
+                <div style="font-size: 1.4rem; font-weight: 800;">342</div>
+                <div style="font-size: 0.75rem; opacity: 0.9;">طالب في مجموعاتك</div>
+              </div>
+              <div style="border-right: 1px solid rgba(255,255,255,0.2); padding-right: 1rem;">
+                <div style="font-size: 1.4rem; font-weight: 800;">4.95 ⭐</div>
+                <div style="font-size: 0.75rem; opacity: 0.9;">تقييم الطلاب</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3" style="grid-template-columns: 2fr 1fr; margin-top: 1.5rem;">
+            <!-- Left: Composer + Feed -->
+            <div>
+              <!-- Teacher Post Composer Card -->
+              <div class="card" style="margin-bottom: 1.5rem; border: 2px solid var(--primary-100);">
+                <div class="card-title">
+                  <span>✍️ إنشاء منشور أكاديمي جديد (Teacher Composer)</span>
+                  <span class="badge badge-primary">معلم موثق ✅</span>
+                </div>
+
+                <!-- Post Type Selector -->
+                <div class="composer-type-pills" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                  <button type="button" class="composer-pill active" id="comp-type-poll" onclick="setPostType('POLL')">💡 سؤال تصويت تفاعلي</button>
+                  <button type="button" class="composer-pill" id="comp-type-voice" onclick="setPostType('VOICE_NOTE')">🎙️ كبسولة صوتية (60 ث)</button>
+                  <button type="button" class="composer-pill" id="comp-type-mindmap" onclick="setPostType('MINDMAP')">📄 خريطة ذهنية / مذكرة</button>
+                  <button type="button" class="composer-pill" id="comp-type-post" onclick="setPostType('POST')">📢 إعلان عام</button>
+                </div>
+
+                <form id="teacher-composer-form" onsubmit="handleTeacherCreatePost(event)">
+                  <input type="hidden" id="teacher-post-type" value="POLL">
+                  
+                  <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <input type="text" id="teacher-post-title" class="input-field" style="flex: 2; margin-bottom: 0;" placeholder="عنوان السؤال أو الفكرة الذكية..." value="💡 سؤال اليوم في كيرشوف" required>
+                    <select id="teacher-post-subject" class="input-field" style="flex: 1; margin-bottom: 0;">
+                      <option value="فيزياء ثانوية عامة">فيزياء ثانوية عامة</option>
+                      <option value="كيمياء ثانوية عامة">كيمياء ثانوية عامة</option>
+                      <option value="رياضيات - تفاضل وتكامل">رياضيات - تفاضل وتكامل</option>
+                    </select>
+                  </div>
+
+                  <textarea id="teacher-post-content" class="input-field" rows="3" placeholder="اكتب نص المسألة، الشرح، أو فكرة الكبسولة هنا..." required>في الدائرة الكهربية الموضحة، احسب فرق الجهد بين النقطتين بعد غلق المفتاح K مباشرة:</textarea>
+
+                  <!-- Dynamic Poll Inputs -->
+                  <div id="composer-poll-fields" style="background: var(--bg-base); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary-700); margin-bottom: 0.5rem;">خيارات التصويت للطلاب:</div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                      <input type="text" id="poll-opt-1" class="input-field" style="margin-bottom: 0;" placeholder="الخيار الأول" value="6 فولت (تظل ثابتة)">
+                      <input type="text" id="poll-opt-2" class="input-field" style="margin-bottom: 0;" placeholder="الخيار الثاني" value="12 فولت (تتضاعف)">
+                      <input type="text" id="poll-opt-3" class="input-field" style="margin-bottom: 0;" placeholder="الخيار الثالث (اختياري)" value="صفر فولت (تهبط للصفر)">
+                    </div>
+                  </div>
+
+                  <!-- Dynamic Voice Note Inputs -->
+                  <div id="composer-voice-fields" style="display: none; background: #FEF3C7; padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; border: 1px dashed #F59E0B;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #92400E; margin-bottom: 0.3rem;">🎙️ كبسولة صوتية جاهزة:</div>
+                    <div style="font-size: 0.8rem; color: #78350F; margin-bottom: 0.5rem;">تم إعداد التسجيل الصوتي بجودة استوديو (المدة: 58 ثانية). اضغط نشر لإتاحتها للطلاب فورياً.</div>
+                  </div>
+
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">🔒 المنشور يظهر لجميع الطلاب ومتابعيك في المجتمع الأكاديمي</span>
+                    <button type="submit" class="btn btn-accent">🚀 نشر في المجتمع الأكاديمي</button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Subject Filter Bar -->
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center; overflow-x: auto; padding-bottom: 0.25rem;">
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-left: 0.5rem;">تصفية حسب:</span>
+                <button class="filter-pill active" onclick="filterFeedBySubject('ALL', this)">🌐 كل المنشورات</button>
+                <button class="filter-pill" onclick="filterFeedBySubject('فيزياء', this)">⚡ فيزياء</button>
+                <button class="filter-pill" onclick="filterFeedBySubject('كيمياء', this)">🧪 كيمياء</button>
+                <button class="filter-pill" onclick="filterFeedBySubject('رياضيات', this)">📐 رياضيات</button>
+              </div>
+
+              <!-- Live Feed List -->
+              <div id="teacher-community-feed-list" class="feed-container">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Right Sidebar: Teachers Directory & Trending -->
+            <div>
+              <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-title">
+                  <span>🏆 دليل نخبة المعلمين (Directory)</span>
+                </div>
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                  شبكة المعلمين المعتمدين عبر المنصة؛ يتابعهم الطلاب ويشتركون في مجموعاتهم.
+                </p>
+                <div id="teacher-directory-sidebar-list">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-title">
+                  <span>💡 نصائح بناء الهيبة والجمهور</span>
+                </div>
+                <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-base);">
+                  <div style="margin-bottom: 0.5rem;">🔹 <strong>أسئلة التصويت:</strong> تحقق تفاعلاً يزيد بـ 4 أضعاف عن المنشورات العادية لأن الطالب يرى نسب إجابات زملائه.</div>
+                  <div style="margin-bottom: 0.5rem;">🔹 <strong>الكبسولة الصوتية:</strong> حل سريع يوفّر وقت قراءة الصفحات الطويلة ويثبت التريكات الصعبة.</div>
+                  <div>🔹 <strong>الكود الأكاديمي:</strong> يمكّن أي طالب جديد من الانضمام لمجموعاتك وسداد الاشتراك بنقرة واحدة.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+  </section>
+
+  <!-- STUDENT PORTAL -->
+  <section id="portal-student" class="portal-view">
+    <div class="portal-student-wrapper">
+
+      <!-- Student Navigation Header & Profile Card -->
+      <div class="card" style="margin-bottom: 1.25rem; background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%); color: #fff; border: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 52px; height: 52px; border-radius: 50%; background: #4F46E5; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; border: 2px solid #818CF8;">🎓</div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <h2 style="margin: 0; font-size: 1.3rem; color: #fff;" id="student-portal-name">أحمد محمود</h2>
+                <span class="badge" style="background: #10B981; color: #fff;" id="student-portal-code">الكود الأكاديمي: STU-102931</span>
+                <span class="badge" style="background: rgba(255,255,255,0.2); color: #E0E7FF;" id="student-portal-sub-badge">مشترك في 3 مواد أكاديمية ⚡</span>
+              </div>
+              <div style="font-size: 0.85rem; color: #C7D2FE; margin-top: 4px;">
+                الصف الثالث الثانوي (ثانوية عامة 2026) • مسجل لدى: أ/ طارق الشناوي، أ/ خالد إبراهيم، أ/ شريف المصري
+              </div>
+            </div>
+          </div>
+
+          <!-- Fast Switch Student Persona -->
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 0.8rem; color: #A5B4FC;">تبديل الطالب:</span>
+            <button class="btn btn-outline" style="border-color: #6366F1; color: #fff; padding: 4px 10px; font-size: 0.8rem;" onclick="setStudentDemo('stu-demo-1')">أحمد محمود (3 مواد)</button>
+            <button class="btn btn-outline" style="border-color: #6366F1; color: #fff; padding: 4px 10px; font-size: 0.8rem;" onclick="setStudentDemo('stu-demo-2')">سلمى إبراهيم (مادتان)</button>
+          </div>
+        </div>
+
+        <!-- Student Sub-Tabs Bar -->
+        <div class="student-subtabs-nav" style="display: flex; gap: 0.5rem; margin-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 0.75rem; flex-wrap: wrap;">
+          <button class="student-subtab-btn active" id="btn-subtab-day" onclick="switchStudentSubTab('day')">📚 رحلتي ويومي الدراسي</button>
+          <button class="student-subtab-btn" id="btn-subtab-community" onclick="switchStudentSubTab('community')">🌐 مجتمع EduSocial والتصويتات</button>
+          <button class="student-subtab-btn" id="btn-subtab-directory" onclick="switchStudentSubTab('directory')">🔍 دليل المعلمين واكتشاف المواد</button>
+        </div>
+      </div>
+
+      <!-- Overdue Paywall Banner (Shown if student subscription is suspended) -->
+      <div id="student-paywall-banner" style="display: none; background: #FEF2F2; border: 2px solid #EF4444; border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem; color: #991B1B;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+          <span class="badge badge-urgent" style="font-size: 0.9rem;">⚠️ تنبيه إداري: الحساب معلق مؤقتاً لانتهاء فترة السماح بالسداد</span>
+          <span style="font-weight: 700; color: #DC2626;" id="paywall-amount-tag">المبلغ المطلوب: 600 ج.م</span>
+        </div>
+        <p style="font-size: 0.95rem; margin-bottom: 0.75rem; color: #7F1D1D;" id="paywall-reason-text">
+          عزيزي الطالب / ولي الأمر، نود إحاطتكم بأنه قد انتهت فترة السماح بسداد الاشتراك الشهري. لحضور حصص الزووم المباشرة وتقديم الامتحانات، يرجى تجديد الاشتراك عبر الطرق السريعة التالية:
+        </p>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; background: #FFF; padding: 0.75rem 1rem; border-radius: 8px; border: 1px dashed #FCA5A5; font-size: 0.85rem; color: #374151; margin-bottom: 0.75rem;">
+          <div>⚡ <strong>إنستاباي (InstaPay):</strong> <code>tarek.physics@instapay</code></div>
+          <div>📱 <strong>فودافون كاش:</strong> <code>01012345678</code></div>
+          <div>🏢 <strong>نقداً بالسنتر:</strong> بسكرتارية السنتر بالحصة القادمة</div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="simulateStudentPayment()">💳 سداد الآن وتفعيل فوري (محاكاة دفع فورية)</button>
+          <button class="btn btn-outline" onclick="contactSecretaryWhatsApp()">📲 إرسال إشعار السداد عبر واتساب</button>
+        </div>
+      </div>
+
+      <!-- ── SUBTAB 1: MY LEARNING DAY (DAILY JOURNEY & MULTI-TEACHER SCHEDULE) ── -->
+      <div id="student-view-day" class="student-subtab-view active">
+        
+        <!-- Multi-Teacher Enrolled Subjects Pill Selector -->
+        <div class="card" style="margin-bottom: 1.25rem; padding: 0.9rem 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--primary-800);">
+              <span>🎯 موادي ومجموعاتي الحالية:</span>
+            </div>
+            <div id="student-enrolled-subjects-pills" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <span class="badge badge-primary" style="padding: 6px 12px; font-size: 0.85rem;">⚡ فيزياء: أ/ طارق الشناوي (السبت 4:00م)</span>
+              <span class="badge" style="background: #D1FAE5; color: #065F46; padding: 6px 12px; font-size: 0.85rem;">🧪 كيمياء: أ/ خالد إبراهيم (الأحد 6:00م)</span>
+              <span class="badge" style="background: #FEE2E2; color: #991B1B; padding: 6px 12px; font-size: 0.85rem;">📐 رياضيات: أ/ شريف المصري (الثلاثاء 5:00م)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <!-- Student Daily Dashboard -->
+            <div class="card">
+              <div class="card-title">📅 رحلتي التعليمية اليومية (My Learning Day)</div>
+              
+              <div style="background: var(--primary-50); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+                <div style="font-weight: 700; color: var(--primary-700);">الحصة القادمة: فيزياء (تطبيقات قانون كيرشوف)</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">السبت القادم - الساعة 4:00 عصراً (مجموعة النخبة مع أ/ طارق)</div>
+              </div>
+
+              <!-- Student Live Zoom Card -->
+              <div id="student-zoom-banner" style="background: linear-gradient(135deg, #1E1B4B, #312E81); border-radius: var(--radius-md); padding: 1.25rem; color: #fff; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.15); box-shadow: var(--shadow-md);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <span class="badge badge-live"><span class="live-pulse-dot"></span> الحصة الأونلاين جارية الآن (Zoom Live)</span>
+                  <span style="font-size: 0.8rem; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 12px;">تسجيل حضور تلقائي ✅</span>
+                </div>
+                <h3 id="student-zoom-topic" style="color: #fff; margin-bottom: 0.3rem;">حل مسائل كيرشوف والدوائر المعقدة</h3>
+                <p id="student-zoom-meta" style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 1rem;">
+                  مع أ/ طارق الشناوي • Meeting ID: <strong>849 2019 4820</strong> • كلمة المرور: <strong>Physics2026</strong>
+                </p>
+                <button class="btn btn-accent" style="width: 100%; font-size: 1rem;" onclick="joinStudentZoomLive()">🚀 دخول الحصة المباشرة الآن (تسجيل الحضور التلقائي)</button>
+              </div>
+
+              <div style="font-weight: 700; margin-bottom: 0.5rem;">الاختبارات والواجبات المتاحة:</div>
+              <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-weight: 700;">اختبار تقييمي: قانون أوم والدوائر الكهربية</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">5 أسئلة • المدة: 25 دقيقة • الدرجة: 10 درجات</div>
+                  </div>
+                  <button class="btn btn-primary" onclick="startStudentQuiz()">بدء الاختبار الآن ✍️</button>
+                </div>
+              </div>
+
+              <div id="student-quiz-modal" style="display: none; background: #FFF; border: 2px solid var(--primary-500); border-radius: var(--radius-md); padding: 1.25rem; margin-top: 1rem;">
+                <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.5rem;">سؤال 1 من 3:</div>
+                <p style="margin-bottom: 0.75rem; font-weight: 600;">ثلاث مقاومات متماثلة قيمة كل منها (R). عند توصيلها على التوازي، تكون المقاومة المكافئة:</p>
+                <label style="display: block; margin-bottom: 0.4rem;"><input type="radio" name="stu_q1" value="3R"> 3R</label>
+                <label style="display: block; margin-bottom: 0.4rem;"><input type="radio" name="stu_q1" value="R / 3" checked> R / 3</label>
+                <label style="display: block; margin-bottom: 0.4rem;"><input type="radio" name="stu_q1" value="R / 9"> R / 9</label>
+                <button class="btn btn-accent" style="margin-top: 0.75rem;" onclick="submitStudentQuiz()">تسليم الإجابات والتصحيح التلقائي ✅</button>
+              </div>
+
+              <div id="student-quiz-result" style="display: none; margin-top: 1rem;" class="priority-banner"></div>
+            </div>
+          </div>
+
+          <div>
+            <!-- Concept Mastery Radar -->
+            <div class="card">
+              <div class="card-title">📈 رادار إتقان المفاهيم (Concept Radar)</div>
+              <div style="margin-bottom: 1rem;">
+                <div style="font-size: 0.85rem; font-weight: 600; color: var(--accent-600); margin-bottom: 4px;">مفاهيم قوية (جاهز للامتحان):</div>
+                <span class="badge badge-good">قانون أوم (95%)</span>
+                <span class="badge badge-good">شدة التيار وفرق الجهد (90%)</span>
+              </div>
+              <div>
+                <div style="font-size: 0.85rem; font-weight: 600; color: var(--danger-500); margin-bottom: 4px;">مفاهيم تحتاج مراجعة:</div>
+                <span class="badge badge-urgent">توصيل التوازي وتجزئة التيار (45%)</span>
+              </div>
+            </div>
+
+            <!-- Socratic AI Coach -->
+            <div class="card">
+              <div class="card-title">💡 المرشد التعليمي السقراطي (AI Coach)</div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">اطرح سؤالك أو خطوتك الأولى في حل المسألة للحصول على تلميحات سقراطية موجهة:</p>
+              <textarea id="socratic-input" placeholder="مثال: كيف أفرق بين قانون كيرشوف الأول والثاني؟" rows="2"></textarea>
+              <button class="btn btn-outline" style="width: 100%;" onclick="askSocraticCoach()">استشارة المرشد الذكي 🤖</button>
+              <div id="socratic-response" style="display: none; background: var(--primary-50); border-radius: var(--radius-md); padding: 0.75rem; margin-top: 0.75rem; font-size: 0.9rem;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SUBTAB 2: EDUSOCIAL COMMUNITY (POLLS, VOICE NOTES, QUESTIONS) ── -->
+      <div id="student-view-community" class="student-subtab-view" style="display: none;">
+        <div class="grid-3" style="grid-template-columns: 2fr 1fr;">
+          <div>
+            <!-- Filter Pills -->
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center; overflow-x: auto; padding-bottom: 0.25rem;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-left: 0.5rem;">المادة:</span>
+              <button class="filter-pill active" onclick="filterStudentFeed('ALL', this)">🌐 كل المنشورات</button>
+              <button class="filter-pill" onclick="filterStudentFeed('فيزياء', this)">⚡ فيزياء</button>
+              <button class="filter-pill" onclick="filterStudentFeed('كيمياء', this)">🧪 كيمياء</button>
+              <button class="filter-pill" onclick="filterStudentFeed('رياضيات', this)">📐 رياضيات</button>
+            </div>
+
+            <!-- Student Feed List -->
+            <div id="student-community-feed-list" class="feed-container">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div>
+            <!-- Community Info Card -->
+            <div class="card" style="margin-bottom: 1rem;">
+              <div class="card-title">💡 عن مجتمع EduSocial</div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                ساحة تفاعلية حصرية تجمعك بنخبة معلمي المواد. صوّت في سؤال اليوم، استمع للكبسولات الصوتية، وشارك باستفساراتك في التعليقات مع زملائك من مختلف المحافظات.
+              </p>
+            </div>
+
+            <!-- Followed Teachers Summary -->
+            <div class="card">
+              <div class="card-title">👨‍🏫 أساتذتي المتابعون</div>
+              <div id="student-followed-teachers-box">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SUBTAB 3: TEACHER DIRECTORY & MULTI-SUBJECT ENROLLMENT ── -->
+      <div id="student-view-directory" class="student-subtab-view" style="display: none;">
+        <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: #fff;">
+          <div style="font-weight: 800; font-size: 1.2rem; margin-bottom: 0.25rem;">🔍 دليل نخبة معلمي الثانوية العامة (Teacher Discovery)</div>
+          <div style="font-size: 0.88rem; color: #94A3B8;">
+            اكتشف نخبة المعلمين في المواد المختلفة، تابع جديدهم، واشترك في مجموعاتهم الدراسية بنقرة واحدة عبر حسابك الموحد.
+          </div>
+        </div>
+
+        <div id="student-directory-cards-container" class="grid-3">
+          <!-- Dynamically populated teacher cards -->
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PARENT PORTAL -->
+  <section id="portal-parent" class="portal-view">
+    <div class="portal-parent-wrapper">
+      
+      <!-- Multi-Child Selector Card -->
+      <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: white;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="font-size: 0.85rem; color: #94A3B8;">👨‍👩‍👧 منظومة نبض العائلة الأكاديمية (Parent Multi-Child Pulse)</div>
+            <h2 style="margin: 0.2rem 0; font-size: 1.35rem; color: #fff;">مرحباً بحضرتك، ولي أمر الطالب: <span id="parent-active-child-name" style="color: #60A5FA;">أحمد محمود</span> 👋</h2>
+            <div style="font-size: 0.82rem; color: #CBD5E1;">رقم الهاتف المسجل: <code>01011112222</code> • مربوط تلقائياً بكافة الأبناء لدى جميع المدرسين</div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-weight: 600; font-size: 0.88rem; color: #E2E8F0;">اختر الابن للمتابعة:</span>
+            <select id="parent-child-select" class="input-field" style="margin-bottom: 0; min-width: 240px; background: #334155; color: #fff; border-color: #475569;" onchange="handleParentChildChange(this.value)">
+              <option value="stu-demo-1" selected>أحمد محمود (3 ثانوي - 3 مواد)</option>
+              <option value="stu-demo-2">سلمى إبراهيم (3 ثانوي - مادتان)</option>
+              <option value="stu-demo-4">منى توفيق (3 ثانوي - اشتراك معلق)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pulse Heuristic Banner -->
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="pulse-indicator" style="margin-bottom: 1rem;">
+          <div class="pulse-dot" id="parent-pulse-dot" style="background-color: var(--accent-500);"></div>
+          <div>
+            <div style="font-weight: 700; font-size: 1.2rem; color: var(--accent-700);" id="parent-pulse-status">الحالة العامة: ممتاز ومستقر (Good)</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted);" id="parent-pulse-summary">مستوى أحمد ممتاز وملتزم بالحضور والواجبات في كافة المواد.</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <div style="background: var(--bg-base); padding: 1rem; border-radius: var(--radius-md); flex: 1; text-align: center; min-width: 120px;">
+            <div style="font-size: 1.6rem; font-weight: 800; color: var(--primary-700);" id="parent-stat-attendance">100%</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">نسبة الحضور التراكمية</div>
+          </div>
+          <div style="background: var(--bg-base); padding: 1rem; border-radius: var(--radius-md); flex: 1; text-align: center; min-width: 120px;">
+            <div style="font-size: 1.6rem; font-weight: 800; color: var(--accent-600);" id="parent-stat-average">88%</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">متوسط درجات التقييمات</div>
+          </div>
+          <div style="background: var(--bg-base); padding: 1rem; border-radius: var(--radius-md); flex: 1; text-align: center; min-width: 120px;">
+            <div style="font-size: 1.6rem; font-weight: 800; color: var(--primary-700);" id="parent-stat-absences">0</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">غياب غير مبرر</div>
+          </div>
+          <div style="background: var(--bg-base); padding: 1rem; border-radius: var(--radius-md); flex: 1; text-align: center; min-width: 120px;">
+            <div style="font-size: 1.6rem; font-weight: 800; color: #10B981;" id="parent-stat-subjects-count">3 مواد</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">المواد المشترك بها</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi-Teacher Breakdown Cards Grid -->
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-title">
+          <span>🌐 متابعة المواد والمعلمين المسجل لديهم الطالب (Multi-Teacher Overview)</span>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+          يتم فصل ومتابعة أداء الطالب ومصاريفه لدى كل معلم على حدة لضمان الشفافية التامة لولي الأمر:
+        </p>
+
+        <div id="parent-enrolled-teachers-grid" class="grid-3">
+          <!-- Dynamically populated cards for each teacher & subject -->
+        </div>
+      </div>
+
+      <!-- WhatsApp Card & Teacher Notes -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📝 ملاحظات المعلمين وتوجيهات المذاكرة</div>
+          <div id="parent-teacher-notes-box" style="font-size: 0.9rem; background: #F8FAFC; padding: 1rem; border-radius: var(--radius-md); line-height: 1.6;">
+            "مستوى الطالب ممتاز وملتزم بالحضور. نرجو تشجيعه على مراجعة مسائل تجزئة التيار قبل الحصة القادمة في الفيزياء، ومراجعة تفاعلات الأكسدة والاختزال في الكيمياء."
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📱 بطاقة المتابعة الذكية عبر الواتساب (1-Click WhatsApp Card)</div>
+          <button class="btn btn-accent" style="width: 100%; margin-bottom: 0.75rem;" onclick="generateWhatsAppCard()">توليد بطاقة الواتساب لكافة المواد 📲</button>
+          <div id="whatsapp-card-display" class="whatsapp-box">اضغط على الزر أعلاه لتوليد بطاقة المتابعة الشاملة لجميع المدرسين لإرسالها لواتساب مباشرة.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+      </main> <!-- /app-body-content -->
+    </div> <!-- /app-main-wrapper -->
+  </div> <!-- /app-layout-container -->
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal 1: Add Student -->
+  <div id="modal-add-student" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>➕ إضافة طالب جديد</h3>
+        <button class="modal-close" onclick="closeModal('modal-add-student')">&times;</button>
+      </div>
+      <form onsubmit="handleCreateStudent(event)">
+        <label>اسم الطالب رباعي:</label>
+        <input type="text" id="stu-name-input" class="input-field" placeholder="مثال: عمر خالد عبد الرحمن" required>
+
+        <label>المجموعة التعليمية:</label>
+        <select id="stu-group-select" class="input-field" required>
+          <!-- Populated dynamically -->
+        </select>
+
+        <label>الصف الدراسي:</label>
+        <select id="stu-grade-select" class="input-field">
+          <option value="GRADE_12_SEC3">الصف الثالث الثانوي (ثانوية عامة)</option>
+          <option value="GRADE_11_SEC2">الصف الثاني الثانوي</option>
+          <option value="GRADE_10_SEC1">الصف الأول الثانوي</option>
+        </select>
+
+        <label>رقم تليفون ولي الأمر (مصر):</label>
+        <input type="tel" id="stu-phone-input" class="input-field" placeholder="010XXXXXXXX" required>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">حفظ الطالب وتوليد الكود الأكاديمي 🚀</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Add Knowledge Memo -->
+  <div id="modal-add-memo" class="modal-overlay">
+    <div class="modal-container" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3>📚 إضافة مذكرة / مرجع لخزينة المعلم (RAG)</h3>
+        <button class="modal-close" onclick="closeModal('modal-add-memo')">&times;</button>
+      </div>
+      <form onsubmit="handleUploadMemo(event)">
+        
+        <!-- Upload Source Options -->
+        <label style="font-weight: 700; margin-bottom: 0.5rem; display: block;">اختر طريقة إرفاق المذكرة أو المستند:</label>
+        <div class="upload-sources-grid">
+          <div class="upload-source-card" onclick="triggerFileInput('memo-file-pdf')">
+            <span class="upload-source-icon">📄</span>
+            <span class="upload-source-title">ملف PDF</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">(.pdf)</span>
+          </div>
+          <div class="upload-source-card" onclick="triggerFileInput('memo-file-word')">
+            <span class="upload-source-icon">📝</span>
+            <span class="upload-source-title">ملف Word</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">(.docx / .doc)</span>
+          </div>
+          <div class="upload-source-card" onclick="triggerFileInput('memo-file-camera')">
+            <span class="upload-source-icon">📷</span>
+            <span class="upload-source-title">تصوير بالكاميرا</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">(OCR فوري)</span>
+          </div>
+        </div>
+
+        <!-- Hidden Inputs for File Selection -->
+        <input type="file" id="memo-file-pdf" accept=".pdf" style="display: none;" onchange="handleFileSelected(event, 'PDF')">
+        <input type="file" id="memo-file-word" accept=".docx,.doc,.txt" style="display: none;" onchange="handleFileSelected(event, 'WORD')">
+        <input type="file" id="memo-file-camera" accept="image/*" capture="environment" style="display: none;" onchange="handleFileSelected(event, 'CAMERA')">
+
+        <!-- Live File Extraction Status Card -->
+        <div id="file-upload-status" class="upload-preview-card" style="display: none;">
+          <div>
+            <strong id="file-status-name">📄 تم إرفاق الملف: </strong>
+            <div id="file-status-details" style="font-size: 0.8rem; color: var(--accent-700); margin-top: 2px;">جاري القراءة واستخراج النصوص بالذكاء الاصطناعي...</div>
+          </div>
+          <span class="badge badge-good" id="file-status-badge">جاهز للفهرسة ✅</span>
+        </div>
+
+        <label>عنوان المذكرة أو المرجع:</label>
+        <input type="text" id="memo-title-input" class="input-field" placeholder="مثال: مذكرة قانون كيرشوف والدوائر المعقدة 2026" required>
+
+        <label>نوع الملف / المحتوى:</label>
+        <select id="memo-type-select" class="input-field">
+          <option value="PDF_DOCUMENT">ملف PDF مستورد</option>
+          <option value="WORD_DOCUMENT">مستند Word</option>
+          <option value="CAMERA_PHOTO_OCR">تصوير ورقي بالكاميرا (OCR)</option>
+          <option value="SUMMARY_NOTE">ملخص شرح وقوانين</option>
+          <option value="PAST_EXAM">امتحان سابق / بنك أسئلة</option>
+          <option value="WORKSHEET">ورقة عمل وتمارين</option>
+        </select>
+
+        <label>النص المستخرج أو المحتوى (يمكنك تعديله أو الإضافة عليه):</label>
+        <textarea id="memo-content-input" rows="5" class="input-field" placeholder="سيظهر النص المستخرج من ملف الـ PDF أو Word أو الكاميرا تلقائياً هنا..." required></textarea>
+
+        <button type="submit" class="btn btn-accent" style="width: 100%; margin-top: 0.5rem;">فهرسة وتقسيم المذكرة بالذكاء الاصطناعي 🧠</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Create Group -->
+  <div id="modal-add-group" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>🏛️ إنشاء مجموعة تعليمية جديدة</h3>
+        <button class="modal-close" onclick="closeModal('modal-add-group')">&times;</button>
+      </div>
+      <form onsubmit="handleCreateGroup(event)">
+        <label>اسم المجموعة:</label>
+        <input type="text" id="group-name-input" class="input-field" placeholder="مثال: مجموعة الأحد 4 مساءً (ثانوية عامة)" required>
+
+        <label>الصف الدراسي:</label>
+        <select id="group-grade-select" class="input-field">
+          <option value="GRADE_12_SEC3">الصف الثالث الثانوي</option>
+          <option value="GRADE_11_SEC2">الصف الثاني الثانوي</option>
+          <option value="GRADE_10_SEC1">الصف الأول الثانوي</option>
+        </select>
+
+        <label>أقصى سعة للقاعة (عدد الطلاب):</label>
+        <input type="number" id="group-capacity-input" class="input-field" value="25" required>
+
+        <label>سعر الحصة / الاشتراك (ج.م):</label>
+        <input type="number" id="group-fee-input" class="input-field" value="150" required>
+
+        <label>يوم الحصة وموعدها:</label>
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="text" id="group-day-input" class="input-field" placeholder="الأحد" value="الأحد" required>
+          <input type="text" id="group-time-input" class="input-field" placeholder="16:00" value="16:00" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">إنشاء المجموعة وتفعيل الجدول 🚀</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Record Payment -->
+  <div id="modal-record-payment" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>💳 تسجيل عملية دفع واشتراك</h3>
+        <button class="modal-close" onclick="closeModal('modal-record-payment')">&times;</button>
+      </div>
+      <form onsubmit="handleRecordPayment(event)">
+        <label>اختر الطالب:</label>
+        <select id="pay-student-select" class="input-field" required>
+          <!-- Populated dynamically -->
+        </select>
+
+        <label>المبلغ المدفوع (بالجنيه المصري):</label>
+        <input type="number" id="pay-amount-input" class="input-field" value="600" required>
+
+        <label>طريقة الدفع:</label>
+        <select id="pay-method-select" class="input-field">
+          <option value="INSTAPAY">InstaPay (تحويل بنكي / انستاباي)</option>
+          <option value="CASH">نقدي بالسنتر (Cash)</option>
+          <option value="VODAFONE_CASH">فودافون كاش / محفظة إلكترونية</option>
+          <option value="FAWRY">فوري (Fawry Pay)</option>
+        </select>
+
+        <label>رقم مرجع التحويل أو ملاحظة:</label>
+        <input type="text" id="pay-ref-input" class="input-field" placeholder="مثال: INSTA-992811">
+
+        <button type="submit" class="btn btn-accent" style="width: 100%; margin-top: 0.5rem;">حفظ الدفعة وتوليد الإيصال الرقمي 🧾</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: Schedule Zoom Meeting -->
+  <div id="modal-add-zoom" class="modal-overlay">
+    <div class="modal-container" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3>🎥 جدولة وبدء حصة زووم مباشرة (Live Zoom Class)</h3>
+        <button class="modal-close" onclick="closeModal('modal-add-zoom')">&times;</button>
+      </div>
+      <form onsubmit="handleCreateZoomMeeting(event)">
+        <label>عنوان وموضوع الحصة:</label>
+        <input type="text" id="zoom-topic-input" class="input-field" placeholder="مثال: مراجعة قانون أوم وكيرشوف وحل أسئلة بنك المعرفة" required>
+
+        <label>المجموعة التعليمية المستهدفة:</label>
+        <select id="zoom-group-select" class="input-field" required>
+          <!-- Populated dynamically -->
+        </select>
+
+        <label>موعد بدء الحصة:</label>
+        <input type="text" id="zoom-time-input" class="input-field" value="اليوم الساعة 04:00 مساءً" required>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <div style="flex: 1;">
+            <label>مدة الحصة (بالدقائق):</label>
+            <input type="number" id="zoom-duration-input" class="input-field" value="75" required>
+          </div>
+          <div style="flex: 1;">
+            <label>رمز المرور (Passcode):</label>
+            <input type="text" id="zoom-passcode-input" class="input-field" value="Physics2026" required>
+          </div>
+        </div>
+
+        <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; cursor: pointer;">
+          <input type="checkbox" id="zoom-record-check" checked>
+          <span>تسجيل الحصة سحابياً تلقائياً (Cloud Recording) وإتاحتها للطلاب بعد الحصة</span>
+        </label>
+
+        <button type="submit" class="btn btn-accent" style="width: 100%; font-size: 1rem;">🚀 إنشاء رابط الزووم وبدء البث المباشر</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 6: Interactive Live Zoom Classroom (Simulator) -->
+  <div id="modal-zoom-live-room" class="modal-overlay">
+    <div class="modal-container" style="max-width: 820px; padding: 1.25rem; background: #0B0F19; color: #fff;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1F2937; padding-bottom: 0.75rem; margin-bottom: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span class="badge badge-live"><span class="live-pulse-dot"></span> مباشر الآن (Zoom Room)</span>
+          <span id="room-topic-title" style="font-weight: 700; font-size: 1rem; color: #fff;">حصة أونلاين: حل مسائل كيرشوف والدوائر المعقدة</span>
+        </div>
+        <button class="modal-close" style="color: #9CA3AF;" onclick="closeModal('modal-zoom-live-room')">&times;</button>
+      </div>
+
+      <!-- Live Video / Whiteboard Screen -->
+      <div class="zoom-room-frame" style="margin-top: 0;">
+        <div class="video-screen-mockup" style="height: 320px; position: relative;">
+          
+          <!-- Whiteboard Canvas Preview -->
+          <div style="text-align: center; padding: 1.5rem; max-width: 500px;">
+            <div style="font-size: 0.85rem; color: #818CF8; margin-bottom: 0.5rem;">[ شاشة المعلم المشتركة — لوحة الشرح الذكية ]</div>
+            <div style="border: 2px dashed #4338CA; border-radius: 8px; padding: 1rem; background: rgba(30, 27, 75, 0.6); margin-bottom: 0.75rem;">
+              <div style="font-weight: 800; font-size: 1.1rem; color: #E0E7FF; margin-bottom: 0.25rem;">دوائر كيرشوف وتطبيقات حفظ الطاقة</div>
+              <div style="font-family: monospace; font-size: 1rem; color: #FCD34D;">Σ I_in = Σ I_out &nbsp;&nbsp;|&nbsp;&nbsp; Σ V = Σ I·R</div>
+              <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 0.4rem;">المقاومة المكافئة للتوازي: 1/R_eq = 1/R1 + 1/R2</div>
+            </div>
+            <div style="font-size: 0.8rem; color: #34D399;">🎙️ صوت المعلم متصل وواضح • تم تسجيل الحضور تلقائياً</div>
+          </div>
+
+          <!-- Teacher Cam PiP -->
+          <div style="position: absolute; top: 12px; left: 12px; background: rgba(15, 23, 42, 0.85); border: 1px solid #4338CA; border-radius: 8px; padding: 6px 12px; display: flex; align-items: center; gap: 6px; font-size: 0.75rem;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981;"></span>
+            <span>أ/ طارق الشناوي (المعلم / المضيف)</span>
+          </div>
+
+          <!-- Student Cam PiP -->
+          <div style="position: absolute; bottom: 12px; left: 12px; background: rgba(15, 23, 42, 0.85); border: 1px solid #374151; border-radius: 8px; padding: 6px 12px; display: flex; align-items: center; gap: 6px; font-size: 0.75rem;">
+            <span>👤 أنت (طالب متصل - سلمى إبراهيم)</span>
+          </div>
+
+          <!-- Participants Counter Overlay -->
+          <div style="position: absolute; top: 12px; right: 12px; background: rgba(0, 0, 0, 0.6); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; color: #E2E8F0;">
+            👥 <span id="live-room-count">14 طالب متصل</span>
+          </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="meeting-controls-bar">
+          <button class="meeting-ctrl-btn" id="btn-ctrl-mic" onclick="toggleZoomMic()" title="كتم/تشغيل المايك">🎙️</button>
+          <button class="meeting-ctrl-btn" id="btn-ctrl-cam" onclick="toggleZoomCam()" title="تشغيل/إيقاف الكاميرا">📹</button>
+          <button class="meeting-ctrl-btn" id="btn-ctrl-hand" onclick="raiseZoomHand()" title="رفع اليد للمشاركة">✋</button>
+          <button class="meeting-ctrl-btn" onclick="sendZoomChat()" title="إرسال رسالة في الشات">💬</button>
+          <button class="btn btn-outline" style="border-color: #4B5563; color: #E5E7EB; padding: 6px 12px; font-size: 0.85rem;" onclick="openOfficialZoomLink()">🔗 فتح في تطبيق زووم الرسمي</button>
+          <button class="btn btn-danger" style="padding: 6px 16px; font-size: 0.85rem;" onclick="closeModal('modal-zoom-live-room')">❌ مغادرة الحصة</button>
+        </div>
+      </div>
+
+      <!-- Live Chat Stream Box -->
+      <div id="zoom-chat-box" style="margin-top: 0.75rem; background: #111827; border-radius: 8px; padding: 0.75rem; font-size: 0.8rem; border: 1px solid #1F2937; max-height: 80px; overflow-y: auto;">
+        <div style="color: #9CA3AF;"><strong style="color: #60A5FA;">أحمد محمود:</strong> يا مستر ممكن توضيح إشارة المقاومة الداخلية؟</div>
+        <div style="color: #9CA3AF;"><strong style="color: #34D399;">أ/ طارق الشناوي:</strong> حاضر يا أحمد، هنشرحها حالاً في المثال القادم.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 7: Multi-Role Authentication & Demo Persona Switcher -->
+  <div id="modal-auth" class="modal-overlay">
+    <div class="modal-container" style="max-width: 540px;">
+      <div class="modal-header">
+        <div style="font-weight: 800; font-size: 1.15rem; color: var(--primary-700);">🔑 تسجيل الدخول وإدارة الهوية</div>
+        <button class="modal-close" onclick="closeModal('modal-auth')">&times;</button>
+      </div>
+
+      <!-- 1-Click Quick Demo Access -->
+      <div class="quick-demo-container">
+        <div style="font-size: 0.82rem; font-weight: 700; color: var(--primary-700);">⚡ وصول تجريبي سريع وفوري بنقرة واحدة:</div>
+        <div class="quick-demo-badges">
+          <button class="quick-tag-btn" onclick="quickLoginAs('TEACHER', 'tch-tarek-001')">👨‍🏫 كمعلم (أ/ طارق الشناوي)</button>
+          <button class="quick-tag-btn" onclick="quickLoginAs('STUDENT', 'stu-demo-2')">🎓 كطالبة نشطة (سلمى إبراهيم)</button>
+          <button class="quick-tag-btn" onclick="quickLoginAs('STUDENT_OVERDUE', 'stu-demo-4')" style="border-color: #DC2626; color: #DC2626;">⚠️ كطالبة معلقة (منى توفيق)</button>
+          <button class="quick-tag-btn" onclick="quickLoginAs('PARENT', '01033334444')">👨‍👩‍👧 كولي أمر (الحاج إبراهيم)</button>
+        </div>
+      </div>
+
+      <!-- Role Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tab-btn-auth-teacher" onclick="switchAuthTab('teacher')">👨‍🏫 المعلم</button>
+        <button class="auth-tab-btn" id="tab-btn-auth-student" onclick="switchAuthTab('student')">🎓 الطالب (بالكود)</button>
+        <button class="auth-tab-btn" id="tab-btn-auth-parent" onclick="switchAuthTab('parent')">👨‍👩‍👧 ولي الأمر</button>
+      </div>
+
+      <!-- Teacher Auth Form -->
+      <div id="auth-panel-teacher" class="auth-panel">
+        <form onsubmit="handleTeacherLogin(event)">
+          <label>رقم هاتف المعلم / السنتر:</label>
+          <input type="text" id="auth-teacher-phone" class="input-field" value="01012345678" required>
+          <label>كلمة المرور:</label>
+          <input type="password" id="auth-teacher-pass" class="input-field" value="Teacher@2026" required>
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.75rem;">دخول لوحة تحكم المعلم 👨‍🏫</button>
+        </form>
+      </div>
+
+      <!-- Student Auth Form -->
+      <div id="auth-panel-student" class="auth-panel" style="display: none;">
+        <form onsubmit="handleStudentLogin(event)">
+          <label>الكود الأكاديمي للطالب (مكتوب في الكارنيه أو الإيصال):</label>
+          <input type="text" id="auth-student-code" class="input-field" placeholder="مثال: STU-884210" value="STU-884210" required>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">أو أدخل رقم هاتف ولي الأمر المسجل لدى المعلم.</div>
+          <button type="submit" class="btn btn-accent" style="width: 100%; margin-top: 0.75rem;">دخول بوابة الطالب 🎓</button>
+        </form>
+      </div>
+
+      <!-- Parent Auth Form -->
+      <div id="auth-panel-parent" class="auth-panel" style="display: none;">
+        <form onsubmit="handleParentLogin(event)">
+          <label>رقم هاتف ولي الأمر المسجل:</label>
+          <input type="text" id="auth-parent-phone" class="input-field" placeholder="مثال: 01033334444" value="01033334444" required>
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.75rem;">عرض نبض مستوى الأبناء 👨‍👩‍👧</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 8: SaaS Plan Upgrade & Monetization Modal -->
+  <div id="modal-upgrade-tier" class="modal-overlay">
+    <div class="modal-container" style="max-width: 840px;">
+      <div class="modal-header">
+        <div>
+          <div style="font-weight: 800; font-size: 1.25rem; color: var(--primary-700);">👑 ترقية باقة المعلم والسنتر (TEACHER OS SaaS)</div>
+          <div style="font-size: 0.84rem; color: var(--text-muted);">حلول متكاملة تمنحك أدوات الأكاديميات الكبرى لزيادة دخلك وتنظيم عملك</div>
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-upgrade-tier')">&times;</button>
+      </div>
+
+      <!-- 🎁 Promo Code 2027 Special Offer Section -->
+      <div style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border: 2px dashed #4F46E5; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; position: relative;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 0.8rem;">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span style="font-size: 1.8rem;">🎁</span>
+            <div>
+              <div style="font-weight: 800; font-size: 1.05rem; color: #1E1B4B;">عرض المعلمين الاستثنائي: اشتراك عام كامل مجاناً (365 يوماً)!</div>
+              <div style="font-size: 0.82rem; color: #4338CA;">ادخل برومو كود <strong style="background: #4F46E5; color: white; padding: 2px 8px; border-radius: 6px; letter-spacing: 1px;">2027</strong> ورقمك القومي واحصل على باقة المحترف (Pro) مجاناً بتوفير 6,000 ج.م سنوياً.</div>
+            </div>
+          </div>
+          <span style="background: #10B981; color: white; font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 20px;">🛡️ محمي ضد تعدد الحسابات</span>
+        </div>
+
+        <form id="form-redeem-promo" onsubmit="handleRedeemPromo(event)" style="display: grid; grid-template-columns: 1fr 1.4fr auto; gap: 0.8rem; align-items: end;">
+          <div>
+            <label style="display: block; font-size: 0.78rem; font-weight: 700; margin-bottom: 0.3rem; color: #312E81;">كود الخصم (Promo Code)</label>
+            <input type="text" id="promo-code-input" value="2027" placeholder="اكتب 2027" style="width: 100%; padding: 0.6rem 0.8rem; border: 1.5px solid #A5B4FC; border-radius: 8px; font-weight: 800; color: #1E1B4B; text-align: center; text-transform: uppercase;" required>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.78rem; font-weight: 700; margin-bottom: 0.3rem; color: #312E81;">الرقم القومي للمعلم (14 رقماً للتحقق ومنع التكرار)</label>
+            <input type="text" id="promo-national-id-input" maxlength="14" placeholder="مثال: 28905140102345" style="width: 100%; padding: 0.6rem 0.8rem; border: 1.5px solid #A5B4FC; border-radius: 8px; font-weight: 700; font-family: monospace;" required>
+          </div>
+          <button type="submit" id="btn-redeem-promo" class="btn" style="background: linear-gradient(135deg, #4F46E5, #3730A3); color: white; font-weight: 800; padding: 0.65rem 1.25rem; border-radius: 8px; border: none; cursor: pointer; white-space: nowrap; height: 42px;">
+            تفعيل العام المجاني ⚡
+          </button>
+        </form>
+        <div id="promo-redeem-status" style="font-size: 0.78rem; margin-top: 0.5rem; color: #4B5563;">
+          * العرض محمي بنظام البصمة المشفرة للعتاد والرقم القومي المصري لضمان استفادة المعلم لمرة واحدة فقط وعدم تكرار الحسابات.
+        </div>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Free Starter -->
+        <div class="pricing-card" id="card-tier-FREE_STARTER">
+          <div style="font-weight: 700; color: #475569; font-size: 1.05rem;">🥉 الباقة الأساسية المفتوحة (مجانية)</div>
+          <div class="plan-price">0 <span>ج.م / شهر</span></div>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">مفتوحة بالكامل لتجربة كافة إمكانيات النظام بقدرات مخصصة للدروس المصغرة.</p>
+          <ul class="feature-check-list">
+            <li>✅ مجموعتان تدريسيتان (حتى 35 طالباً)</li>
+            <li>✅ بث زووم مباشر مفتوح (5 حصص/شهر)</li>
+            <li>✅ مصحح ضوئي للامتحانات (20 ورقة/شهر)</li>
+            <li>✅ استوديو الذكاء الاصطناعي (15 عملية توليد)</li>
+            <li>✅ بنك الأسئلة وتسجيل الحضور وكشوف الدرجات</li>
+            <li>✅ بوابة الطالب وولي الأمر بالرمز الأكاديمي</li>
+          </ul>
+          <button class="btn btn-outline" style="width: 100%; margin-top: auto; font-weight: 700;" onclick="upgradeTeacherSaaS('FREE_STARTER')">البدء مجاناً مدى الحياة</button>
+        </div>
+
+        <!-- Pro Teacher -->
+        <div class="pricing-card featured" id="card-tier-PRO_TEACHER">
+          <div class="badge-featured" style="background: var(--primary-600); color: white; border-radius: 20px; font-size: 0.72rem; padding: 2px 10px; display: inline-block; margin-bottom: 0.4rem; font-weight: 800;">الأكثر طلباً للمدرسين ⚡</div>
+          <div style="font-weight: 700; color: var(--primary-600); font-size: 1.05rem;">👑 باقة المعلم المحترف (Pro)</div>
+          <div class="plan-price">500 <span>ج.م / شهر</span></div>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">الخيار الأمثل للمدرس الخصوصي المحترف لتوسيع طاقته الاستيعابية وتنظيم دخله.</p>
+          <ul class="feature-check-list">
+            <li>✅ حتى 10 مجموعات (300 طالب)</li>
+            <li>✅ بث زووم مباشر غير محدود مع تسجيل سحابي ومزامنة الحضور</li>
+            <li>✅ مصحح ضوئي للامتحانات الورقية (500 ورقة/شهر)</li>
+            <li>✅ استوديو الذكاء الاصطناعي وتوليد المذكرات بلا حدود</li>
+            <li>✅ خزانة معرفة ذكية ومستندات (50 ملف PDF/Word)</li>
+            <li>✅ حساب سكرتيرة / مساعد لإدخال الحضور والمصروفات</li>
+            <li>✅ تذكيرات السداد وتقارير نبض الأبناء عبر واتساب بنقرة واحدة</li>
+          </ul>
+          <button class="btn btn-primary" style="width: 100%; margin-top: auto; font-weight: 800;" onclick="upgradeTeacherSaaS('PRO_TEACHER')">تفعيل باقة المحترف (500 ج.م) ⚡</button>
+        </div>
+
+        <!-- Enterprise Center -->
+        <div class="pricing-card" id="card-tier-ENTERPRISE_CENTER" style="border: 2px solid #7C3AED; background: linear-gradient(180deg, rgba(124, 58, 237, 0.03) 0%, #FFFFFF 100%);">
+          <div class="badge-featured" style="background: linear-gradient(135deg, #7C3AED, #4F46E5); color: white; border-radius: 20px; font-size: 0.72rem; padding: 2px 10px; display: inline-block; margin-bottom: 0.4rem; font-weight: 800;">🚀 القوة القصوى والذكاء الاصطناعي</div>
+          <div style="font-weight: 700; color: #7C3AED; font-size: 1.05rem;">🏢 باقة السنتر الذكي والنخبة (Enterprise)</div>
+          <div class="plan-price">1,200 <span>ج.م / شهر</span></div>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">المنظومة الأقوى للسناتر الكبرى وكبار المدرسين مع قدرات الذكاء الاصطناعي الاستثنائية.</p>
+          <ul class="feature-check-list">
+            <li>✅ طلاب ومجموعات لا نهائية (غير محدود ∞)</li>
+            <li>🤖 <strong>التوأم الرقمي للمعلم 24/7 (AI Digital Twin):</strong> إجابة أسئلة الطلاب بصوتك وأسلوبك على مدار الساعة</li>
+            <li>📸 <strong>المصحح الضوئي الجماعي الفوري (Bulk OCR):</strong> مسح 50+ ورقة بكاميرا الهاتف واستخراج كشف الدرجات فوراً</li>
+            <li>🎨 <strong>هوية مخصصة للسنتر (White-Label):</strong> شعارك وعلامتك المائية على المنصة والشهادات ومذكرات PDF</li>
+            <li>👥 حسابات سكرتارية ومساعدين غير محدودة مع صلاحيات (RBAC) وحجب الأرباح الصافية</li>
+            <li>📲 بوابة رسائل واتساب المباشرة المعتمدة للإشعارات الآلية</li>
+            <li>⚡ سيرفر سحابي مخصص، نسخ احتياطي يومي، ودعم VIP هاتفي</li>
+          </ul>
+          <button class="btn" style="width: 100%; margin-top: auto; background: #7C3AED; color: white; font-weight: 800;" onclick="upgradeTeacherSaaS('ENTERPRISE_CENTER')">تفعيل باقة السنتر والنخبة (1,200 ج.م) 🚀</button>
+        </div>
+      </div>
+
+      <!-- Egyptian Payment Methods Info Box -->
+      <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; font-size: 0.85rem;">
+        <div style="font-weight: 700; margin-bottom: 0.4rem; color: var(--text-pure);">طرق سداد وتفعيل اشتراك المعلم المتاحة داخل جمهورية مصر العربية:</div>
+        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; color: var(--text-muted);">
+          <div>⚡ <strong>إنستاباي (InstaPay):</strong> <code style="color: var(--gold-400);">teacher-os@instapay</code></div>
+          <div>📱 <strong>فودافون كاش / أورنج / وي:</strong> <code style="color: var(--gold-400);">01012345678</code></div>
+          <div>💳 <strong>بطاقات ميزة والفيزا والماستركارد المصرية</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Sticky Navigation Bar -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-item active" id="mob-nav-day" onclick="switchTeacherTab('tab-my-day')">
+      <span class="nav-icon">📊</span>
+      <span>الرئيسية</span>
+    </button>
+    <button class="mobile-nav-item" id="mob-nav-students" onclick="switchTeacherTab('tab-students')">
+      <span class="nav-icon">👥</span>
+      <span>الطلاب</span>
+    </button>
+    <button class="mobile-nav-item" id="mob-nav-zoom" onclick="switchTeacherTab('tab-zoom')">
+      <span class="nav-icon">🎥</span>
+      <span>الزووم</span>
+    </button>
+    <button class="mobile-nav-item" id="mob-nav-business" onclick="switchTeacherTab('tab-business')">
+      <span class="nav-icon">💼</span>
+      <span>الحسابات</span>
+    </button>
+    <button class="mobile-nav-item" id="mob-nav-more" onclick="toggleSidebar(true)">
+      <span class="nav-icon">☰</span>
+      <span>القائمة</span>
+    </button>
+  </nav>
+
+  <!-- Mobile More Drawer (Slide-Up Bottom Sheet for secondary tabs) -->
+  <div id="mobile-more-drawer" class="mobile-drawer-overlay" onclick="closeMobileMoreDrawer(event)">
+    <div class="mobile-drawer-content" onclick="event.stopPropagation()">
+      <div class="drawer-drag-handle"></div>
+      <div style="font-weight: 800; color: var(--gold-400); margin-bottom: 1rem; font-size: 1rem;">أقسام المنظومة الإضافية:</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+        <button class="btn btn-outline" style="padding: 12px; justify-content: flex-start; text-align: right;" onclick="switchTeacherTab('tab-knowledge'); closeMobileMoreDrawer();">
+          <span>📚</span>
+          <div>
+            <div style="font-weight: 700; font-size: 0.82rem;">خزينة المذكرات</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">PDF والمراجع والـ RAG</div>
+          </div>
+        </button>
+        <button class="btn btn-outline" style="padding: 12px; justify-content: flex-start; text-align: right;" onclick="switchTeacherTab('tab-ai-studio'); closeMobileMoreDrawer();">
+          <span>🤖</span>
+          <div>
+            <div style="font-weight: 700; font-size: 0.82rem;">استوديو AI</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">توليد الحصص والأسئلة</div>
+          </div>
+        </button>
+        <button class="btn btn-outline" style="padding: 12px; justify-content: flex-start; text-align: right;" onclick="switchTeacherTab('tab-assessments'); closeMobileMoreDrawer();">
+          <span>📝</span>
+          <div>
+            <div style="font-weight: 700; font-size: 0.82rem;">المصحح الضوئي</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">تصحيح أوراق الامتحانات</div>
+          </div>
+        </button>
+        <button class="btn btn-outline" style="padding: 12px; justify-content: flex-start; text-align: right;" onclick="switchTeacherTab('tab-gaps'); closeMobileMoreDrawer();">
+          <span>📊</span>
+          <div>
+            <div style="font-weight: 700; font-size: 0.82rem;">رادار الفجوات</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">تحليل أخطاء الطلاب</div>
+          </div>
+        </button>
+        <button class="btn btn-outline" style="padding: 12px; justify-content: flex-start; text-align: right;" onclick="switchTeacherTab('tab-community'); closeMobileMoreDrawer();">
+          <span>🌐</span>
+          <div>
+            <div style="font-weight: 700; font-size: 0.82rem;">مجتمع التعليم</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">EduSocial والتصويتات</div>
+          </div>
+        </button>
+      </div>
+      <button class="btn btn-outline" style="width: 100%; margin-top: 1rem;" onclick="closeMobileMoreDrawer()">إغلاق القائمة</button>
+    </div>
+  </div>
+
+  <script src="app.js?v=20260907_3"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration error:', err));
+      });
+    }
+  </script>
+</body>
+</html>

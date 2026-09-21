@@ -1,0 +1,27 @@
+{
+  "name": "Teacher OS — نظام تشغيل المعلم الذكي",
+  "short_name": "TeacherOS",
+  "description": "منظومة إدارة وتدريس المناهج، الامتحانات الذكية، البث المباشر، ومجتمع التواصل التعليمي",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#2563EB",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"]
+}
