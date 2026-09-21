@@ -22,6 +22,7 @@ const ocrController = require('./modules/ocr/ocr.controller');
 const twinController = require('./modules/twin/twin.controller');
 const zoomController = require('./modules/zoom/zoom.controller');
 const communityController = require('./modules/community/community.controller');
+const brandingController = require('./modules/teacher/branding.controller');
 const SecurityEngine = require('./core/security');
 
 const PORT = process.env.PORT || 3000;
@@ -96,6 +97,8 @@ class APIGatewayServer {
       // 1. Auth Routes
       if (pathname === '/api/v1/auth/register' && method === 'POST') return authController.register(reqWrapper, resWrapper);
       if (pathname === '/api/v1/auth/login' && method === 'POST') return authController.login(reqWrapper, resWrapper);
+      if (pathname === '/api/v1/auth/phone-login' && method === 'POST') return authController.phoneLogin(reqWrapper, resWrapper);
+      if (pathname === '/api/v1/auth/google-login' && method === 'POST') return authController.googleLogin(reqWrapper, resWrapper);
       if (pathname === '/api/v1/auth/student-login' && method === 'POST') return authController.studentLogin(reqWrapper, resWrapper);
       if (pathname === '/api/v1/auth/parent-login' && method === 'POST') return authController.parentLogin(reqWrapper, resWrapper);
       if (pathname === '/api/v1/auth/me' && method === 'GET') return authController.getMe(reqWrapper, resWrapper);
@@ -155,6 +158,18 @@ class APIGatewayServer {
       if (pathname === '/api/v1/student/ask-coach' && method === 'POST') return studentController.askCoach(reqWrapper, resWrapper);
 
       // 8. Parent Routes
+      if (pathname === '/api/v1/parent/link-student' && method === 'POST') return parentController.linkStudent(reqWrapper, resWrapper);
+      if (pathname === '/api/v1/parent/children' && method === 'GET') return parentController.getChildren(reqWrapper, resWrapper);
+      if (pathname === '/api/v1/parent/teacher-showcase' && method === 'GET') return parentController.getTeacherShowcase(reqWrapper, resWrapper);
+      const parentShowcaseMatch = pathname.match(/^\/api\/v1\/parent\/teacher-showcase\/([^\/]+)$/);
+      if (parentShowcaseMatch && method === 'GET') {
+        reqWrapper.params.teacherId = parentShowcaseMatch[1];
+        return parentController.getTeacherShowcase(reqWrapper, resWrapper);
+      }
+      if (pathname === '/api/v1/parent/pulse' && method === 'GET') {
+        reqWrapper.params.studentId = reqWrapper.query.studentId || 'stu-demo-1';
+        return parentController.getPulse(reqWrapper, resWrapper);
+      }
       const parentPulseMatch = pathname.match(/^\/api\/v1\/parent\/child-pulse\/([^\/]+)$/);
       if (parentPulseMatch && method === 'GET') {
         reqWrapper.params.studentId = parentPulseMatch[1];
@@ -165,6 +180,10 @@ class APIGatewayServer {
         reqWrapper.params.studentId = parentCardMatch[1];
         return parentController.getWhatsAppCard(reqWrapper, resWrapper);
       }
+
+      // Teacher Branding & Theme Routes
+      if (pathname === '/api/v1/teacher/branding' && method === 'GET') return brandingController.getBranding(reqWrapper, resWrapper);
+      if (pathname === '/api/v1/teacher/branding' && method === 'POST') return brandingController.updateBranding(reqWrapper, resWrapper);
 
       // 9. Knowledge Vault (RAG) Routes
       if (pathname === '/api/v1/knowledge/upload' && method === 'POST') return knowledgeController.uploadDocument(reqWrapper, resWrapper);

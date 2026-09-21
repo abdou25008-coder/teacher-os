@@ -90,6 +90,7 @@ class StudentService {
     return {
       student_name: student.full_name,
       academic_code: student.academic_code,
+      pairing_pin: student.pairing_pin || 'LNK-1029',
       grade_level: student.grade_level,
       active_tasks_count: availableAssessments.filter(a => !a.is_completed).length,
       upcoming_sessions: upcomingSessions,

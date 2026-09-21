@@ -17,7 +17,8 @@ const testFiles = [
   'test_zoom_meetings.js',
   'test_saas_tiering_billing.js',
   'test_promo_anti_abuse.js',
-  'test_community_multi_teacher.js'
+  'test_community_multi_teacher.js',
+  'test_branding_and_secure_parent_link.js'
 ];
 
 console.log('================================================================');
@@ -41,7 +42,7 @@ for (const testFile of testFiles) {
 
 if (allPassed) {
   console.log('\n================================================================');
-  console.log('🏆 ALL 12 SUITES OF TEACHER OS VERIFIED & PASSING WITH 100% SUCCESS!');
+  console.log('🏆 ALL 13 SUITES OF TEACHER OS VERIFIED & PASSING WITH 100% SUCCESS!');
   console.log('================================================================');
   process.exit(0);
 } else {

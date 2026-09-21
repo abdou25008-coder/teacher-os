@@ -69,6 +69,38 @@ class AuthController {
     }
   }
 
+  async phoneLogin(req, res) {
+    try {
+      const result = await authService.phoneQuickLogin(req.body);
+      res.status(200).json({
+        success: true,
+        data: result,
+        message: 'Mobile phone login successful'
+      });
+    } catch (err) {
+      res.status(err.statusCode || 400).json({
+        success: false,
+        error: err.message
+      });
+    }
+  }
+
+  async googleLogin(req, res) {
+    try {
+      const result = await authService.googleLogin(req.body);
+      res.status(200).json({
+        success: true,
+        data: result,
+        message: 'Google login successful'
+      });
+    } catch (err) {
+      res.status(err.statusCode || 400).json({
+        success: false,
+        error: err.message
+      });
+    }
+  }
+
   async getMe(req, res) {
     try {
       const authHeader = req.headers.authorization || '';

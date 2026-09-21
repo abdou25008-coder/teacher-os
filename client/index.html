@@ -13,6 +13,85 @@
 </head>
 <body>
 
+  <!-- ==================== MOBILE SPLASH & ONBOARDING AUTH SCREEN ==================== -->
+  <div id="app-splash-auth" class="splash-auth-overlay">
+    <div class="splash-auth-card">
+      <div class="splash-brand-header">
+        <div class="splash-logo-circle" id="splash-brand-logo">⚡</div>
+        <h1 class="splash-brand-name" id="splash-brand-title">أكاديمية أ/ طارق الشناوي للفيزياء</h1>
+        <p class="splash-brand-tagline" id="splash-brand-subtitle">رواد تدريس وتبسيط الفيزياء للثانوية العامة</p>
+      </div>
+
+      <div class="splash-auth-box">
+        <!-- Auth Mode Toggle -->
+        <div class="splash-tabs">
+          <button type="button" class="splash-tab-btn active" id="btn-tab-phone" onclick="switchSplashAuthTab('phone')">📱 رقم الموبايل</button>
+          <button type="button" class="splash-tab-btn" id="btn-tab-google" onclick="switchSplashAuthTab('google')">🌐 حساب Google</button>
+        </div>
+
+        <!-- Phone Auth Form -->
+        <form id="splash-phone-form" onsubmit="handleSplashPhoneLogin(event)">
+          <label class="splash-input-label">رقم الهاتف المحمول (مصر):</label>
+          <div class="splash-phone-input-wrap">
+            <span class="phone-flag-prefix">🇪🇬 +20</span>
+            <input type="tel" id="splash-phone-number" class="splash-input" placeholder="010XXXXXXXX" value="01012345678" required>
+          </div>
+
+          <label class="splash-input-label">الاسم بالكامل (اختياري للجدد):</label>
+          <input type="text" id="splash-full-name" class="splash-input" placeholder="اكتب اسمك ثلاثي أو رباعي">
+
+          <label class="splash-input-label">نوع الحساب:</label>
+          <div class="splash-role-pills">
+            <label class="role-pill active" id="role-pill-student">
+              <input type="radio" name="splash_role" value="STUDENT" checked onchange="updateRolePillActive(this)">
+              <span>🎓 طالب</span>
+            </label>
+            <label class="role-pill" id="role-pill-parent">
+              <input type="radio" name="splash_role" value="PARENT" onchange="updateRolePillActive(this)">
+              <span>👨‍👩‍👧 ولي أمر</span>
+            </label>
+            <label class="role-pill" id="role-pill-teacher">
+              <input type="radio" name="splash_role" value="TEACHER" onchange="updateRolePillActive(this)">
+              <span>👨‍🏫 المعلم</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-splash-submit" id="btn-splash-phone-submit">
+            <span>دخول فوري للتطبيق ➔</span>
+          </button>
+        </form>
+
+        <!-- Google One-Tap Sign In Box -->
+        <div id="splash-google-box" style="display: none; text-align: center;">
+          <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 1.25rem; line-height: 1.6;">
+            تسجيل دخول آمن وفوري بضغطة واحدة باستخدام حساب Google المعتمد ومزامنة بياناتك الأساسية.
+          </p>
+
+          <button type="button" class="btn-google-sso" onclick="handleSplashGoogleLogin()">
+            <svg class="google-icon" width="20" height="20" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.26 21.36 7.33 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.99 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+            <span>متابعة بحساب Google</span>
+          </button>
+        </div>
+
+        <!-- Quick Demo Switcher -->
+        <div class="splash-demo-divider">
+          <span>أو معاينة سريعة كـ (Demo)</span>
+        </div>
+
+        <div class="splash-demo-chips">
+          <button type="button" class="demo-chip-btn" onclick="quickLoginAs('TEACHER', 'tch-tarek-001')">👨‍🏫 الأستاذ طارق</button>
+          <button type="button" class="demo-chip-btn" onclick="quickLoginAs('STUDENT', 'stu-demo-1')">🎓 الطالب أحمد</button>
+          <button type="button" class="demo-chip-btn" onclick="quickLoginAs('PARENT', '01011112222')">👨‍👩‍👧 ولي الأمر</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Mobile Sidebar Backdrop Overlay -->
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar(false)"></div>
 
@@ -71,6 +150,11 @@
           <span class="side-icon">🌐</span>
           <span class="side-label">مجتمع التعليم والتواصل</span>
           <span class="side-badge" style="background:#059669; color:white;">جديد</span>
+        </button>
+        <button class="sidebar-item" id="side-item-branding" onclick="openModal('modal-branding-studio')">
+          <span class="side-icon">🎨</span>
+          <span class="side-label">الهوية البصرية والقالب</span>
+          <span class="side-badge" style="background:#8B5CF6; color:white;">هويتي</span>
         </button>
       </nav>
 
@@ -155,6 +239,11 @@
             <button class="persona-btn" id="persona-btn-student" onclick="switchPortal('student')">🎓 الطالب</button>
             <button class="persona-btn" id="persona-btn-parent" onclick="switchPortal('parent')">👨‍👩‍👧 ولي الأمر</button>
           </div>
+
+          <!-- Quick Logout Button -->
+          <button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.8rem; border-color: #CBD5E1; color: #64748B; margin-right: 6px;" onclick="handleLogout()" title="تسجيل الخروج والعودة لشاشة البداية">
+            🚪 خروج
+          </button>
         </div>
       </header>
 
@@ -989,6 +1078,12 @@
               <div style="font-size: 0.85rem; color: #C7D2FE; margin-top: 4px;">
                 الصف الثالث الثانوي (ثانوية عامة 2026) • مسجل لدى: أ/ طارق الشناوي، أ/ خالد إبراهيم، أ/ شريف المصري
               </div>
+              <div style="margin-top: 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <span class="badge" style="background: rgba(255,255,255,0.15); border: 1px dashed #FCD34D; color: #FEF08A; font-size: 0.8rem;">
+                  🔑 كود ربط ولي الأمر: <strong style="font-family: monospace; letter-spacing: 1px;" id="student-pairing-pin-badge">LNK-1029</strong>
+                </span>
+                <span style="font-size: 0.72rem; color: #CBD5E1;">(شارك هذا الكود مع والدك لتوثيق حسابه)</span>
+              </div>
             </div>
           </div>
 
@@ -1257,6 +1352,34 @@
           <div class="card-title">📱 بطاقة المتابعة الذكية عبر الواتساب (1-Click WhatsApp Card)</div>
           <button class="btn btn-accent" style="width: 100%; margin-bottom: 0.75rem;" onclick="generateWhatsAppCard()">توليد بطاقة الواتساب لكافة المواد 📲</button>
           <div id="whatsapp-card-display" class="whatsapp-box">اضغط على الزر أعلاه لتوليد بطاقة المتابعة الشاملة لجميع المدرسين لإرسالها لواتساب مباشرة.</div>
+        </div>
+      </div>
+
+      <!-- 🛡️ Secure Child Pairing Callout Banner (Shown if child metrics are locked) -->
+      <div id="parent-unlinked-warning" style="display: none; background: #FEF2F2; border: 2px dashed #EF4444; border-radius: var(--radius-md); padding: 1.25rem; margin-top: 1.5rem; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
+        <h3 style="color: #991B1B; margin-bottom: 0.4rem; font-size: 1.15rem;">بيانات هذا الطالب محمية بمنظومة التوثيق الثنائي</h3>
+        <p style="color: #7F1D1D; font-size: 0.88rem; max-width: 540px; margin: 0 auto 1rem auto; line-height: 1.6;">
+          لمنع أي استعراض عشوائي لنتائج وحضور الطلاب؛ يتطلب النظام إدخال رمز الربط السري (Pairing PIN) الخاص بالطالب والمسجل لدى المعلم في الكارنيه أو الإيصال لربط الحسابين رسمياً.
+        </p>
+        <button class="btn btn-primary" onclick="openModal('modal-link-child')">🔑 إدخال رمز الربط السري وتوثيق الحساب 🛡️</button>
+      </div>
+
+      <!-- 🏆 Teacher Marketing & Showcase Section for Parents -->
+      <div class="card" style="margin-top: 1.5rem; border: 1px solid var(--border-subtle);">
+        <div class="card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.4rem;">🏆</span>
+            <span style="font-size: 1.15rem; font-weight: 800; color: var(--primary-700);">السيرة الأكاديمية ومشاريع الأستاذ (Teacher Showcase)</span>
+          </div>
+          <span class="badge badge-primary">معلم خبير معتمد ✅</span>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          تعرف على رؤية المعلم الأكاديمية، أحدث مؤلفاته ومذكراته، مبادراته الخاصة للمتفوقين، وقائمة شرف أوائل الجمهورية:
+        </p>
+
+        <div id="parent-teacher-showcase-content">
+          <!-- Dynamically populated from backend /api/v1/parent/teacher-showcase -->
         </div>
       </div>
 
@@ -1766,6 +1889,125 @@
         </button>
       </div>
       <button class="btn btn-outline" style="width: 100%; margin-top: 1rem;" onclick="closeMobileMoreDrawer()">إغلاق القائمة</button>
+    </div>
+  </div>
+
+  <!-- Modal 9: Teacher Branding & Theme Studio -->
+  <div id="modal-branding-studio" class="modal-overlay">
+    <div class="modal-container" style="max-width: 620px;">
+      <div class="modal-header">
+        <div style="font-weight: 800; font-size: 1.2rem; color: var(--primary-700);">🎨 استوديو الهوية البصرية والقالب الموحد</div>
+        <button class="modal-close" onclick="closeModal('modal-branding-studio')">&times;</button>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+        خصص اسم وهُوِيّة سنترك أو أكاديميتك ولون المنصة الأساسي؛ وسيتم تطبيق وتعميم هذه الهوية فورياً على شاشات كافة الطلاب وأولياء الأمور!
+      </p>
+
+      <form id="form-branding-studio" onsubmit="handleSaveBranding(event)">
+        <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 0.35rem;">اسم الأكاديمية / السنتر الرسمي:</label>
+        <input type="text" id="brand-input-name" class="input-field" value="أكاديمية أ/ طارق الشناوي للفيزياء" required>
+
+        <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 0.35rem;">الشعار اللفظي (Slogan / الرؤية):</label>
+        <input type="text" id="brand-input-tagline" class="input-field" value="رواد تدريس وتبسيط الفيزياء للثانوية العامة" required>
+
+        <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 0.35rem;">رمز / أيقونة الشعار (Emoji أو نص):</label>
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+          <input type="text" id="brand-input-logo" class="input-field" style="width: 80px; text-align: center; font-size: 1.4rem; margin-bottom: 0;" value="⚡" required>
+          <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 1.1rem;" onclick="document.getElementById('brand-input-logo').value='⚡'">⚡</button>
+            <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 1.1rem;" onclick="document.getElementById('brand-input-logo').value='🚀'">🚀</button>
+            <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 1.1rem;" onclick="document.getElementById('brand-input-logo').value='🎓'">🎓</button>
+            <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 1.1rem;" onclick="document.getElementById('brand-input-logo').value='🔬'">🔬</button>
+            <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 1.1rem;" onclick="document.getElementById('brand-input-logo').value='💡'">💡</button>
+            <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 1.1rem;" onclick="document.getElementById('brand-input-logo').value='👑'">👑</button>
+          </div>
+        </div>
+
+        <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 0.35rem;">اختر لون الهوية الأكاديمية الأساسي:</label>
+        <div class="branding-palette-grid">
+          <div class="color-swatch-card active" id="swatch-blue" onclick="selectColorPreset('#2563EB', '#059669', 'ACADEMIC_ROYAL_BLUE', this)">
+            <div class="swatch-circle" style="background: #2563EB;"></div>
+            <span class="swatch-title">أزرق أكاديمي</span>
+            <span style="font-size: 0.7rem; color: #64748B;">ملكي ومريح للعين</span>
+          </div>
+
+          <div class="color-swatch-card" id="swatch-emerald" onclick="selectColorPreset('#059669', '#D97706', 'EMERALD_GREEN', this)">
+            <div class="swatch-circle" style="background: #059669;"></div>
+            <span class="swatch-title">أخضر زمردي</span>
+            <span style="font-size: 0.7rem; color: #64748B;">تحفيزي واستيعابي</span>
+          </div>
+
+          <div class="color-swatch-card" id="swatch-violet" onclick="selectColorPreset('#7C3AED', '#2563EB', 'MIDNIGHT_VIOLET', this)">
+            <div class="swatch-circle" style="background: #7C3AED;"></div>
+            <span class="swatch-title">بنفسجي نخبوي</span>
+            <span style="font-size: 0.7rem; color: #64748B;">أكاديميات كبرى</span>
+          </div>
+
+          <div class="color-swatch-card" id="swatch-amber" onclick="selectColorPreset('#D97706', '#2563EB', 'GOLDEN_LUXURY', this)">
+            <div class="swatch-circle" style="background: #D97706;"></div>
+            <span class="swatch-title">ذهبي كهرماني</span>
+            <span style="font-size: 0.7rem; color: #64748B;">تميز وثراء بصري</span>
+          </div>
+
+          <div class="color-swatch-card" id="swatch-crimson" onclick="selectColorPreset('#DC2626', '#4F46E5', 'CRIMSON_PRESTIGE', this)">
+            <div class="swatch-circle" style="background: #DC2626;"></div>
+            <span class="swatch-title">أحمر قرمزي</span>
+            <span style="font-size: 0.7rem; color: #64748B;">وقار وطاقة عالية</span>
+          </div>
+
+          <div class="color-swatch-card" id="swatch-dark" onclick="selectColorPreset('#0F172A', '#F59E0B', 'MIDNIGHT_DARK', this)">
+            <div class="swatch-circle" style="background: #0F172A;"></div>
+            <span class="swatch-title">كحلي فاخر</span>
+            <span style="font-size: 0.7rem; color: #64748B;">هيبة عالمية</span>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; background: #F8FAFC; padding: 0.75rem 1rem; border-radius: 10px; margin-bottom: 1.25rem;">
+          <span style="font-size: 0.85rem; font-weight: 700; color: #334155;">أو اختر لوناً مخصصاً بدقة (Custom Hex):</span>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="color" id="brand-color-picker" value="#2563EB" style="width: 42px; height: 36px; border: none; border-radius: 6px; cursor: pointer;" onchange="handleCustomColorPick(this.value)">
+            <input type="text" id="brand-color-hex" value="#2563EB" style="width: 85px; font-family: monospace; font-size: 0.85rem; padding: 4px 8px; border: 1px solid #CBD5E1; border-radius: 6px; text-align: center;" readonly>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1rem; padding: 0.85rem; font-weight: 800;">
+          حفظ وتعميم الهوية على كافة المستخدمين الآن 🎨
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 10: Secure Dual-Key Parent-Student Link Modal -->
+  <div id="modal-link-child" class="modal-overlay">
+    <div class="modal-container" style="max-width: 500px;">
+      <div class="modal-header">
+        <div style="font-weight: 800; font-size: 1.15rem; color: #1E1B4B;">🛡️ توثيق وربط حساب الطالب بولي الأمر</div>
+        <button class="modal-close" onclick="closeModal('modal-link-child')">&times;</button>
+      </div>
+
+      <div style="background: #EEF2FF; border: 1px solid #C7D2FE; border-radius: 10px; padding: 0.85rem; margin-bottom: 1rem; font-size: 0.82rem; color: #3730A3; line-height: 1.6;">
+        🔒 <strong>حماية خصوصية الدرجات والغياب:</strong><br>
+        يشترط النظام إدخال الكود الأكاديمي المكتوب في كارنيه الطالب ورقم الربط السري (Pairing PIN) لضمان عدم اطلاع أي شخص غريب على درجات ابنك.
+      </div>
+
+      <form id="form-link-child" onsubmit="handleLinkChildSubmit(event)">
+        <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 0.35rem;">رقم هاتف ولي الأمر المسجل لدى المعلم:</label>
+        <input type="tel" id="link-parent-phone" class="input-field" placeholder="010XXXXXXXX" value="01011112222" required>
+
+        <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 0.35rem;">الكود الأكاديمي للطالب (الموجود في الكارنيه/الإيصال):</label>
+        <input type="text" id="link-student-code" class="input-field" placeholder="مثال: STU-102931" value="STU-102931" required>
+
+        <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 0.35rem;">رمز الربط السري (Pairing PIN):</label>
+        <input type="text" id="link-pairing-pin" class="input-field" placeholder="مثال: LNK-1029" value="LNK-1029" style="letter-spacing: 2px; font-family: monospace; font-weight: 800;" required>
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 1rem;">
+          * يظهر هذا الرمز في تطبيق الطالب في الشاشة الرئيسية لديه تحت مسمى "كود ربط ولي الأمر".
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-weight: 800;">
+          تحقق وتوثيق الارتباط الأكاديمي 🛡️
+        </button>
+      </form>
     </div>
   </div>
 

@@ -226,7 +226,39 @@ class DatabaseAdapter {
       bio: 'مدرس أول فيزياء بالقاهرة ومؤسس سلسلة المتميز في الفيزياء.',
       subjects: [physics.id],
       saas_plan: 'PRO_TEACHER',
-      saas_status: 'ACTIVE'
+      saas_status: 'ACTIVE',
+      branding: {
+        academy_name: 'أكاديمية أ/ طارق الشناوي للفيزياء',
+        tagline: 'رواد تدريس وتبسيط الفيزياء للثانوية العامة',
+        logo_icon: '⚡',
+        primary_color: '#2563EB',
+        accent_color: '#059669',
+        theme_preset: 'ACADEMIC_ROYAL_BLUE',
+        cover_gradient: 'linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%)'
+      },
+      showcase: {
+        bio: 'خبير ومعد المناهج التعليمية بالقاهرة لأكثر من 18 عاماً، ومؤسس أكاديمية الشناوي للفيزياء الحديثة.',
+        philosophy: 'الفيزياء ليست حفظاً للمعادلات، بل فهم عميق للظواهر الكونية وتطبيقاتها الحياتية. نعتمد على استراتيجية حل المشكلات والخرائط المفاهيمية والمحاكاة التفاعلية.',
+        publications: [
+          { title: 'سلسلة المتميز في الفيزياء (الشرح والتدريبات 2026)', year: '2026', type: 'كتاب ومذكرات شاملة' },
+          { title: 'بنك أسئلة مستويات التفكير العليا (بلوم 600 فكرة)', year: '2025', type: 'تدريبات وبنك أسئلة' }
+        ],
+        projects: [
+          { name: 'معسكر الأوائل الشتوي المكثف (Winter Physics Camp)', desc: 'مراجعة البابين الأول والثاني وحل أكثر من 400 مسألة امتحانات وزارية سابقة.' },
+          { name: 'رادار الفجوات المفاهيمية بالذكاء الاصطناعي', desc: 'تحليل دقيق لأخطاء كل طالب وعلاجها فردياً قبل الامتحانات الرسمية.' },
+          { name: 'المختبر الافتراضي للدوائر الكهربية (Virtual Lab)', desc: 'تطبيق تجارب أوم وكيرشوف عملياً عبر محاكاة حاسوبية ثلاثية الأبعاد.' }
+        ],
+        academic_interests: [
+          'تبسيط الكهرومغناطيسية والفيزياء الحديثة',
+          'إعداد الطلاب لأولمبياد العلوم والفيزياء المصرية والعالمية',
+          'استراتيجيات التعلم التفاعلي القائم على التقصي'
+        ],
+        hall_of_fame: [
+          { student_name: 'زياد محمود طاهر', score: '60/60 (الدرجة النهائية)', rank: 'المركز الأول مكرر علمي علوم 2025' },
+          { student_name: 'نوران حسام الدين', score: '59.5/60', rank: 'كلية الطب البشري جامعة القاهرة' },
+          { student_name: 'كريم أشرف', score: '59/60', rank: 'هندسة القاهرة - قسم كهرباء' }
+        ]
+      }
     });
 
     // Default Groups
@@ -254,12 +286,13 @@ class DatabaseAdapter {
       schedule_time: '18:00'
     });
 
-    // Default Students
+    // Default Students (with secure pairing PINs for parent verification)
     const stu1 = this.insert('students', {
       id: 'stu-demo-1',
       teacher_id: defaultTeacher.id,
       full_name: 'أحمد محمود',
       academic_code: 'STU-102931',
+      pairing_pin: 'LNK-1029',
       grade_level: 'GRADE_12_SEC3',
       parent_phone: '+201011112222'
     });
@@ -269,6 +302,7 @@ class DatabaseAdapter {
       teacher_id: defaultTeacher.id,
       full_name: 'سلمى إبراهيم',
       academic_code: 'STU-884210',
+      pairing_pin: 'LNK-8842',
       grade_level: 'GRADE_12_SEC3',
       parent_phone: '+201033334444'
     });
@@ -278,6 +312,7 @@ class DatabaseAdapter {
       teacher_id: defaultTeacher.id,
       full_name: 'يوسف كريم',
       academic_code: 'STU-992381',
+      pairing_pin: 'LNK-9923',
       grade_level: 'GRADE_12_SEC3',
       parent_phone: '+201055556666'
     });
@@ -287,8 +322,30 @@ class DatabaseAdapter {
       teacher_id: defaultTeacher.id,
       full_name: 'منى توفيق',
       academic_code: 'STU-441199',
+      pairing_pin: 'LNK-4411',
       grade_level: 'GRADE_12_SEC3',
       parent_phone: '+201077778888'
+    });
+
+    // Seed Verified Parent-Student Links
+    this.insert('parent_student_links', {
+      id: 'link-parent-demo-1',
+      parent_phone: '+201011112222',
+      student_id: stu1.id,
+      pairing_pin: 'LNK-1029',
+      status: 'VERIFIED',
+      verified_at: new Date().toISOString(),
+      device_fingerprint: 'fp_demo_guardian_01'
+    });
+
+    this.insert('parent_student_links', {
+      id: 'link-parent-demo-2',
+      parent_phone: '+201033334444',
+      student_id: stu2.id,
+      pairing_pin: 'LNK-8842',
+      status: 'VERIFIED',
+      verified_at: new Date().toISOString(),
+      device_fingerprint: 'fp_demo_guardian_02'
     });
 
     // Enroll students in group1

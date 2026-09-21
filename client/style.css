@@ -2099,3 +2099,477 @@ body.portal-not-teacher .app-main-wrapper {
   font-size: 1.1rem;
 }
 
+/* ==========================================================================
+   MOBILE-FIRST SPLASH SCREEN & AUTH GATE
+   ========================================================================== */
+.splash-auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow-y: auto;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.splash-auth-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 440px;
+  padding: 2rem 1.75rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  direction: rtl;
+  position: relative;
+  animation: splashFadeIn 0.4s ease-out;
+}
+
+@keyframes splashFadeIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.splash-logo-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  font-size: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem auto;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+  border: 3px solid rgba(255, 255, 255, 0.8);
+}
+
+.splash-brand-name {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #1E293B;
+  margin: 0 0 0.4rem 0;
+  line-height: 1.3;
+}
+
+.splash-brand-tagline {
+  font-size: 0.88rem;
+  color: #64748B;
+  margin: 0 0 1.5rem 0;
+}
+
+.splash-tabs {
+  display: flex;
+  background: #F1F5F9;
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+  gap: 4px;
+}
+
+.splash-tab-btn {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.splash-tab-btn.active {
+  background: #FFFFFF;
+  color: var(--primary-600);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.splash-input-label {
+  display: block;
+  text-align: right;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.35rem;
+}
+
+.splash-phone-input-wrap {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 12px;
+  background: #F8FAFC;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+
+.splash-phone-input-wrap:focus-within {
+  border-color: var(--primary-500);
+  background: #FFFFFF;
+}
+
+.phone-flag-prefix {
+  padding: 0.75rem 1rem;
+  background: #E2E8F0;
+  color: #334155;
+  font-weight: 700;
+  font-size: 0.88rem;
+  direction: ltr;
+}
+
+.splash-phone-input-wrap input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1E293B;
+  outline: none;
+  direction: ltr;
+  text-align: right;
+}
+
+.splash-input {
+  width: 100%;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 12px;
+  background: #F8FAFC;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1E293B;
+  margin-bottom: 1rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.splash-input:focus {
+  border-color: var(--primary-500);
+  background: #FFFFFF;
+}
+
+.splash-role-pills {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.role-pill {
+  flex: 1;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 0.55rem 0.4rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #64748B;
+  background: #F8FAFC;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.role-pill input {
+  display: none;
+}
+
+.role-pill.active {
+  border-color: var(--primary-500);
+  background: var(--primary-50);
+  color: var(--primary-700);
+}
+
+.btn-splash-submit {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+  transition: all 0.2s;
+}
+
+.btn-splash-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.btn-google-sso {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1E293B;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.btn-google-sso:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+  transform: translateY(-1px);
+}
+
+.splash-demo-divider {
+  position: relative;
+  margin: 1.5rem 0 1rem 0;
+  text-align: center;
+}
+
+.splash-demo-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #E2E8F0;
+}
+
+.splash-demo-divider span {
+  position: relative;
+  background: #FFFFFF;
+  padding: 0 12px;
+  font-size: 0.78rem;
+  color: #94A3B8;
+  font-weight: 600;
+}
+
+.splash-demo-chips {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.demo-chip-btn {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.demo-chip-btn:hover {
+  background: var(--primary-50);
+  border-color: var(--primary-400);
+  color: var(--primary-700);
+}
+
+/* ==========================================================================
+   BRANDING STUDIO & COLOR PRESETS
+   ========================================================================== */
+.branding-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.color-swatch-card {
+  border: 2px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #FFFFFF;
+}
+
+.color-swatch-card.active {
+  border-color: var(--primary-600);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  background: #F8FAFC;
+}
+
+.swatch-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin: 0 auto 0.4rem auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.swatch-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1E293B;
+  display: block;
+}
+
+/* ==========================================================================
+   TEACHER SHOWCASE & MARKETING CARDS IN PARENT PORTAL
+   ========================================================================== */
+.showcase-hero-banner {
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  color: #FFFFFF;
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.showcase-grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.showcase-item-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+}
+
+.showcase-item-icon {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.showcase-item-title {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #1E293B;
+  margin-bottom: 0.35rem;
+}
+
+.showcase-item-desc {
+  font-size: 0.85rem;
+  color: #64748B;
+  line-height: 1.55;
+  flex: 1;
+}
+
+/* Hall of Fame Honor Pill */
+.hall-of-fame-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+}
+
+/* ==========================================================================
+   MOBILE-FIRST ANDROID POLISH (360px - 480px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .app-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: -280px;
+    width: 280px;
+    z-index: 10000;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .app-sidebar.open {
+    right: 0;
+  }
+
+  .app-main-wrapper {
+    margin-right: 0 !important;
+    padding-bottom: 72px; /* space for bottom nav bar */
+  }
+
+  .mobile-bottom-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 62px;
+    background: #FFFFFF;
+    border-top: 1px solid #E2E8F0;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
+    z-index: 9999;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .mobile-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: #64748B;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px 0;
+    transition: all 0.2s;
+    min-height: 48px;
+  }
+
+  .mobile-nav-item.active {
+    color: var(--primary-600);
+  }
+
+  .mobile-nav-item .nav-icon {
+    font-size: 1.25rem;
+    margin-bottom: 2px;
+  }
+
+  /* Modals on Mobile as Slide-Up Bottom Sheets */
+  .modal-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: auto 0 0 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    padding: 1.5rem 1.25rem !important;
+  }
+
+  .topbar-page-info {
+    display: none;
+  }
+
+  .persona-switcher {
+    gap: 2px;
+  }
+
+  .persona-btn {
+    padding: 4px 8px;
+    font-size: 0.78rem;
+  }
+}
+
+

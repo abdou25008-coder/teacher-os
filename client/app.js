@@ -29,6 +29,8 @@ let state = {
 
 // Initial boot
 document.addEventListener('DOMContentLoaded', async () => {
+  await loadTeacherBranding();
+  checkAuthSession();
   await loadAllData();
 });
 
@@ -2462,8 +2464,10 @@ async function loadStudentPortalData() {
       const data = json.data;
       const nameEl = document.getElementById('student-portal-name');
       const codeEl = document.getElementById('student-portal-code');
+      const pinEl = document.getElementById('student-pairing-pin-badge');
       if (nameEl) nameEl.innerText = data.student_name;
       if (codeEl) codeEl.innerText = `الكود الأكاديمي: ${data.academic_code}`;
+      if (pinEl) pinEl.innerText = data.pairing_pin || (studentId === 'stu-demo-2' ? 'LNK-8842' : 'LNK-1029');
 
       // Render Multi-Teacher Enrolled Subject Badges
       const pillsContainer = document.getElementById('student-enrolled-subjects-pills');
@@ -2483,27 +2487,69 @@ async function loadStudentPortalData() {
   fetchTeacherDirectory();
 }
 
-// ── Parent Portal Multi-Teacher Handlers ──────────────────────────────
+// ── Parent Portal Multi-Teacher & Zero-Trust Verification Handlers ──────
 async function loadParentPortalData(studentId = 'stu-demo-1') {
   try {
-    const res = await fetch(`/api/v1/parent/pulse?studentId=${studentId}`);
+    const parentPhone = localStorage.getItem('parent_phone') || '01011112222';
+    const res = await fetch(`/api/v1/parent/child-pulse/${studentId}?parentPhone=${encodeURIComponent(parentPhone)}`);
     const json = await res.json();
-    if (json.success && json.pulse) {
-      const p = json.pulse;
+
+    // Always fetch and render teacher showcase
+    loadTeacherShowcase();
+
+    if (json.success && json.data) {
+      const p = json.data;
       const childNameEl = document.getElementById('parent-active-child-name');
       const pulseStatusEl = document.getElementById('parent-pulse-status');
       const pulseSummaryEl = document.getElementById('parent-pulse-summary');
       const pulseDotEl = document.getElementById('parent-pulse-dot');
+      const warningBanner = document.getElementById('parent-unlinked-warning');
 
       if (childNameEl) childNameEl.innerText = p.student_name;
-      if (pulseStatusEl) pulseStatusEl.innerText = `الحالة العامة: ${p.pulse.badgeAr}`;
-      if (pulseSummaryEl) pulseSummaryEl.innerText = p.pulse.summaryAr;
-      if (pulseDotEl) pulseDotEl.style.backgroundColor = p.pulse.colorHex;
 
-      document.getElementById('parent-stat-attendance').innerText = `${p.metrics.attendanceRatePct}%`;
-      document.getElementById('parent-stat-average').innerText = `${p.metrics.averageAssessmentScorePct}%`;
-      document.getElementById('parent-stat-absences').innerText = p.metrics.unexcusedAbsences;
-      document.getElementById('parent-stat-subjects-count').innerText = `${p.enrolled_subjects?.length || 1} مواد`;
+      // Check Zero-Trust Verification
+      if (p.is_verified === false) {
+        if (warningBanner) warningBanner.style.display = 'block';
+        if (pulseStatusEl) pulseStatusEl.innerText = 'الحالة العامة: 🔒 محجوبة لحين التوثيق';
+        if (pulseSummaryEl) pulseSummaryEl.innerText = p.message || 'بيانات هذا الطالب محمية وتتطلب إدخال رمز الربط السري.';
+        if (pulseDotEl) pulseDotEl.style.backgroundColor = '#EF4444';
+
+        document.getElementById('parent-stat-attendance').innerText = '--%';
+        document.getElementById('parent-stat-average').innerText = '--%';
+        document.getElementById('parent-stat-absences').innerText = '--';
+        document.getElementById('parent-stat-subjects-count').innerText = '--';
+
+        const grid = document.getElementById('parent-enrolled-teachers-grid');
+        if (grid) {
+          grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; background: #FFF1F2; border: 1px dashed #FDA4AF; border-radius: 12px;">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
+              <div style="font-weight: 800; color: #9F1239; margin-bottom: 0.35rem; font-size: 1.05rem;">المواد الدراسية والدرجات محجوبة برمز الأمان</div>
+              <p style="font-size: 0.85rem; color: #881337; max-width: 480px; margin: 0 auto 1rem auto; line-height: 1.5;">
+                لحماية خصوصية الطالب، يلزم إدخال رمز الربط السري (Pairing PIN) المدون في الكارنيه لربط الحساب رسمياً بولي الأمر.
+              </p>
+              <button class="btn btn-primary" onclick="openModal('modal-link-child')">🔑 إدخال رمز الربط السري وتوثيق الحساب 🛡️</button>
+            </div>
+          `;
+        }
+        return;
+      }
+
+      // Verified: unlock and display full pulse data
+      if (warningBanner) warningBanner.style.display = 'none';
+
+      if (p.pulse) {
+        if (pulseStatusEl) pulseStatusEl.innerText = `الحالة العامة: ${p.pulse.badgeAr}`;
+        if (pulseSummaryEl) pulseSummaryEl.innerText = p.pulse.summaryAr;
+        if (pulseDotEl) pulseDotEl.style.backgroundColor = p.pulse.colorHex;
+      }
+
+      if (p.metrics) {
+        document.getElementById('parent-stat-attendance').innerText = `${p.metrics.attendanceRatePct}%`;
+        document.getElementById('parent-stat-average').innerText = `${p.metrics.averageAssessmentScorePct}%`;
+        document.getElementById('parent-stat-absences').innerText = p.metrics.unexcusedAbsences;
+        document.getElementById('parent-stat-subjects-count').innerText = `${p.enrolled_subjects?.length || 1} مواد`;
+      }
 
       // Render Multi-Teacher Breakdown Grid
       const grid = document.getElementById('parent-enrolled-teachers-grid');
@@ -2545,6 +2591,526 @@ function handleParentChildChange(studentId) {
 function contactTeacherSecretary(teacherName) {
   alert(`📲 جاري فتح محادثة واتساب الرسمية مع سكرتارية ${teacherName} للمتابعة المباشرة.`);
 }
+
+// ── Teacher Marketing & Showcase Loader ──────────────────────────────
+async function loadTeacherShowcase() {
+  const container = document.getElementById('parent-teacher-showcase-content');
+  if (!container) return;
+
+  try {
+    const res = await fetch('/api/v1/parent/teacher-showcase');
+    const json = await res.json();
+    if (json.success && json.data) {
+      const { teacher, showcase } = json.data;
+
+      let pubsHtml = '';
+      if (Array.isArray(showcase.publications)) {
+        pubsHtml = showcase.publications.map(p => `
+          <div class="showcase-item-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.4rem;">
+              <span style="font-weight: 800; font-size: 0.95rem; color: #1E293B;">📖 ${escapeHtml(p.title)}</span>
+              <span class="badge badge-primary" style="font-size: 0.75rem;">${escapeHtml(p.badge || 'معتمد')}</span>
+            </div>
+            <p style="font-size: 0.82rem; color: #64748B; margin: 0 0 0.4rem 0;">${escapeHtml(p.description)}</p>
+            <div style="font-size: 0.75rem; color: var(--primary-600); font-weight: 600;">سنة الإصدار: ${p.year} • التصنيف: ${escapeHtml(p.category)}</div>
+          </div>
+        `).join('');
+      }
+
+      let projectsHtml = '';
+      if (Array.isArray(showcase.projects)) {
+        projectsHtml = showcase.projects.map(pr => `
+          <div class="showcase-item-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.4rem;">
+              <span style="font-weight: 800; font-size: 0.95rem; color: #1E293B;">🚀 ${escapeHtml(pr.name)}</span>
+              <span class="badge badge-good" style="font-size: 0.75rem;">${escapeHtml(pr.badge || 'مبادرة')}</span>
+            </div>
+            <p style="font-size: 0.82rem; color: #64748B; margin: 0 0 0.4rem 0;">${escapeHtml(pr.description)}</p>
+            <div style="font-size: 0.75rem; color: #475569;">الفئة المستهدفة: <strong>${escapeHtml(pr.target)}</strong></div>
+          </div>
+        `).join('');
+      }
+
+      let interestsHtml = '';
+      if (Array.isArray(showcase.academic_interests)) {
+        interestsHtml = showcase.academic_interests.map(i => `
+          <span class="badge" style="background: #F1F5F9; color: #334155; border: 1px solid #CBD5E1; font-size: 0.82rem; padding: 6px 12px;">
+            🔬 ${escapeHtml(i)}
+          </span>
+        `).join('');
+      }
+
+      let fameHtml = '';
+      if (Array.isArray(showcase.hall_of_fame)) {
+        fameHtml = showcase.hall_of_fame.map(h => `
+          <div class="hall-of-fame-item">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🏅</div>
+            <div style="font-weight: 800; font-size: 0.92rem; color: #1E1B4B;">${escapeHtml(h.student_name)}</div>
+            <div style="font-size: 0.8rem; color: var(--primary-600); font-weight: 700; margin: 2px 0;">${escapeHtml(h.rank)}</div>
+            <div style="font-size: 0.75rem; color: #059669; font-weight: 800;">المجموع: ${escapeHtml(h.score)}</div>
+            <div style="font-size: 0.72rem; color: #64748B;">التحق بـ: ${escapeHtml(h.college)}</div>
+          </div>
+        `).join('');
+      }
+
+      container.innerHTML = `
+        <div style="background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(5,150,105,0.06)); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary-500); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">👨‍🏫</div>
+            <div>
+              <div style="font-weight: 800; font-size: 1.1rem; color: #1E293B;">${escapeHtml(teacher.full_name)}</div>
+              <div style="font-size: 0.85rem; color: var(--primary-600); font-weight: 600;">${escapeHtml(teacher.professional_title)}</div>
+            </div>
+          </div>
+          <div style="font-size: 0.88rem; color: #334155; line-height: 1.7; font-style: italic; border-right: 3px solid var(--primary-500); padding-right: 0.75rem;">
+            « ${escapeHtml(showcase.educational_philosophy)} »
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="font-size: 0.95rem; font-weight: 800; color: #1E293B; margin-bottom: 0.75rem;">📚 أحدث المؤلفات والمذكرات المعتمدة:</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.85rem;">
+            ${pubsHtml}
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="font-size: 0.95rem; font-weight: 800; color: #1E293B; margin-bottom: 0.75rem;">🚀 المبادرات والمشاريع الأكاديمية الخاصة:</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.85rem;">
+            ${projectsHtml}
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="font-size: 0.95rem; font-weight: 800; color: #1E293B; margin-bottom: 0.75rem;">💡 مجالات الاهتمام والتطوير الأكاديمي:</h4>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            ${interestsHtml}
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <h4 style="font-size: 0.95rem; font-weight: 800; color: #1E293B; margin-bottom: 0.75rem;">🏆 لوحة شرف أوائل الثانوية العامة والأكاديمية:</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+            ${fameHtml}
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.25rem;">
+          <button class="btn btn-outline" style="font-size: 0.85rem; padding: 8px 16px;" onclick="contactTeacherSecretary('${escapeHtml(teacher.full_name)}')">
+            💬 الاستفسار عن المذكرات وحجز المقاعد عبر واتساب الأستاذ
+          </button>
+        </div>
+      `;
+    }
+  } catch (err) {
+    console.error('Error loading teacher showcase:', err);
+  }
+}
+
+// ── Dual-Key Parent-Student Link Handler ─────────────────────────────
+async function handleLinkChildSubmit(event) {
+  if (event) event.preventDefault();
+  const parentPhone = document.getElementById('link-parent-phone')?.value?.trim();
+  const academicCode = document.getElementById('link-student-code')?.value?.trim();
+  const pairingPin = document.getElementById('link-pairing-pin')?.value?.trim();
+
+  if (!parentPhone || !academicCode || !pairingPin) {
+    alert('يرجى تعبئة كافة الحقول المطلوبة (رقم الهاتف، الكود الأكاديمي، ورمز الربط السري).');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/v1/parent/link-student', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        parentPhone,
+        academicCode,
+        pairingPin,
+        deviceFingerprint: 'mobile_session_' + navigator.userAgent.slice(0, 20)
+      })
+    });
+    const json = await res.json();
+    if (json.success && json.data) {
+      localStorage.setItem('parent_phone', parentPhone);
+      closeModal('modal-link-child');
+      alert(`🛡️ تم توثيق ارتباطك الأكاديمي بالطالب (${json.data.link.student_name || 'ابنك'}) بنجاح!\nتم فتح كافة تقارير الحضور والغياب والدرجات بأمان.`);
+      loadParentPortalData(json.data.link.student_id);
+    } else {
+      alert(`⛔ تعذر التوثيق: ${json.error || 'الكود الأكاديمي أو رمز الربط السري غير صحيح.'}`);
+    }
+  } catch (err) {
+    console.error('Error linking child:', err);
+    alert('حدث خطأ أثناء محاولة التوثيق، يرجى التأكد من اتصال السيرفر.');
+  }
+}
+
+// ── Mobile Splash Auth & Session Lifecycle ───────────────────────────
+function checkAuthSession() {
+  const token = localStorage.getItem('teacher_os_token');
+  const userStr = localStorage.getItem('teacher_os_user');
+  const splash = document.getElementById('app-splash-auth');
+
+  if (!token || !userStr) {
+    if (splash) splash.style.display = 'flex';
+    return false;
+  }
+
+  try {
+    const user = JSON.parse(userStr);
+    state.currentUser = user;
+    if (splash) splash.style.display = 'none';
+
+    // Update Header
+    const nameEl = document.getElementById('header-user-name');
+    const avatarEl = document.getElementById('header-user-avatar');
+    if (nameEl) nameEl.innerText = user.name || user.fullName || 'المستخدم';
+    if (avatarEl) {
+      if (user.role === 'TEACHER') avatarEl.innerText = '👨‍🏫';
+      else if (user.role === 'STUDENT') avatarEl.innerText = '🎓';
+      else avatarEl.innerText = '👨‍👩‍👧';
+    }
+
+    if (user.role === 'PARENT' && user.phone) {
+      localStorage.setItem('parent_phone', user.phone);
+    }
+
+    const rolePortal = (user.role || 'TEACHER').toLowerCase();
+    switchPortal(rolePortal);
+    return true;
+  } catch (e) {
+    if (splash) splash.style.display = 'flex';
+    return false;
+  }
+}
+
+function switchSplashAuthTab(tab) {
+  const btnPhone = document.getElementById('btn-tab-phone');
+  const btnGoogle = document.getElementById('btn-tab-google');
+  const phoneForm = document.getElementById('splash-phone-form');
+  const googleBox = document.getElementById('splash-google-box');
+
+  if (tab === 'phone') {
+    btnPhone?.classList.add('active');
+    btnGoogle?.classList.remove('active');
+    if (phoneForm) phoneForm.style.display = 'block';
+    if (googleBox) googleBox.style.display = 'none';
+  } else {
+    btnGoogle?.classList.add('active');
+    btnPhone?.classList.remove('active');
+    if (phoneForm) phoneForm.style.display = 'none';
+    if (googleBox) googleBox.style.display = 'block';
+  }
+}
+
+function updateRolePillActive(input) {
+  document.querySelectorAll('.splash-role-pill').forEach(pill => {
+    pill.classList.remove('active');
+  });
+  if (input && input.parentElement) {
+    input.parentElement.classList.add('active');
+  }
+  const gradeWrap = document.getElementById('splash-student-grade-wrap');
+  if (gradeWrap) {
+    gradeWrap.style.display = (input && input.value === 'STUDENT') ? 'block' : 'none';
+  }
+}
+
+function fillDemoAuth(role, phone, name) {
+  const phoneInput = document.getElementById('splash-phone-number');
+  const nameInput = document.getElementById('splash-full-name');
+  if (phoneInput) phoneInput.value = phone;
+  if (nameInput) nameInput.value = name;
+
+  const roleRadio = document.querySelector(`input[name="splash_role"][value="${role}"]`);
+  if (roleRadio) {
+    roleRadio.checked = true;
+    updateRolePillActive(roleRadio);
+  }
+
+  switchSplashAuthTab('phone');
+}
+
+async function handleSplashPhoneLogin(e) {
+  if (e) e.preventDefault();
+  const phone = document.getElementById('splash-phone-number')?.value?.trim();
+  const fullName = document.getElementById('splash-full-name')?.value?.trim();
+  const roleRadio = document.querySelector('input[name="splash_role"]:checked');
+  const role = roleRadio ? roleRadio.value : 'STUDENT';
+  const gradeLevel = document.getElementById('splash-grade-select')?.value || 'GRADE_12_SEC3';
+
+  if (!phone) {
+    alert('يرجى إدخال رقم الهاتف المحمول.');
+    return;
+  }
+
+  const submitBtn = document.getElementById('btn-splash-phone-submit');
+  const originalText = submitBtn ? submitBtn.innerText : '';
+  if (submitBtn) {
+    submitBtn.innerText = '⏳ جاري الدخول والمزامنة...';
+    submitBtn.disabled = true;
+  }
+
+  try {
+    const res = await fetch('/api/v1/auth/phone-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone,
+        full_name: fullName,
+        role,
+        grade_level: gradeLevel
+      })
+    });
+    const json = await res.json();
+    if (json.success && json.data) {
+      const { token, user } = json.data;
+      localStorage.setItem('teacher_os_token', token);
+      localStorage.setItem('teacher_os_user', JSON.stringify(user));
+      if (role === 'PARENT') {
+        localStorage.setItem('parent_phone', phone);
+      }
+
+      state.currentUser = user;
+
+      if (role === 'STUDENT' && user.academicCode) {
+        state.currentStudent = {
+          id: user.id || 'stu-demo-1',
+          name: user.name,
+          academicCode: user.academicCode,
+          gradeLevel: user.gradeLevel || gradeLevel
+        };
+      }
+
+      // Smooth hide splash
+      const splash = document.getElementById('app-splash-auth');
+      if (splash) {
+        splash.style.opacity = '0';
+        splash.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => {
+          splash.style.display = 'none';
+          splash.style.opacity = '1';
+        }, 300);
+      }
+
+      const nameEl = document.getElementById('header-user-name');
+      const avatarEl = document.getElementById('header-user-avatar');
+      if (nameEl) nameEl.innerText = user.name;
+      if (avatarEl) {
+        if (role === 'TEACHER') avatarEl.innerText = '👨‍🏫';
+        else if (role === 'STUDENT') avatarEl.innerText = '🎓';
+        else avatarEl.innerText = '👨‍👩‍👧';
+      }
+
+      switchPortal(role.toLowerCase());
+      alert(`🎉 أهلاً بك يا ${user.name}! تم تسجيل الدخول بنجاح.`);
+    } else {
+      alert('خطأ أثناء الدخول: ' + (json.error || 'يرجى مراجعة البيانات'));
+    }
+  } catch (err) {
+    console.error('Error during splash phone login:', err);
+    alert('حدث خطأ في الاتصال بالخادم.');
+  } finally {
+    if (submitBtn) {
+      submitBtn.innerText = originalText;
+      submitBtn.disabled = false;
+    }
+  }
+}
+
+async function handleSplashGoogleLogin() {
+  const roleRadio = document.querySelector('input[name="splash_role"]:checked');
+  const role = roleRadio ? roleRadio.value : 'STUDENT';
+  const gradeLevel = document.getElementById('splash-grade-select')?.value || 'GRADE_12_SEC3';
+
+  try {
+    const res = await fetch('/api/v1/auth/google-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        google_token: 'google_oauth_token_' + Date.now(),
+        profile_override: {
+          role,
+          grade_level: gradeLevel
+        }
+      })
+    });
+    const json = await res.json();
+    if (json.success && json.data) {
+      const { token, user } = json.data;
+      localStorage.setItem('teacher_os_token', token);
+      localStorage.setItem('teacher_os_user', JSON.stringify(user));
+      if (role === 'PARENT') {
+        localStorage.setItem('parent_phone', user.phone || '01011112222');
+      }
+
+      state.currentUser = user;
+
+      const splash = document.getElementById('app-splash-auth');
+      if (splash) {
+        splash.style.opacity = '0';
+        splash.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => {
+          splash.style.display = 'none';
+          splash.style.opacity = '1';
+        }, 300);
+      }
+
+      const nameEl = document.getElementById('header-user-name');
+      if (nameEl) nameEl.innerText = user.name;
+
+      switchPortal(role.toLowerCase());
+      alert(`🌐 مرحباً بك عبر حساب Google: ${user.name}!`);
+    } else {
+      alert('خطأ أثناء الدخول بحساب جوجل: ' + (json.error || 'يرجى إعادة المحاولة'));
+    }
+  } catch (err) {
+    console.error('Error during google login:', err);
+    alert('تعذر الدخول بحساب جوجل حالياً.');
+  }
+}
+
+function handleLogout() {
+  localStorage.removeItem('teacher_os_token');
+  localStorage.removeItem('teacher_os_user');
+  const splash = document.getElementById('app-splash-auth');
+  if (splash) {
+    splash.style.display = 'flex';
+    splash.style.opacity = '1';
+  }
+}
+
+// ── Teacher Dynamic Branding Engine ──────────────────────────────────
+async function loadTeacherBranding() {
+  try {
+    const res = await fetch('/api/v1/teacher/branding');
+    const json = await res.json();
+    if (json.success && json.data) {
+      applyBrandingTheme(json.data);
+    }
+  } catch (err) {
+    console.error('Error fetching teacher branding:', err);
+  }
+}
+
+function applyBrandingTheme(b) {
+  if (!b) return;
+  const root = document.documentElement;
+
+  if (b.primary_color) {
+    root.style.setProperty('--primary-500', b.primary_color);
+    root.style.setProperty('--primary-600', b.primary_color);
+    const accent = b.accent_color || '#059669';
+    root.style.setProperty('--accent-500', accent);
+    root.style.setProperty('--primary-gradient', `linear-gradient(135deg, ${b.primary_color} 0%, ${accent} 100%)`);
+  }
+  if (b.accent_color) {
+    root.style.setProperty('--accent-500', b.accent_color);
+  }
+
+  const academyName = b.academy_name || 'أكاديمية أ/ طارق الشناوي للفيزياء';
+  const tagline = b.tagline || 'رواد تدريس وتبسيط الفيزياء للثانوية العامة';
+  const logo = b.logo_icon || '⚡';
+
+  // Update Splash brand
+  const splashTitle = document.getElementById('splash-brand-title');
+  if (splashTitle) splashTitle.innerText = academyName;
+  const splashSubtitle = document.getElementById('splash-brand-subtitle');
+  if (splashSubtitle) splashSubtitle.innerText = tagline;
+  const splashLogo = document.getElementById('splash-brand-logo');
+  if (splashLogo) splashLogo.innerText = logo;
+
+  // Update Sidebar & Topbar brand
+  const sidebarBrandTitle = document.querySelector('.sidebar-brand h2');
+  if (sidebarBrandTitle) sidebarBrandTitle.innerText = academyName;
+  const sidebarBrandLogo = document.querySelector('.brand-logo');
+  if (sidebarBrandLogo) sidebarBrandLogo.innerText = logo;
+
+  // Update Modal inputs
+  const inputName = document.getElementById('brand-input-name');
+  if (inputName) inputName.value = academyName;
+  const inputTagline = document.getElementById('brand-input-tagline');
+  if (inputTagline) inputTagline.value = tagline;
+  const inputLogo = document.getElementById('brand-input-logo');
+  if (inputLogo) inputLogo.value = logo;
+  const colorPicker = document.getElementById('brand-color-picker');
+  if (colorPicker && b.primary_color) colorPicker.value = b.primary_color;
+  const colorHex = document.getElementById('brand-color-hex');
+  if (colorHex && b.primary_color) colorHex.value = b.primary_color;
+
+  // Set document title
+  document.title = `${academyName} — منصة التعليم الذكية`;
+}
+
+function selectColorPreset(primary, accent, presetName, el) {
+  document.querySelectorAll('.color-swatch-card').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const picker = document.getElementById('brand-color-picker');
+  const hex = document.getElementById('brand-color-hex');
+  if (picker) picker.value = primary;
+  if (hex) hex.value = primary;
+
+  applyBrandingTheme({
+    academy_name: document.getElementById('brand-input-name')?.value,
+    tagline: document.getElementById('brand-input-tagline')?.value,
+    logo_icon: document.getElementById('brand-input-logo')?.value,
+    primary_color: primary,
+    accent_color: accent,
+    theme_preset: presetName
+  });
+}
+
+function handleCustomColorPick(val) {
+  const hex = document.getElementById('brand-color-hex');
+  if (hex) hex.value = val;
+  document.querySelectorAll('.color-swatch-card').forEach(c => c.classList.remove('active'));
+
+  applyBrandingTheme({
+    academy_name: document.getElementById('brand-input-name')?.value,
+    tagline: document.getElementById('brand-input-tagline')?.value,
+    logo_icon: document.getElementById('brand-input-logo')?.value,
+    primary_color: val,
+    accent_color: '#4F46E5',
+    theme_preset: 'CUSTOM'
+  });
+}
+
+async function handleSaveBranding(event) {
+  if (event) event.preventDefault();
+  const academy_name = document.getElementById('brand-input-name')?.value?.trim();
+  const tagline = document.getElementById('brand-input-tagline')?.value?.trim();
+  const logo_icon = document.getElementById('brand-input-logo')?.value?.trim() || '⚡';
+  const primary_color = document.getElementById('brand-color-picker')?.value || '#2563EB';
+  const activeSwatch = document.querySelector('.color-swatch-card.active');
+  const preset = activeSwatch ? activeSwatch.id.replace('swatch-', '').toUpperCase() : 'CUSTOM';
+
+  try {
+    const res = await fetch('/api/v1/teacher/branding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        academy_name,
+        tagline,
+        logo_icon,
+        primary_color,
+        accent_color: primary_color === '#059669' ? '#D97706' : '#059669',
+        theme_preset: preset
+      })
+    });
+    const json = await res.json();
+    if (json.success && json.data) {
+      applyBrandingTheme(json.data);
+      closeModal('modal-branding-studio');
+      alert('🎨 تم حفظ وتعميم الهوية البصرية والقالب بنجاح على شاشات كافة الطلاب وأولياء الأمور!');
+    } else {
+      alert('خطأ أثناء حفظ الهوية: ' + (json.error || 'يرجى المحاولة مجدداً'));
+    }
+  } catch (err) {
+    console.error('Error saving branding:', err);
+    alert('تعذر حفظ الهوية، تأكد من اتصال الخادم.');
+  }
+}
+
 
 
 
