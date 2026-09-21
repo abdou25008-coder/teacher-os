@@ -20,18 +20,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Build Debug APK
         working-directory: ./android
         run: |
-          chmod +x ./gradlew || true
-          gradle assembleDebug --no-daemon || (gradle wrapper && ./gradlew assembleDebug --no-daemon)
+          gradle assembleDebug --no-daemon
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: teacher-os-android-apk
+          name: teacher-os-apk
           path: android/app/build/outputs/apk/debug/*.apk
           retention-days: 30
