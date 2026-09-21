@@ -3,7 +3,7 @@
  * Ensures offline caching, rapid application loading, and native-like performance.
  */
 
-const CACHE_NAME = 'teacher-os-cache-v1';
+const CACHE_NAME = 'teacher-os-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
