@@ -4,6 +4,7 @@
 
 const assert = require('assert');
 const http = require('http');
+const APIGatewayServer = require('../backend/src/server');
 
 function makeRequest(path, method = 'GET', body = null, headers = {}) {
   return new Promise((resolve, reject) => {
@@ -39,6 +40,14 @@ function makeRequest(path, method = 'GET', body = null, headers = {}) {
 
 async function runTests() {
   console.log('🚀 [TEST 13] Running Teacher Branding & Secure Dual-Key Link Test Suite...');
+
+  const gateway = new APIGatewayServer();
+  let serverInstance = null;
+  try {
+    serverInstance = await gateway.start(3000);
+  } catch (e) {
+    // Port might already be open
+  }
 
   // 1. Teacher Branding API
   console.log('  Testing GET /api/v1/teacher/branding...');
@@ -140,6 +149,9 @@ async function runTests() {
   console.log('    ✅ Verified parent successfully unlocked full student pulse, attendance, and grades!');
 
   console.log('\n🎉 ALL TEACHER BRANDING & SECURE DUAL-KEY PARENT-STUDENT TESTS PASSED 100%!');
+  if (serverInstance) {
+    serverInstance.close();
+  }
 }
 
 runTests().catch(err => {
