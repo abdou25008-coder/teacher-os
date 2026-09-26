@@ -4115,3 +4115,120 @@ window.addEventListener('DOMContentLoaded', () => {
   renderMobileZoomList();
   renderMobileGroupsList();
 });
+
+
+
+/* ==========================================================================
+   SHOWCASE & MO3LEM PLATFORM INTEGRATION HELPERS
+   Controls transition between dark luxury showcase and operational workspace,
+   course player, booklet downloads, and AI Mo3lem Chat.
+   ========================================================================== */
+
+function switchToAppWorkspace(role = 'TEACHER') {
+  const showcase = document.getElementById('view-dark-showcase');
+  const workspace = document.getElementById('view-app-workspace');
+
+  if (showcase) showcase.style.display = 'none';
+  if (workspace) workspace.style.display = 'flex';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Switch to the requested role
+  if (typeof switchPortal === 'function') {
+    switchPortal(role.toLowerCase());
+  }
+
+  // Ensure bottom bar is visible for teacher
+  const bottomBar = document.getElementById('mobile-bottom-bar');
+  if (bottomBar && role === 'TEACHER') {
+    bottomBar.style.display = 'flex';
+  }
+}
+
+function switchToPublicShowcase() {
+  const showcase = document.getElementById('view-dark-showcase');
+  const workspace = document.getElementById('view-app-workspace');
+
+  if (workspace) workspace.style.display = 'none';
+  if (showcase) showcase.style.display = 'block';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openCoursePlayerSheet(title) {
+  const titleEl = document.getElementById('course-player-title');
+  if (titleEl && title) {
+    titleEl.innerText = title;
+  }
+  openSheet('sheet-course-player');
+}
+
+function openBookletDownloadSheet() {
+  openSheet('sheet-booklet-download');
+}
+
+function simulateDownloadBooklet() {
+  closeSheet('sheet-booklet-download');
+  alert('📥 تم بدء تحميل "مذكرة المراجعة الشاملة والخرائط الذهنية 2026 (PDF)" بنجاح!\nالملخص مجاني تماماً لدعم جميع طلاب الثانوية العامة.');
+}
+
+function openDirectWhatsApp() {
+  const text = encodeURIComponent('مساء الخير يا مستر طارق، أنا طالب في الثانوية العامة وحابب أنضم لمجموعات الفيزياء والمتابعة مع حضرتك.');
+  window.open('https://wa.me/201012345678?text=' + text, '_blank');
+}
+
+function closeSplashAuth() {
+  const splash = document.getElementById('app-splash-auth');
+  if (splash) splash.style.display = 'none';
+}
+
+function askMo3lemChatPreset(question) {
+  const input = document.getElementById('mo3lem-showcase-chat-input');
+  if (input) {
+    input.value = question;
+    handleMo3lemShowcaseAsk();
+  }
+}
+
+function handleMo3lemShowcaseAsk() {
+  const input = document.getElementById('mo3lem-showcase-chat-input');
+  const stream = document.getElementById('mo3lem-showcase-chat-stream');
+  if (!input || !stream) return;
+
+  const q = input.value.trim();
+  if (!q) return;
+
+  // Append user bubble
+  const userBubble = document.createElement('div');
+  userBubble.className = 'chat-bubble student';
+  userBubble.innerText = q;
+  stream.appendChild(userBubble);
+
+  input.value = '';
+  stream.scrollTop = stream.scrollHeight;
+
+  // Simulate AI Response in Egyptian Arabic
+  setTimeout(() => {
+    const aiBubble = document.createElement('div');
+    aiBubble.className = 'chat-bubble ai';
+    aiBubble.style.background = 'rgba(99, 102, 241, 0.15)';
+    aiBubble.style.borderColor = 'rgba(99, 102, 241, 0.35)';
+    aiBubble.style.color = '#E0E7FF';
+
+    let answer = 'فكرة ممتازة يا بطل! 💡 في الفيزياء دائماً حدد القانون الفيزيائي الحاكم، افصل المعطيات عن المطلوب، وتأكد من وحدات القياس الدولية (SI). إذا أردت مسألة تدريبية شبيهة اطلب مني فوراً.';
+
+    if (q.includes('كيرشوف')) {
+      answer = 'خطوات ذهبية لحل أي مسألة كيرشوف بدون خطأ:\n1. حدد نقاط التفرع (Nodes) وطبق قانون كيرشوف الأول (مجموع التيارات الداخلة = الخارجة).\n2. ارسم اتجاه دوران المسار المغلق (مع أو عكس عقارب الساعة).\n3. طبق كيرشوف الثاني: ΣVB = Σ(I*R) مع مراعاة الإشارات بدقة.\n4. رتب المعادلات وحلها بآلتك الحاسبة [Mode 5 2].';
+    } else if (q.includes('متردد') || q.includes('مستمر')) {
+      answer = 'الفرق الجوهري بينهما:\n1. التيار المستمر (DC): ثابت الشدة وموحد الاتجاه، ينتج من الأعمدة والبطاريات، ولا يمكن رفع أو خفض جهده بالمحول.\n2. التيار المتردد (AC): متغير الشدة والاتجاه دورياً (جيبياً)، ينتج من الدينامو، ويمكن رفع وخفض جهده بالمحولات لنقله لمسافات بعيدة بأقل فقد في الطاقة.';
+    } else if (q.includes('رنين') || q.includes('RLC')) {
+      answer = 'شروط حدوث حالة الرنين في دائرة RLC:\n1. المفاعلة الحثية = المفاعلة السعوية (XL = XC).\n2. المعاوقة الكلية للدائرة أقل ما يمكن وتساوي المقاومة الأومية فقط (Z = R).\n3. شدة التيار المتردد تكون عند قيمتها العظمى (Imax).\n4. زاوية الطور بين الجهد الكلي والتيار = صفر (يتفقان في الطور).';
+    } else if (q.includes('كهروضوئي') || q.includes('أينشتاين') || q.includes('كومتون')) {
+      answer = 'تفسير أينشتاين للتأثير الكهروضوئي (فوتون لـ إلكترون):\nالضوء عبارة عن كمّات من الطاقة تسمى فوتونات، طاقة كل فوتون E = hν.\n- إذا كان تردد الضوء الساقط أكبر من التردد الحرج للمعدن (ν > νc)، يتحرر الإلكترون فورياً ويكتسب طاقة حركة KE = hν - E_work دون أي انتظار زمني، وتزداد طاقة الحركة بزيادة التردد لا الشدة!';
+    }
+
+    aiBubble.innerText = answer;
+    stream.appendChild(aiBubble);
+    stream.scrollTop = stream.scrollHeight;
+  }, 600);
+}

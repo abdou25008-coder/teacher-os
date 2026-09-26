@@ -3,18 +3,446 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>مساعد الأستاذ طارق الشناوي — نظام تشغيل المعلم الذكي</title>
-  <meta name="theme-color" content="#2563EB">
+  <title>الأستاذ طارق الشناوي — خبير الفيزياء ونظام تشغيل المعلم الذكي</title>
+  <meta name="description" content="البورتفوليو الرسمي وتطبيق المساعد الذكي للأستاذ طارق الشناوي - كورسات ومذكرات مجانية، بنك أسئلة الأوائل، ومعلم شات الذكي للثانوية العامة.">
+  <meta name="theme-color" content="#0B0F19">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=20260907_mobile_v1">
+  <link rel="stylesheet" href="style.css?v=20260907_dark_v2">
 </head>
-<body>
+<body style="background: #0B0F19; margin: 0; padding: 0;">
 
-  <!-- ==================== MOBILE-FIRST CONTAINER SHELL ==================== -->
-  <div class="app-viewport-wrapper">
+  <!-- ==========================================================================
+       SECTION 1: DARK LUXURY CREATOR/TEACHER PORTFOLIO (Image Reference Match)
+       Inspired by modern dark developer portfolios + mo3lem-eg.com + mo3lem.chat
+       ========================================================================== -->
+  <div id="view-dark-showcase" class="dark-portfolio-wrapper">
+
+    <!-- 1. Navbar -->
+    <header class="portfolio-nav">
+      <div class="brand-logo-code" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <span class="brand-tag">&lt;/&gt;</span>
+        <span>أ/ طارق الشناوي</span>
+      </div>
+
+      <nav class="nav-links-wrap">
+        <a class="nav-link-item active" href="#hero-section">الرئيسية</a>
+        <a class="nav-link-item" href="#about-section">عن الأستاذ</a>
+        <a class="nav-link-item" href="#skills-section">الفروع ونواتج التعلم</a>
+        <a class="nav-link-item" href="#courses-section">الكورسات والمذكرات</a>
+        <a class="nav-link-item" href="#mo3lem-chat-section">معلم شات AI</a>
+        <a class="nav-link-item" href="#testimonials-section">آراء الطلاب</a>
+        <a class="nav-link-item" href="#contact-section">تواصل معنا</a>
+      </nav>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="btn-top-cta" onclick="switchToAppWorkspace('TEACHER')">
+          <span>دخول المنصة / التطبيق</span>
+          <span style="font-size: 1.1rem;">↗</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. Hero Section -->
+    <section id="hero-section" class="portfolio-hero-section">
+      <div class="hero-text-column">
+        <div class="pill-teacher-role">
+          <span>⚡</span>
+          <span>خبير تدريس الفيزياء للثانوية العامة</span>
+        </div>
+
+        <h1 class="hero-main-title">
+          أهلاً بك، أنا <span class="highlight-purple">أ/ طارق الشناوي</span>
+        </h1>
+        <h2 class="hero-sub-title">
+          أصنع تفوقك وتميزك في الفيزياء للثانوية العامة.
+        </h2>
+
+        <p class="hero-lead-text">
+          معلم ومحاضر متخصص في تبسيط أعقد المفاهيم الفيزيائية، حل مسائل مستويات التفكير العليا، واستخدام أحدث أدوات المحاكاة ثلاثية الأبعاد ومساعد الذكاء الاصطناعي الخاص لإعداد أوائل الجمهورية.
+        </p>
+
+        <div class="hero-actions-row">
+          <a href="#courses-section" class="btn-hero-primary">
+            <span>تصفح الكورسات والمذكرات</span>
+            <span>↗</span>
+          </a>
+          <button class="btn-hero-outline" onclick="openBookletDownloadSheet()">
+            <span>تحميل مذكرة التأسيس مجاناً</span>
+            <span>📥</span>
+          </button>
+        </div>
+
+        <div class="hero-tech-stack">
+          <div class="tech-stack-title">الفروع والمحاور الأساسية للمنهج:</div>
+          <div class="tech-pills-row">
+            <span class="tech-pill">⚡ التيار وقانون أوم</span>
+            <span class="tech-pill">🧲 قوانين كيرشوف</span>
+            <span class="tech-pill">🧭 التأثير المغناطيسي</span>
+            <span class="tech-pill">⚙️ الحث والدينامو</span>
+            <span class="tech-pill">🌊 دوائر التيار المتردد</span>
+            <span class="tech-pill">🔬 الفيزياء الحديثة</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Visual Column with Glowing Aura & Floating Code Box -->
+      <div class="hero-visual-column">
+        <div class="hero-glow-aura"></div>
+
+        <div class="hero-teacher-portrait-box">
+          <div style="font-size: 5rem; margin-bottom: 12px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));">👨‍🏫</div>
+          <div style="font-weight: 900; font-size: 1.25rem; color: #FFFFFF;">أ/ طارق الشناوي</div>
+          <div style="font-size: 0.82rem; color: #A78BFA; font-weight: 700; margin-top: 4px;">خبير أوائل الجمهورية في الفيزياء</div>
+          <div style="display: flex; gap: 6px; margin-top: 14px;">
+            <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3);">متاح للمتابعة 🟢</span>
+            <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #A5B4FC; border: 1px solid rgba(99, 102, 241, 0.3);">دفعة 2026</span>
+          </div>
+        </div>
+
+        <!-- Floating Code Box (Matching Image Template) -->
+        <div class="floating-code-card">
+          <div class="code-header-bar">
+            <span style="color: #94A3B8; font-size: 0.72rem;">&lt;/&gt; Teacher_Profile.js</span>
+            <span class="code-header-dot"></span>
+          </div>
+          <div style="color: #F43F5E;">const <span style="color: #60A5FA;">teacher</span> = {</div>
+          <div style="padding-left: 12px; color: #E2E8F0;">
+            name: <span style="color: #FBBF24;">"طارق الشناوي"</span>,<br>
+            subject: <span style="color: #FBBF24;">"الفيزياء للثانوية العامة"</span>,<br>
+            method: [<span style="color: #34D399;">"فهم عميق"</span>, <span style="color: #34D399;">"محاكاة 3D"</span>],<br>
+            platform: <span style="color: #A78BFA;">"مجاني 100% للجميع"</span>,<br>
+            motto: <span style="color: #FBBF24;">"الفيزياء فهم واستنتاج مش حفظ"</span>
+          </div>
+          <div style="color: #F43F5E;">};</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. About & Stats Section -->
+    <section id="about-section" class="showcase-stats-section">
+      <div>
+        <div class="pill-teacher-role">عن أسلوب الأستاذ طارق</div>
+        <h2 style="font-size: 1.85rem; font-weight: 900; color: #FFFFFF; line-height: 1.3; margin-bottom: 14px;">
+          شغوف بتقديم تجربة تعليمية استثنائية تصنع فارقاً حقيقياً في مستقبل طلابنا
+        </h2>
+        <p style="font-size: 0.92rem; color: #94A3B8; line-height: 1.7; margin-bottom: 20px;">
+          على مدار أكثر من 15 عاماً، رسخت مبدأ أن "الفيزياء أمتع مادة لما تتفهم صح". في منظومتنا، الطالب مش بس بيسمع شرح، الطالب بيشوف التجارب بمحاكاة تفاعلية، بيحل كل أفكار بنك المعرفة ومسائل الأوائل، وبيتابع مع مساعد ذكي يوجهه خطوة بخطوة في أي وقت.
+        </p>
+        <button class="btn-hero-outline" onclick="switchToAppWorkspace('STUDENT')" style="font-size: 0.88rem;">
+          <span>تجربة بوابة الطالب فوراً 🎓</span>
+        </button>
+      </div>
+
+      <!-- 4 Dark Neon Stat Cards -->
+      <div class="dark-stat-grid">
+        <div class="dark-stat-card">
+          <div class="dark-stat-icon-wrap">📅</div>
+          <div>
+            <div class="dark-stat-number">+15</div>
+            <div class="dark-stat-label">سنة خبرة في تدريس الثانوية</div>
+          </div>
+        </div>
+
+        <div class="dark-stat-card">
+          <div class="dark-stat-icon-wrap">&lt;/&gt;</div>
+          <div>
+            <div class="dark-stat-number">+5000</div>
+            <div class="dark-stat-label">طالب متفوق بالجمهورية</div>
+          </div>
+        </div>
+
+        <div class="dark-stat-card">
+          <div class="dark-stat-icon-wrap">😃</div>
+          <div>
+            <div class="dark-stat-number">+100</div>
+            <div class="dark-stat-label">أوائل جمهورية ودرجات نهائية</div>
+          </div>
+        </div>
+
+        <div class="dark-stat-card">
+          <div class="dark-stat-icon-wrap">🏆</div>
+          <div>
+            <div class="dark-stat-number">100%</div>
+            <div class="dark-stat-label">رضا ومتابعة دورية لأولياء الأمور</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Skills & Subject Mastery Progress Bars -->
+    <section id="skills-section" class="showcase-skills-section">
+      <div class="pill-teacher-role">نواتج التعلم وفروع المنهج</div>
+      <h2 style="font-size: 1.85rem; font-weight: 900; color: #FFFFFF; margin-bottom: 8px;">
+        الفروع والمحاور التي نتقن تدريسها
+      </h2>
+      <p style="font-size: 0.88rem; color: #94A3B8; max-width: 600px; margin: 0 auto;">
+        مؤشرات ونسب التمكن واستيعاب الطلاب بعد دورات الشرح وحل ورش العمل التدريبية
+      </p>
+
+      <div class="skills-grid">
+        <div class="dark-skill-item">
+          <div class="dark-skill-header">
+            <span>⚡ التيار الكهربي وقانون أوم وقوانين كيرشوف</span>
+            <span style="color: #A78BFA;">98%</span>
+          </div>
+          <div class="dark-skill-bar-track">
+            <div class="dark-skill-bar-fill" style="width: 98%;"></div>
+          </div>
+        </div>
+
+        <div class="dark-skill-item">
+          <div class="dark-skill-header">
+            <span>🧭 التأثير المغناطيسي للتيار وأجهزة القياس</span>
+            <span style="color: #A78BFA;">95%</span>
+          </div>
+          <div class="dark-skill-bar-track">
+            <div class="dark-skill-bar-fill" style="width: 95%;"></div>
+          </div>
+        </div>
+
+        <div class="dark-skill-item">
+          <div class="dark-skill-header">
+            <span>⚙️ الحث الكهرومغناطيسي والدينامو والمحول</span>
+            <span style="color: #A78BFA;">96%</span>
+          </div>
+          <div class="dark-skill-bar-track">
+            <div class="dark-skill-bar-fill" style="width: 96%;"></div>
+          </div>
+        </div>
+
+        <div class="dark-skill-item">
+          <div class="dark-skill-header">
+            <span>🌊 دوائر التيار المتردد ودائرة الرنين RLC</span>
+            <span style="color: #A78BFA;">92%</span>
+          </div>
+          <div class="dark-skill-bar-track">
+            <div class="dark-skill-bar-fill" style="width: 92%;"></div>
+          </div>
+        </div>
+
+        <div class="dark-skill-item">
+          <div class="dark-skill-header">
+            <span>🔬 الفيزياء الحديثة وازدواجية الموجة والجسيم</span>
+            <span style="color: #A78BFA;">96%</span>
+          </div>
+          <div class="dark-skill-bar-track">
+            <div class="dark-skill-bar-fill" style="width: 96%;"></div>
+          </div>
+        </div>
+
+        <div class="dark-skill-item">
+          <div class="dark-skill-header">
+            <span>🎯 مسائل مستويات التفكير العليا وبنك المعرفة</span>
+            <span style="color: #A78BFA;">94%</span>
+          </div>
+          <div class="dark-skill-bar-track">
+            <div class="dark-skill-bar-fill" style="width: 94%;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Featured Courses & Booklets (Inspired by mo3lem-eg.com) -->
+    <section id="courses-section" class="showcase-projects-section">
+      <div style="text-align: center;">
+        <div class="pill-teacher-role">مكتبة المنظومة المجانية</div>
+        <h2 style="font-size: 1.85rem; font-weight: 900; color: #FFFFFF; margin-bottom: 8px;">
+          الكورسات والمذكرات المتاحة للجميع مجاناً
+        </h2>
+        <p style="font-size: 0.88rem; color: #94A3B8; max-width: 600px; margin: 0 auto;">
+          منظومة متكاملة من أول يوم لحد ليلة الامتحان: كورسات فيديو، بنوك أسئلة، ومذكرات رقمية
+        </p>
+      </div>
+
+      <div class="projects-cards-grid">
+        <!-- Project 01 -->
+        <div class="dark-project-card">
+          <div class="project-number-tag">01 • كورس فيديو مجاني</div>
+          <div class="project-preview-mock">⚡</div>
+          <div class="project-card-title">كورس تأسيس الفيزياء وقوانين كيرشوف</div>
+          <div class="project-card-desc">
+            12 محاضرة فيديو عالية الدقة تغطي الدوائر الكهربية، فرق الجهد، حساب المقاومات، وحل الدوائر المعقدة بطريقة النقط وقوانين كيرشوف مع كويز إلكتروني لكل درس.
+          </div>
+          <div class="project-card-cta" onclick="openCoursePlayerSheet('كورس تأسيس الفيزياء وقوانين كيرشوف')">
+            <span>ابدأ مشاهدة الحصص الآن</span>
+            <span>↗</span>
+          </div>
+        </div>
+
+        <!-- Project 02 -->
+        <div class="dark-project-card">
+          <div class="project-number-tag">02 • بنك الأسئلة الذكي</div>
+          <div class="project-preview-mock">📚</div>
+          <div class="project-card-title">بنك أسئلة الأوائل والتفكير الابتكاري</div>
+          <div class="project-card-desc">
+            أكثر من 1500 مسألة تفكير عليا من امتحانات الأعوام السابقة وبنك المعرفة المصري، مصنفة حسب الأبواب ومدعمة بالإجابات النموذجية المفصلة خطوة بخطوة.
+          </div>
+          <div class="project-card-cta" onclick="switchToAppWorkspace('TEACHER')">
+            <span>توليد امتحان تدريبي فوري</span>
+            <span>↗</span>
+          </div>
+        </div>
+
+        <!-- Project 03 -->
+        <div class="dark-project-card">
+          <div class="project-number-tag">03 • مذكرة رقمية PDF</div>
+          <div class="project-preview-mock">📖</div>
+          <div class="project-card-title">مذكرة المراجعة الشاملة والخرائط الذهنية</div>
+          <div class="project-card-desc">
+            المرجع الأقوى لطلاب 3 ثانوي: تجميعة كافة القوانين، العلاقات البيانية، والرسومات الهندسية لأجهزة القياس والمحولات في كتيب رقمي أنيق وجاهز للطباعة.
+          </div>
+          <div class="project-card-cta" onclick="openBookletDownloadSheet()">
+            <span>تحميل المذكرة فوراً (PDF)</span>
+            <span>📥</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Integrated Mo3lem Chat Section (Inspired by mo3lem.chat) -->
+    <section id="mo3lem-chat-section" class="mo3lem-chat-section">
+      <div class="mo3lem-chat-card">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <div style="font-size: 0.78rem; font-weight: 800; color: #A78BFA;">معلم شات الذكي | AI Socratic Assistant</div>
+            <h3 style="font-size: 1.35rem; font-weight: 900; color: #FFFFFF; margin-top: 2px;">
+              مساعدك الدراسي الذكي لحل الواجبات وشرح المسائل
+            </h3>
+          </div>
+          <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4);">
+            ذكاء اصطناعي فيزيائي نشط 🟢
+          </span>
+        </div>
+
+        <p style="font-size: 0.84rem; color: #94A3B8; line-height: 1.6; margin-bottom: 10px;">
+          اسأل عن أي نقطة غامضة في المنهج أو جرب أحد الأسئلة الشائعة، وسيقوم مساعد الأستاذ طارق الذكي بتوجيهك خطوة بخطوة بفهم واستنتاج:
+        </p>
+
+        <!-- Preset Chips -->
+        <div class="preset-chips-row">
+          <button class="preset-chip" onclick="askMo3lemChatPreset('كيف أتعامل مع مسائل كيرشوف المعقدة بدون خطأ؟')">
+            💡 كيف أحل مسائل كيرشوف المعقدة؟
+          </button>
+          <button class="preset-chip" onclick="askMo3lemChatPreset('ما الفرق الجوهري بين التيار المتردد والمستمر؟')">
+            ❓ ما الفرق بين التيار المتردد والمستمر؟
+          </button>
+          <button class="preset-chip" onclick="askMo3lemChatPreset('ما هي شروط حدوث حالة الرنين في دائرة RLC؟')">
+            ⚡ شروط الرنين في دائرة RLC؟
+          </button>
+          <button class="preset-chip" onclick="askMo3lemChatPreset('كيف يفسر أينشتاين ظاهرة التأثير الكهروضوئي؟')">
+            🔬 تفسير التأثير الكهروضوئي؟
+          </button>
+        </div>
+
+        <!-- Chat Stream Box -->
+        <div class="chat-stream-box" id="mo3lem-showcase-chat-stream" style="max-height: 250px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 12px;">
+          <div class="chat-bubble ai" style="background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.35); color: #E0E7FF;">
+            أهلاً بك يا بطل! أنا معلم شات الذكي المبرمج على أسلوب وفلسفة الأستاذ طارق الشناوي. اكتب سؤالك وسأساعدك في استنتاج الحل خطوة بخطوة.
+          </div>
+        </div>
+
+        <!-- Input Bar -->
+        <div class="chat-input-bar" style="margin-top: 12px;">
+          <input type="text" id="mo3lem-showcase-chat-input" class="m-input" placeholder="اكتب سؤالك في الفيزياء هنا..." style="margin-bottom: 0; background: rgba(15, 23, 42, 0.9); border-color: rgba(255, 255, 255, 0.12); color: #FFFFFF;" onkeydown="if(event.key==='Enter') handleMo3lemShowcaseAsk()">
+          <button class="btn btn-primary" onclick="handleMo3lemShowcaseAsk()" style="min-height: 44px; padding: 0 20px;">
+            <span>إرسال</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Testimonials & Wall of Fame -->
+    <section id="testimonials-section" style="max-width: 1100px; margin: 0 auto; padding: 30px 20px;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div class="pill-teacher-role">شهادات الأوائل</div>
+        <h2 style="font-size: 1.85rem; font-weight: 900; color: #FFFFFF;">
+          ماذا يقول طلابنا وأولياء أمورهم؟
+        </h2>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="dark-testimonial-box">
+          <div style="font-size: 1.5rem; color: #818CF8; margin-bottom: 6px;">“</div>
+          <p style="font-size: 0.88rem; color: #CBD5E1; line-height: 1.6; margin-bottom: 14px;">
+            الفيزياء كانت كابوسي في بداية السنة، ولكن مع مستر طارق الشناوي فهمت أصل كل قانون. المحاكاة التفاعلية وطريقة الشرح الممتعة خلتني واثقة من نفسي جداً، والحمد لله جبت 60/60 ودخلت طب قصر العيني.
+          </p>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 38px; height: 38px; border-radius: 50%; background: #6366F1; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800;">س</div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.88rem; color: #FFFFFF;">سلمى إبراهيم</div>
+              <div style="font-size: 0.74rem; color: #94A3B8;">المركز الثالث جمهورية — ثانوية عامة</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dark-testimonial-box">
+          <div style="font-size: 1.5rem; color: #818CF8; margin-bottom: 6px;">“</div>
+          <p style="font-size: 0.88rem; color: #CBD5E1; line-height: 1.6; margin-bottom: 14px;">
+            بصفتي ولي أمر، كان يهمني جداً أعرف مستوى ابني أولاً بأول. تطبيق مستر طارق ونظام التقارير الفورية وبوابة ولي الأمر ريحتنا جداً وخلتنا مطمئنين تماماً. شكراً لحضرتك على أمانتك ومجهودك الخرافي.
+          </p>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 38px; height: 38px; border-radius: 50%; background: #059669; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800;">أ</div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.88rem; color: #FFFFFF;">المهندس عادل مصطفى</div>
+              <div style="font-size: 0.74rem; color: #94A3B8;">ولي أمر الطالب أحمد (كلية هندسة)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Contact & Footer Matching Image Reference -->
+    <footer id="contact-section" class="showcase-footer-section">
+      <div>
+        <div style="font-size: 0.78rem; font-weight: 800; color: #A78BFA; text-transform: uppercase; margin-bottom: 6px;">LET'S WORK TOGETHER / انضم لدفعة الأوائل</div>
+        <h3 style="font-size: 1.6rem; font-weight: 900; color: #FFFFFF; margin-bottom: 8px;">
+          جاهز تبدأ رحلة التفوق مع الأستاذ طارق؟
+        </h3>
+        <p style="font-size: 0.85rem; color: #94A3B8; line-height: 1.6; margin-bottom: 18px; max-width: 440px;">
+          جميع الحصص والمذكرات متاحة مجاناً، ويمكنك الانضمام لمجموعات الزووم المباشرة وحجز مكانك في المجموعات الجديدة عبر واتساب.
+        </p>
+        <button class="btn-hero-primary" onclick="openDirectWhatsApp()" style="padding: 10px 22px; font-size: 0.88rem;">
+          <span>تواصل واحجز مقعدك الآن</span>
+          <span>↗</span>
+        </button>
+      </div>
+
+      <div style="text-align: right;">
+        <div style="font-size: 0.8rem; font-weight: 700; color: #64748B; margin-bottom: 10px;">قنوات التواصل الرسمية:</div>
+        <div style="display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;">
+          <a href="https://wa.me/201012345678" target="_blank" class="tech-pill" style="color: #34D399; text-decoration: none; font-size: 0.85rem;">
+            💬 واتساب مباشر
+          </a>
+          <a href="https://t.me/teacher_tarek_physics" target="_blank" class="tech-pill" style="color: #60A5FA; text-decoration: none; font-size: 0.85rem;">
+            ✈️ قناة تليجرام
+          </a>
+          <a href="tel:01012345678" class="tech-pill" style="color: #FCD34D; text-decoration: none; font-size: 0.85rem;">
+            📞 01012345678
+          </a>
+        </div>
+        <div style="font-size: 0.78rem; color: #64748B;">
+          © 2026 الأستاذ طارق الشناوي. جميع الحقوق محفوظة.<br>
+          صُنِع بكل ❤️ لخدمة وتفوق طلاب الثانوية العامة بمصر.
+        </div>
+      </div>
+    </footer>
+
+    <!-- Floating Launcher to Switch to Workspace -->
+    <button class="floating-app-launcher-btn" onclick="switchToAppWorkspace('TEACHER')">
+      <span>📱 فتح تطبيق المعلم التشغيلي (Teacher OS)</span>
+      <span>➔</span>
+    </button>
+  </div>
+
+
+  <!-- ==========================================================================
+       SECTION 2: TEACHER OS OPERATIONAL WORKSPACE & MOBILE APP
+       Complete native mobile shell containing Teacher, Student, and Parent Hubs
+       ========================================================================== -->
+  <div id="view-app-workspace" class="app-viewport-wrapper">
     <div class="mobile-app-shell">
 
       <!-- ==================== MOBILE TOP BAR ==================== -->
@@ -32,6 +460,10 @@
           </div>
 
           <div class="topbar-actions">
+            <!-- Back to Showcase Button -->
+            <button class="icon-btn" onclick="switchToPublicShowcase()" title="العودة للبورتفوليو والمعرض">
+              <span>🌐</span>
+            </button>
             <button class="icon-btn" onclick="shareTeacherProfile()" title="مشاركة رابط التطبيق">
               <span>🔗</span>
             </button>
@@ -111,8 +543,8 @@
               <div class="m-stat-box">
                 <div class="m-stat-icon" style="background: #F3E8FF; color: #9333EA;">💳</div>
                 <div>
-                  <div class="m-stat-val" id="stat-collected-fees">85%</div>
-                  <div class="m-stat-lbl">تحصيل الشهر</div>
+                  <div class="m-stat-val" id="stat-collected-fees">مجاني ✅</div>
+                  <div class="m-stat-lbl">الخطة الترويجية</div>
                 </div>
               </div>
             </div>
@@ -516,8 +948,8 @@
               <div class="m-stat-box">
                 <div class="m-stat-icon" style="background: #FEF3C7; color: #D97706;">💳</div>
                 <div>
-                  <div class="m-stat-val" style="color: #059669;">مسدد ✅</div>
-                  <div class="m-stat-lbl">اشتراك الشهر الحالي</div>
+                  <div class="m-stat-val" style="color: #059669;">مجاني تماماً ✅</div>
+                  <div class="m-stat-lbl">حالة الاشتراك</div>
                 </div>
               </div>
 
@@ -593,7 +1025,7 @@
   </div>
 
   <!-- ==================== ONBOARDING / AUTH MODAL OVERLAY ==================== -->
-  <div id="app-splash-auth" class="m-splash-overlay">
+  <div id="app-splash-auth" class="m-splash-overlay" style="display: none;">
     <div class="m-splash-card">
       <div class="m-splash-logo-circle" id="splash-brand-logo">👨‍🏫</div>
       <h1 class="m-splash-title" id="splash-brand-title">مساعد الأستاذ طارق الشناوي</h1>
@@ -650,6 +1082,11 @@
           </button>
         </div>
       </div>
+
+      <!-- Close splash overlay button -->
+      <button type="button" onclick="closeSplashAuth()" class="btn btn-outline btn-block" style="margin-top: 10px; border-color: transparent; color: #64748B;">
+        إغلاق وتصفح المعرض ✕
+      </button>
     </div>
   </div>
 
@@ -784,7 +1221,63 @@
     </div>
   </div>
 
+  <!-- NEW SHEET: COURSE VIDEO PLAYER (Inspired by mo3lem-eg.com) -->
+  <div id="sheet-course-player" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'sheet-course-player')">
+    <div class="m-sheet-content" style="max-height: 95vh;">
+      <div class="m-sheet-handle"></div>
+      <div class="m-sheet-header">
+        <h3 class="m-sheet-title" id="course-player-title">⚡ حصة: قانون أوم وقوانين كيرشوف</h3>
+        <button class="m-sheet-close" onclick="closeSheet('sheet-course-player')">✕</button>
+      </div>
+      <div style="background: #000; border-radius: 14px; overflow: hidden; position: relative; padding-top: 56.25%; margin-bottom: 12px;">
+        <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff;">
+          <div style="font-size: 3rem; margin-bottom: 8px; cursor: pointer;" onclick="alert('▶️ جاري تشغيل المحاضرة التفاعلية بجودة HD')">▶️</div>
+          <div style="font-size: 0.85rem; font-weight: 700;">المحاضرة الأولى: تجزئة الجهد والتيار وقانون أوم</div>
+          <div style="font-size: 0.72rem; color: #94A3B8; margin-top: 4px;">مدة الحصة: 48 دقيقة • جودة 1080p</div>
+        </div>
+      </div>
+      <div style="font-weight: 800; font-size: 0.95rem; color: #1E293B; margin-bottom: 6px;">
+        عناصر المحاضرة والمذكرة المصاحبة:
+      </div>
+      <ul style="font-size: 0.82rem; color: #475569; padding-right: 20px; line-height: 1.6; margin-bottom: 14px;">
+        <li>استنتاج العلاقة بين المقاومة الكهربية ونصف القطر (R ∝ 1/r²).</li>
+        <li>حل 5 مسائل من أصعب أفكار امتحانات الثانوية العامة السابقة.</li>
+        <li>واجب إلكتروني مكون من 10 أسئلة متدرجة الصعوبة.</li>
+      </ul>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-primary" onclick="alert('✅ تم بدء الاختبار التدريبي المرفق بالحصة')" style="flex: 1;">
+          <span>📝 ابدأ اختبار الحصة</span>
+        </button>
+        <button class="btn btn-whatsapp" onclick="openDirectWhatsApp()" style="flex: 1;">
+          <span>💬 اسأل مستر طارق</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW SHEET: BOOKLET DOWNLOAD (Inspired by mo3lem-eg.com) -->
+  <div id="sheet-booklet-download" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'sheet-booklet-download')">
+    <div class="m-sheet-content">
+      <div class="m-sheet-handle"></div>
+      <div class="m-sheet-header">
+        <h3 class="m-sheet-title">📖 مذكرة المراجعة والخرائط الذهنية 2026</h3>
+        <button class="m-sheet-close" onclick="closeSheet('sheet-booklet-download')">✕</button>
+      </div>
+      <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; margin-bottom: 14px; text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 6px;">📑</div>
+        <div style="font-weight: 900; font-size: 1rem; color: #1E293B;">المذكرة الرسمية المعتمدة — أ/ طارق الشناوي</div>
+        <div style="font-size: 0.78rem; color: #059669; font-weight: 700; margin-top: 4px;">نسخة أصلية PDF عالية الجودة (124 صفحة) • مجانية تماماً</div>
+      </div>
+      <div style="font-size: 0.82rem; color: #334155; line-height: 1.6; margin-bottom: 14px;">
+        تحتوي على: ملخص كافة القوانين الفيزيائية، إثباتات العلاقات الرياضية المقررة، أطلس أجهزة القياس والدينامو، وجداول المقارنات الذهنية السريعة.
+      </div>
+      <button class="btn btn-primary btn-block" onclick="simulateDownloadBooklet()">
+        <span>📥 تحميل المذكرة الآن بصيغة PDF مجاناً</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Core Scripts -->
-  <script src="app.js?v=20260907_mobile_v1"></script>
+  <script src="app.js?v=20260907_dark_v2"></script>
 </body>
 </html>
