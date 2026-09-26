@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=20260907_dark_v2">
+  <link rel="stylesheet" href="style.css?v=20260907_dark_v3">
 </head>
 <body style="background: #0B0F19; margin: 0; padding: 0;">
 
@@ -38,8 +38,14 @@
       </nav>
 
       <div style="display: flex; align-items: center; gap: 10px;">
-        <button class="btn-top-cta" onclick="switchToAppWorkspace('TEACHER')">
-          <span>دخول المنصة / التطبيق</span>
+        <!-- Discrete Teacher Admin Entry Link -->
+        <button type="button" class="btn-hero-outline" onclick="openTeacherAuthModal()" style="padding: 7px 14px; font-size: 0.8rem; border-color: rgba(139, 92, 246, 0.4); color: #C4B5FD; min-height: 36px;">
+          <span>🔒 دخول المعلم</span>
+        </button>
+
+        <!-- Main Public Student & Parent Auth CTA -->
+        <button type="button" class="btn-top-cta" onclick="openStudentParentAuth('STUDENT')">
+          <span>دخول الطلاب وأولياء الأمور</span>
           <span style="font-size: 1.1rem;">↗</span>
         </button>
       </div>
@@ -65,11 +71,11 @@
         </p>
 
         <div class="hero-actions-row">
-          <a href="#courses-section" class="btn-hero-primary">
-            <span>تصفح الكورسات والمذكرات</span>
+          <button type="button" class="btn-hero-primary" onclick="openStudentParentAuth('STUDENT')">
+            <span>تسجيل دخول الطالب وولي الأمر</span>
             <span>↗</span>
-          </a>
-          <button class="btn-hero-outline" onclick="openBookletDownloadSheet()">
+          </button>
+          <button type="button" class="btn-hero-outline" onclick="openBookletDownloadSheet()">
             <span>تحميل مذكرة التأسيس مجاناً</span>
             <span>📥</span>
           </button>
@@ -131,8 +137,8 @@
         <p style="font-size: 0.92rem; color: #94A3B8; line-height: 1.7; margin-bottom: 20px;">
           على مدار أكثر من 15 عاماً، رسخت مبدأ أن "الفيزياء أمتع مادة لما تتفهم صح". في منظومتنا، الطالب مش بس بيسمع شرح، الطالب بيشوف التجارب بمحاكاة تفاعلية، بيحل كل أفكار بنك المعرفة ومسائل الأوائل، وبيتابع مع مساعد ذكي يوجهه خطوة بخطوة في أي وقت.
         </p>
-        <button class="btn-hero-outline" onclick="switchToAppWorkspace('STUDENT')" style="font-size: 0.88rem;">
-          <span>تجربة بوابة الطالب فوراً 🎓</span>
+        <button type="button" class="btn-hero-outline" onclick="openStudentParentAuth('STUDENT')" style="font-size: 0.88rem;">
+          <span>تسجيل حساب طالب جديد 🎓</span>
         </button>
       </div>
 
@@ -280,8 +286,8 @@
           <div class="project-card-desc">
             أكثر من 1500 مسألة تفكير عليا من امتحانات الأعوام السابقة وبنك المعرفة المصري، مصنفة حسب الأبواب ومدعمة بالإجابات النموذجية المفصلة خطوة بخطوة.
           </div>
-          <div class="project-card-cta" onclick="switchToAppWorkspace('TEACHER')">
-            <span>توليد امتحان تدريبي فوري</span>
+          <div class="project-card-cta" onclick="openStudentParentAuth('STUDENT')">
+            <span>تسجيل وحل الامتحانات التدريبية</span>
             <span>↗</span>
           </div>
         </div>
@@ -402,26 +408,26 @@
           جاهز تبدأ رحلة التفوق مع الأستاذ طارق؟
         </h3>
         <p style="font-size: 0.85rem; color: #94A3B8; line-height: 1.6; margin-bottom: 18px; max-width: 440px;">
-          جميع الحصص والمذكرات متاحة مجاناً، ويمكنك الانضمام لمجموعات الزووم المباشرة وحجز مكانك في المجموعات الجديدة عبر واتساب.
+          جميع الحصص والمذكرات متاحة مجاناً، ويمكنك تسجيل حسابك لمتابعة درجاتك وجداول الزووم مباشرة.
         </p>
-        <button class="btn-hero-primary" onclick="openDirectWhatsApp()" style="padding: 10px 22px; font-size: 0.88rem;">
-          <span>تواصل واحجز مقعدك الآن</span>
+        <button class="btn-hero-primary" onclick="openStudentParentAuth('STUDENT')" style="padding: 10px 22px; font-size: 0.88rem;">
+          <span>تسجيل دخول الطالب وولي الأمر</span>
           <span>↗</span>
         </button>
       </div>
 
       <div style="text-align: right;">
-        <div style="font-size: 0.8rem; font-weight: 700; color: #64748B; margin-bottom: 10px;">قنوات التواصل الرسمية:</div>
-        <div style="display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;">
+        <div style="font-size: 0.8rem; font-weight: 700; color: #64748B; margin-bottom: 10px;">قنوات التواصل والإدارة:</div>
+        <div style="display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap;">
           <a href="https://wa.me/201012345678" target="_blank" class="tech-pill" style="color: #34D399; text-decoration: none; font-size: 0.85rem;">
             💬 واتساب مباشر
           </a>
           <a href="https://t.me/teacher_tarek_physics" target="_blank" class="tech-pill" style="color: #60A5FA; text-decoration: none; font-size: 0.85rem;">
             ✈️ قناة تليجرام
           </a>
-          <a href="tel:01012345678" class="tech-pill" style="color: #FCD34D; text-decoration: none; font-size: 0.85rem;">
-            📞 01012345678
-          </a>
+          <button type="button" class="tech-pill" onclick="openTeacherAuthModal()" style="color: #C084FC; background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.4); cursor: pointer;">
+            🔒 بوابة المعلم الإدارية
+          </button>
         </div>
         <div style="font-size: 0.78rem; color: #64748B;">
           © 2026 الأستاذ طارق الشناوي. جميع الحقوق محفوظة.<br>
@@ -430,9 +436,9 @@
       </div>
     </footer>
 
-    <!-- Floating Launcher to Switch to Workspace -->
-    <button class="floating-app-launcher-btn" onclick="switchToAppWorkspace('TEACHER')">
-      <span>📱 فتح تطبيق المعلم التشغيلي (Teacher OS)</span>
+    <!-- Floating Launcher for Students & Parents -->
+    <button class="floating-app-launcher-btn" onclick="openStudentParentAuth('STUDENT')">
+      <span>🎓 دخول المنصة (طلاب وأولياء أمور)</span>
       <span>➔</span>
     </button>
   </div>
@@ -440,12 +446,12 @@
 
   <!-- ==========================================================================
        SECTION 2: TEACHER OS OPERATIONAL WORKSPACE & MOBILE APP
-       Complete native mobile shell containing Teacher, Student, and Parent Hubs
+       Complete native mobile shell containing strictly isolated Teacher, Student, or Parent Hub
        ========================================================================== -->
   <div id="view-app-workspace" class="app-viewport-wrapper">
     <div class="mobile-app-shell">
 
-      <!-- ==================== MOBILE TOP BAR ==================== -->
+      <!-- ==================== MOBILE TOP BAR (WITH NO SWITCHER BAR) ==================== -->
       <header class="app-topbar">
         <div class="topbar-main-row">
           <div class="teacher-brand-badge">
@@ -473,17 +479,13 @@
           </div>
         </div>
 
-        <!-- Role / Persona Quick Segmented Switcher -->
-        <div class="persona-segmented-bar">
-          <button class="persona-tab-btn active" id="p-tab-teacher" onclick="switchPortal('teacher', this)">
-            <span>👨‍🏫</span> المعلم
-          </button>
-          <button class="persona-tab-btn" id="p-tab-student" onclick="switchPortal('student', this)">
-            <span>🎓</span> الطالب
-          </button>
-          <button class="persona-tab-btn" id="p-tab-parent" onclick="switchPortal('parent', this)">
-            <span>👨‍👩‍👧</span> ولي الأمر
-          </button>
+        <!-- Strict Role Identity Pill Bar (Replacing the Persona Switcher) -->
+        <div id="active-session-bar" style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between; background: rgba(37,99,235,0.06); border: 1px solid rgba(37,99,235,0.14); padding: 6px 12px; border-radius: 10px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 0.76rem; color: #64748B;">الجلسة النشطة:</span>
+            <span id="header-user-badge" style="font-weight: 800; font-size: 0.82rem; color: var(--primary-700);">أ/ طارق الشناوي (المعلم 👨‍🏫)</span>
+          </div>
+          <span class="badge badge-good" id="header-user-status-pill" style="font-size: 0.7rem;">نشط وموثق ✅</span>
         </div>
       </header>
 
@@ -807,12 +809,12 @@
 
         </section>
 
-        <!-- ==================== 2. STUDENT PORTAL ==================== -->
+        <!-- ==================== 2. STUDENT PORTAL (STRICTLY ISOLATED) ==================== -->
         <section id="portal-student" class="portal-view">
           <!-- Student Greeting Card -->
           <div class="m-card" style="background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(16,185,129,0.06)); border-color: rgba(37,99,235,0.15);">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-              <span class="badge badge-primary">بوابة الطالب الذكية</span>
+              <span class="badge badge-primary">بوابة الطالب الخاصة</span>
               <span style="font-size: 0.78rem; font-weight: 700; color: #64748B;" id="student-code-badge">كود: STU-884210</span>
             </div>
             <h2 style="font-size: 1.15rem; font-weight: 800; color: #1E293B;">أهلاً بك يا بطل! 🎓</h2>
@@ -898,7 +900,7 @@
           </div>
         </section>
 
-        <!-- ==================== 3. PARENT PORTAL ==================== -->
+        <!-- ==================== 3. PARENT PORTAL (STRICTLY ISOLATED) ==================== -->
         <section id="portal-parent" class="portal-view">
 
           <!-- Parent Zero-Trust Linking Header -->
@@ -997,7 +999,7 @@
 
       </main>
 
-      <!-- ==================== MOBILE BOTTOM NAVIGATION BAR ==================== -->
+      <!-- ==================== MOBILE BOTTOM NAVIGATION BAR (SHOWN TO TEACHER ONLY) ==================== -->
       <nav id="mobile-bottom-bar" class="m-bottom-nav">
         <button class="m-nav-tab active" id="b-tab-copilot" onclick="switchTeacherTab('tab-copilot', this)">
           <span class="icon">🤖</span>
@@ -1024,69 +1026,127 @@
     </div>
   </div>
 
-  <!-- ==================== ONBOARDING / AUTH MODAL OVERLAY ==================== -->
-  <div id="app-splash-auth" class="m-splash-overlay" style="display: none;">
-    <div class="m-splash-card">
-      <div class="m-splash-logo-circle" id="splash-brand-logo">👨‍🏫</div>
-      <h1 class="m-splash-title" id="splash-brand-title">مساعد الأستاذ طارق الشناوي</h1>
-      <p class="m-splash-subtitle" id="splash-brand-subtitle">
-        تطبيقك الذكي للمتابعة، الحصص، والمساعد الشخصي بالذكاء الاصطناعي
-      </p>
-
-      <!-- Role Selector Grid -->
-      <div class="m-role-pill-grid">
-        <div class="m-role-pill active" id="splash-pill-teacher" onclick="setSplashRole('TEACHER', this)">
-          <span>👨‍🏫 المعلم</span>
+  <!-- ==========================================================================
+       MODAL 1: STUDENT & PARENT AUTH (DEDICATED & SEPARATED FROM TEACHER)
+       ========================================================================== -->
+  <div id="modal-student-parent-auth" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-student-parent-auth')">
+    <div class="m-sheet-content" style="max-height: 95vh; background: #0F172A; color: #FFFFFF; border: 1px solid rgba(139, 92, 246, 0.3);">
+      <div class="m-sheet-handle" style="background: #334155;"></div>
+      <div class="m-sheet-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px;">
+        <div>
+          <div style="font-size: 0.76rem; font-weight: 800; color: #A78BFA;">منصة أ/ طارق الشناوي</div>
+          <h3 class="m-sheet-title" style="color: #FFFFFF; font-size: 1.15rem; margin-top: 2px;">
+            🎓 دخول واشتراك الطلاب وأولياء الأمور
+          </h3>
         </div>
-        <div class="m-role-pill" id="splash-pill-student" onclick="setSplashRole('STUDENT', this)">
-          <span>🎓 طالب</span>
-        </div>
-        <div class="m-role-pill" id="splash-pill-parent" onclick="setSplashRole('PARENT', this)">
-          <span>👨‍👩‍👧 ولي أمر</span>
-        </div>
+        <button class="m-sheet-close" onclick="closeSheet('modal-student-parent-auth')" style="background: rgba(255,255,255,0.1); color: #fff;">✕</button>
       </div>
 
-      <!-- Quick Phone Form -->
-      <form id="splash-phone-form" onsubmit="handleSplashPhoneLogin(event)">
-        <label class="m-input-label">رقم الهاتف المحمول (مصر):</label>
-        <input type="tel" id="splash-phone-number" class="m-input" placeholder="010XXXXXXXX" value="01012345678" required style="direction: ltr; text-align: left;">
+      <!-- Role Selector (Students & Parents ONLY) -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0;">
+        <button type="button" class="btn" id="auth-role-student-btn" onclick="selectAuthRole('STUDENT')" style="background: #2563EB; color: #fff; border-radius: 12px; font-weight: 800; border: none;">
+          🎓 حساب طالب
+        </button>
+        <button type="button" class="btn" id="auth-role-parent-btn" onclick="selectAuthRole('PARENT')" style="background: rgba(255,255,255,0.06); color: #94A3B8; border-radius: 12px; font-weight: 800; border: 1px solid rgba(255,255,255,0.1);">
+          👨‍👩‍👧 حساب ولي أمر
+        </button>
+      </div>
 
-        <label class="m-input-label">الاسم بالكامل (للمستخدم الجديد):</label>
-        <input type="text" id="splash-full-name" class="m-input" placeholder="مثال: أحمد محمود">
+      <!-- Auth Form -->
+      <form onsubmit="handleStudentParentAuth(event)">
+        <input type="hidden" id="auth-selected-role" value="STUDENT">
 
-        <button type="submit" class="btn btn-primary btn-block" id="btn-splash-phone-submit">
-          <span>دخول فوري للتطبيق ➔</span>
+        <label class="m-input-label" style="color: #E2E8F0;">رقم الهاتف المحمول (مصر):</label>
+        <input type="tel" id="user-auth-phone" class="m-input" placeholder="010XXXXXXXX" value="01099887766" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff; direction: ltr; text-align: left;">
+
+        <label class="m-input-label" style="color: #E2E8F0;">الاسم بالكامل:</label>
+        <input type="text" id="user-auth-name" class="m-input" placeholder="اكتب اسمك ثلاثي" value="أحمد محمود" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff;">
+
+        <!-- Conditional Field: Student Grade -->
+        <div id="auth-student-grade-field">
+          <label class="m-input-label" style="color: #E2E8F0;">الصف الدراسي:</label>
+          <select id="user-auth-grade" class="m-input" style="background: #1E293B; border-color: rgba(255,255,255,0.15); color: #fff;">
+            <option value="GRADE_12_SEC3">الصف الثالث الثانوي (3ث)</option>
+            <option value="GRADE_11_SEC2">الصف الثاني الثانوي (2ث)</option>
+            <option value="GRADE_10_SEC1">الصف الأول الثانوي (1ث)</option>
+          </select>
+        </div>
+
+        <!-- Conditional Field: Parent Linked Child PIN -->
+        <div id="auth-parent-pin-field" style="display: none;">
+          <label class="m-input-label" style="color: #FCD34D;">كود ربط الطالب (PIN) أو رقم هاتف الطالب:</label>
+          <input type="text" id="user-auth-parent-link" class="m-input" placeholder="مثال: LNK-1029" value="LNK-1029" style="background: rgba(15,23,42,0.9); border-color: #FCD34D; color: #fff; text-align: center; letter-spacing: 1px; font-weight: 800;">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px; min-height: 46px; font-size: 0.95rem;">
+          <span>دخول المنصة مباشرة ➔</span>
         </button>
       </form>
 
-      <!-- Google SSO Button -->
-      <button type="button" class="btn btn-outline btn-block" onclick="handleSplashGoogleLogin()" style="margin-top: 8px;">
-        <span>🌐 متابعة بحساب Google</span>
+      <!-- Google Sign In -->
+      <button type="button" class="btn btn-outline btn-block" onclick="handleGoogleUserAuth()" style="margin-top: 8px; border-color: rgba(255,255,255,0.15); color: #CBD5E1;">
+        <span>🌐 متابعة سريعة بحساب Google</span>
       </button>
 
-      <!-- Demo One-Tap Chips -->
-      <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-color);">
-        <div style="font-size: 0.74rem; font-weight: 700; color: #64748B; margin-bottom: 8px;">أو معاينة فورية سريعة كـ (Demo):</div>
-        <div class="demo-chips-grid">
-          <button type="button" class="demo-chip-btn" onclick="fillDemoAuth('TEACHER', '01012345678', 'أ/ طارق الشناوي')">
-            <span>👨‍🏫 الأستاذ طارق الشناوي</span>
-            <span style="color: var(--primary-600);">دخول ➔</span>
+      <!-- Quick Demo Chips -->
+      <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
+        <div style="font-size: 0.74rem; font-weight: 700; color: #94A3B8; margin-bottom: 8px;">أو معاينة سريعة كـ (Demo):</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button type="button" class="tech-pill" onclick="fillStudentDemo()" style="padding: 10px; cursor: pointer; text-align: center; color: #60A5FA; background: rgba(37,99,235,0.15); border-color: rgba(37,99,235,0.3);">
+            🎓 دخول كطالب (أحمد)
           </button>
-          <button type="button" class="demo-chip-btn" onclick="fillDemoAuth('STUDENT', '01099887766', 'أحمد محمود')">
-            <span>🎓 الطالب أحمد محمود</span>
-            <span style="color: var(--primary-600);">دخول ➔</span>
-          </button>
-          <button type="button" class="demo-chip-btn" onclick="fillDemoAuth('PARENT', '01011112222', 'الحاج إبراهيم')">
-            <span>👨‍👩‍👧 ولي أمر سلمى</span>
-            <span style="color: var(--primary-600);">دخول ➔</span>
+          <button type="button" class="tech-pill" onclick="fillParentDemo()" style="padding: 10px; cursor: pointer; text-align: center; color: #34D399; background: rgba(5,150,105,0.15); border-color: rgba(5,150,105,0.3);">
+            👨‍👩‍👧 دخول كولي أمر (سلمى)
           </button>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Close splash overlay button -->
-      <button type="button" onclick="closeSplashAuth()" class="btn btn-outline btn-block" style="margin-top: 10px; border-color: transparent; color: #64748B;">
-        إغلاق وتصفح المعرض ✕
-      </button>
+  <!-- ==========================================================================
+       MODAL 2: TEACHER MASTER ADMIN LOGIN (DEDICATED FOR THE TEACHER ONLY)
+       ========================================================================== -->
+  <div id="modal-teacher-auth" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-teacher-auth')">
+    <div class="m-sheet-content" style="max-height: 95vh; background: #0F172A; color: #FFFFFF; border: 2px solid rgba(139, 92, 246, 0.5);">
+      <div class="m-sheet-handle" style="background: #475569;"></div>
+      <div class="m-sheet-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #6366F1, #8B5CF6); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+            👨‍🏫
+          </div>
+          <div>
+            <h3 class="m-sheet-title" style="color: #FFFFFF; font-size: 1.15rem; margin-top: 2px;">
+              بوابة دخول المعلم الخاصة
+            </h3>
+            <div style="font-size: 0.76rem; color: #A78BFA; font-weight: 700;">لوحة التحكم والإدارة المركزية — أ/ طارق الشناوي</div>
+          </div>
+        </div>
+        <button class="m-sheet-close" onclick="closeSheet('modal-teacher-auth')" style="background: rgba(255,255,255,0.1); color: #fff;">✕</button>
+      </div>
+
+      <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 10px 14px; margin: 14px 0; font-size: 0.8rem; color: #C7D2FE;">
+        🔒 هذه البوابة مخصصة حصرياً للأستاذ طارق الشناوي لإدارة المجموعات، كشوف الطلاب، والامتحانات.
+      </div>
+
+      <!-- Teacher Auth Form -->
+      <form onsubmit="handleTeacherMasterAuth(event)">
+        <label class="m-input-label" style="color: #E2E8F0;">رقم هاتف المعلم / اسم المستخدم:</label>
+        <input type="tel" id="teacher-auth-phone" class="m-input" value="01012345678" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff; direction: ltr; text-align: left;">
+
+        <label class="m-input-label" style="color: #E2E8F0;">رمز الإدارة السري أو كلمة المرور:</label>
+        <input type="password" id="teacher-auth-secret" class="m-input" placeholder="اكتب رمز الإدارة (مثال: 2027)" value="2027" required style="background: rgba(15,23,42,0.9); border-color: rgba(139,92,246,0.4); color: #fff; letter-spacing: 2px;">
+
+        <button type="submit" class="btn btn-hero-primary btn-block" style="margin-top: 10px; min-height: 48px; font-size: 0.95rem;">
+          <span>🔐 تأكيد الدخول للوحة تحكم المعلم ➔</span>
+        </button>
+      </form>
+
+      <!-- 1-Tap Quick Teacher Demo -->
+      <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
+        <button type="button" class="btn btn-outline btn-block" onclick="fillTeacherMasterDemo()" style="border-color: rgba(139, 92, 246, 0.4); color: #C4B5FD;">
+          <span>⚡ دخول فوري للأستاذ طارق (رمز 2027)</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1221,7 +1281,7 @@
     </div>
   </div>
 
-  <!-- NEW SHEET: COURSE VIDEO PLAYER (Inspired by mo3lem-eg.com) -->
+  <!-- SHEET: COURSE VIDEO PLAYER (Inspired by mo3lem-eg.com) -->
   <div id="sheet-course-player" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'sheet-course-player')">
     <div class="m-sheet-content" style="max-height: 95vh;">
       <div class="m-sheet-handle"></div>
@@ -1255,7 +1315,7 @@
     </div>
   </div>
 
-  <!-- NEW SHEET: BOOKLET DOWNLOAD (Inspired by mo3lem-eg.com) -->
+  <!-- SHEET: BOOKLET DOWNLOAD (Inspired by mo3lem-eg.com) -->
   <div id="sheet-booklet-download" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'sheet-booklet-download')">
     <div class="m-sheet-content">
       <div class="m-sheet-handle"></div>
@@ -1278,6 +1338,6 @@
   </div>
 
   <!-- Core Scripts -->
-  <script src="app.js?v=20260907_dark_v2"></script>
+  <script src="app.js?v=20260907_dark_v3"></script>
 </body>
 </html>

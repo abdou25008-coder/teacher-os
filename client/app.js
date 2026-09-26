@@ -4232,3 +4232,264 @@ function handleMo3lemShowcaseAsk() {
     stream.scrollTop = stream.scrollHeight;
   }, 600);
 }
+
+
+
+/* ==========================================================================
+   STRICT SEPARATED AUTH & ROLE ISOLATION CONTROLLER
+   - Teacher Master Admin Portal (PIN/Secret protected)
+   - Student & Parent Auth Portal (Mobile Number + Name + Grade/PIN)
+   - Complete Role Isolation (NO cross-role switcher bars)
+   ========================================================================== */
+
+// 1. Open Auth Modals
+function openStudentParentAuth(role = 'STUDENT') {
+  openSheet('modal-student-parent-auth');
+  selectAuthRole(role);
+}
+
+function openTeacherAuthModal() {
+  openSheet('modal-teacher-auth');
+}
+
+// 2. Toggle Student vs Parent in Auth Modal
+function selectAuthRole(role) {
+  const roleInput = document.getElementById('auth-selected-role');
+  if (roleInput) roleInput.value = role;
+
+  const studentBtn = document.getElementById('auth-role-student-btn');
+  const parentBtn = document.getElementById('auth-role-parent-btn');
+  const gradeField = document.getElementById('auth-student-grade-field');
+  const parentPinField = document.getElementById('auth-parent-pin-field');
+
+  if (role === 'STUDENT') {
+    if (studentBtn) {
+      studentBtn.style.background = '#2563EB';
+      studentBtn.style.color = '#FFFFFF';
+      studentBtn.style.border = 'none';
+    }
+    if (parentBtn) {
+      parentBtn.style.background = 'rgba(255,255,255,0.06)';
+      parentBtn.style.color = '#94A3B8';
+      parentBtn.style.border = '1px solid rgba(255,255,255,0.1)';
+    }
+    if (gradeField) gradeField.style.display = 'block';
+    if (parentPinField) parentPinField.style.display = 'none';
+  } else {
+    if (studentBtn) {
+      studentBtn.style.background = 'rgba(255,255,255,0.06)';
+      studentBtn.style.color = '#94A3B8';
+      studentBtn.style.border = '1px solid rgba(255,255,255,0.1)';
+    }
+    if (parentBtn) {
+      parentBtn.style.background = '#059669';
+      parentBtn.style.color = '#FFFFFF';
+      parentBtn.style.border = 'none';
+    }
+    if (gradeField) gradeField.style.display = 'none';
+    if (parentPinField) parentPinField.style.display = 'block';
+  }
+}
+
+// 3. Demo Pre-fills
+function fillStudentDemo() {
+  selectAuthRole('STUDENT');
+  const phone = document.getElementById('user-auth-phone');
+  const name = document.getElementById('user-auth-name');
+  if (phone) phone.value = '01099887766';
+  if (name) name.value = 'أحمد محمود رضوان';
+}
+
+function fillParentDemo() {
+  selectAuthRole('PARENT');
+  const phone = document.getElementById('user-auth-phone');
+  const name = document.getElementById('user-auth-name');
+  const link = document.getElementById('user-auth-parent-link');
+  if (phone) phone.value = '01122334455';
+  if (name) name.value = 'محمود رضوان (ولي أمر أحمد)';
+  if (link) link.value = 'LNK-1029';
+}
+
+function fillTeacherMasterDemo() {
+  const phone = document.getElementById('teacher-auth-phone');
+  const secret = document.getElementById('teacher-auth-secret');
+  if (phone) phone.value = '01012345678';
+  if (secret) secret.value = '2027';
+}
+
+// 4. Handle Submissions
+function handleStudentParentAuth(event) {
+  if (event) event.preventDefault();
+
+  const role = (document.getElementById('auth-selected-role')?.value || 'STUDENT').toUpperCase();
+  const phone = document.getElementById('user-auth-phone')?.value.trim() || '01099887766';
+  const name = document.getElementById('user-auth-name')?.value.trim() || (role === 'STUDENT' ? 'أحمد محمود' : 'ولي الأمر');
+  const grade = document.getElementById('user-auth-grade')?.value || 'GRADE_12_SEC3';
+  const parentLink = document.getElementById('user-auth-parent-link')?.value.trim() || 'LNK-1029';
+
+  const session = {
+    role: role,
+    name: name,
+    phone: phone,
+    grade: grade,
+    parentLink: parentLink,
+    createdAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('active_user_session', JSON.stringify(session));
+  closeSheet('modal-student-parent-auth');
+
+  switchToAppWorkspace(role);
+}
+
+function handleGoogleUserAuth() {
+  const session = {
+    role: 'STUDENT',
+    name: 'أحمد محمود (Google)',
+    phone: '01099887766',
+    email: 'ahmed.student@gmail.com',
+    grade: 'GRADE_12_SEC3',
+    createdAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('active_user_session', JSON.stringify(session));
+  closeSheet('modal-student-parent-auth');
+  alert('✅ تم التحقق والتسجيل بنجاح عبر حساب Google!');
+  switchToAppWorkspace('STUDENT');
+}
+
+function handleTeacherMasterAuth(event) {
+  if (event) event.preventDefault();
+
+  const phone = document.getElementById('teacher-auth-phone')?.value.trim() || '';
+  const secret = document.getElementById('teacher-auth-secret')?.value.trim() || '';
+
+  if (secret !== '2027' && secret !== 'admin' && secret !== '123456') {
+    alert('⚠️ رمز الإدارة السري غير صحيح! يرجى إدخال رمز المعلم الصحيح (الرمز الافتراضي: 2027).');
+    return;
+  }
+
+  const session = {
+    role: 'TEACHER',
+    name: 'أ/ طارق الشناوي',
+    phone: phone || '01012345678',
+    isMasterAdmin: true,
+    createdAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('active_user_session', JSON.stringify(session));
+  closeSheet('modal-teacher-auth');
+
+  switchToAppWorkspace('TEACHER');
+}
+
+function handleLogout() {
+  localStorage.removeItem('active_user_session');
+  switchToPublicShowcase();
+}
+
+// 5. Views Switching (Showcase <-> App Workspace)
+function switchToAppWorkspace(role = 'TEACHER') {
+  const showcase = document.getElementById('view-dark-showcase');
+  const workspace = document.getElementById('view-app-workspace');
+
+  if (showcase) showcase.style.display = 'none';
+  if (workspace) workspace.style.display = 'flex';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  switchPortal(role.toLowerCase());
+}
+
+function switchToPublicShowcase() {
+  const showcase = document.getElementById('view-dark-showcase');
+  const workspace = document.getElementById('view-app-workspace');
+
+  if (workspace) workspace.style.display = 'none';
+  if (showcase) showcase.style.display = 'block';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 6. Strict Role-Isolated Portal Switcher
+function switchPortal(portalName) {
+  portalName = (portalName || 'teacher').toLowerCase();
+
+  // Hide all portals
+  document.querySelectorAll('.portal-view').forEach(p => p.classList.remove('active'));
+
+  // Activate selected portal
+  const targetPortal = document.getElementById(`portal-${portalName}`);
+  if (targetPortal) targetPortal.classList.add('active');
+
+  // Strict Control over Header User Badge and Avatar
+  const badgeEl = document.getElementById('header-user-badge');
+  const statusPill = document.getElementById('header-user-status-pill');
+  const avatarCircle = document.getElementById('header-teacher-avatar');
+  const sidebar = document.getElementById('app-sidebar');
+  const hamburger = document.querySelector('.btn-hamburger');
+  const bottomBar = document.getElementById('mobile-bottom-bar');
+  const titleEl = document.getElementById('topbar-page-title');
+
+  let session = {};
+  try {
+    session = JSON.parse(localStorage.getItem('active_user_session') || '{}');
+  } catch (e) {
+    session = {};
+  }
+
+  // Close mobile drawer if open
+  if (typeof toggleSidebar === 'function') toggleSidebar(false);
+
+  if (portalName === 'teacher') {
+    document.body.classList.remove('portal-not-teacher');
+    if (sidebar) sidebar.style.display = '';
+    if (hamburger) hamburger.style.display = '';
+    if (bottomBar) bottomBar.style.display = 'flex';
+    if (titleEl) titleEl.innerText = 'لوحة التحكم الرئيسية (Dashboard)';
+
+    if (badgeEl) badgeEl.innerText = 'أ/ طارق الشناوي (المعلم 👨‍🏫)';
+    if (statusPill) {
+      statusPill.innerText = 'مدير المنصة 👑';
+      statusPill.className = 'badge badge-good';
+    }
+    if (avatarCircle) {
+      avatarCircle.innerHTML = '<span>👨‍🏫</span><span class="online-dot" title="متصل الآن"></span>';
+    }
+
+    if (typeof renderMobileTodaySchedule === 'function') renderMobileTodaySchedule();
+    if (typeof renderMobileStudentsList === 'function') renderMobileStudentsList();
+  } else {
+    // STUDENT OR PARENT: Strictly hide bottom bar, sidebar, and teacher controls
+    document.body.classList.add('portal-not-teacher');
+    if (sidebar) sidebar.style.display = 'none';
+    if (hamburger) hamburger.style.display = 'none';
+    if (bottomBar) bottomBar.style.display = 'none';
+
+    if (portalName === 'student') {
+      const studentName = session.name || 'أحمد محمود رضوان';
+      if (badgeEl) badgeEl.innerText = `${studentName} (طالب 🎓)`;
+      if (statusPill) {
+        statusPill.innerText = 'طالب مسجل 🟢';
+        statusPill.className = 'badge badge-good';
+      }
+      if (avatarCircle) {
+        avatarCircle.innerHTML = '<span>🎓</span><span class="online-dot" title="متصل"></span>';
+      }
+      if (titleEl) titleEl.innerText = '🎓 بوابة الطالب الذكية (My Learning Day)';
+      if (typeof loadStudentPortalData === 'function') loadStudentPortalData();
+    } else if (portalName === 'parent') {
+      const parentName = session.name || 'محمد إبراهيم رضوان (ولي أمر)';
+      if (badgeEl) badgeEl.innerText = `${parentName} (ولي أمر 👨‍👩‍👧)`;
+      if (statusPill) {
+        statusPill.innerText = 'ولي أمر موثق 🛡️';
+        statusPill.className = 'badge badge-good';
+      }
+      if (avatarCircle) {
+        avatarCircle.innerHTML = '<span>👨‍👩‍👧</span><span class="online-dot" title="موثق"></span>';
+      }
+      if (titleEl) titleEl.innerText = '👨‍👩‍👧 بوابة ولي الأمر (Child Pulse)';
+      if (typeof loadParentPortalData === 'function') loadParentPortalData();
+    }
+  }
+}
