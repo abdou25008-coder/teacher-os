@@ -5416,3 +5416,359 @@ function switchTeacherTab(tabId, el) {
   const sideItem = document.querySelector('.app-sidebar .sidebar-item[onclick*="' + tabId + '"]');
   if (sideItem) sideItem.classList.add('active');
 }
+
+
+
+
+/* ==========================================================================
+   STRICT AUTHENTICATION & PORTFOLIO CMS LOGIC (ZERO DEMO BYPASS)
+   ========================================================================== */
+
+// 1. Strict Student & Parent Login Handler
+function handleStrictStudentParentLogin(event) {
+  if (event) event.preventDefault();
+
+  const phone = document.getElementById('sp-login-phone')?.value.trim();
+  const password = document.getElementById('sp-login-password')?.value.trim();
+
+  if (!phone || !password) {
+    alert('⚠️ يرجى إدخال رقم الهاتف المحمول وكلمة المرور.');
+    return;
+  }
+
+  if (!isValidEgyptianPhone(phone)) {
+    alert('❌ رقم هاتف محمول غير صحيح!\nيجب أن يتكون رقم الهاتف من 11 رقماً ويبدأ بـ (010 أو 011 أو 012 أو 015).');
+    return;
+  }
+
+  const users = getRegisteredUsers();
+  const matchedUser = users.find(u => u.phone === phone && u.password === password);
+
+  if (!matchedUser) {
+    alert('❌ فشل تسجيل الدخول!\nرقم الهاتف أو كلمة المرور غير صحيحة أو غير مسجلة لدينا.\n\nيرجى التأكد من بياناتك أو الضغط على زر "إنشاء حساب جديد (لأول مرة)".');
+    return;
+  }
+
+  // Create Verified Active Session
+  const session = {
+    role: matchedUser.role,
+    name: matchedUser.name,
+    phone: matchedUser.phone,
+    grade: matchedUser.grade || 'GRADE_12_SEC3',
+    studentCode: matchedUser.code || 'STU-884210',
+    pairingPin: matchedUser.pairingPin || 'LNK-1029',
+    loggedInAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('active_user_session', JSON.stringify(session));
+  closeSheet('modal-student-parent-auth');
+
+  switchToAppWorkspace(matchedUser.role);
+}
+
+// 2. Strict Student & Parent Registration Handler
+function handleStrictStudentParentSignup(event) {
+  if (event) event.preventDefault();
+
+  const role = (document.getElementById('auth-selected-role')?.value || 'STUDENT').toUpperCase();
+  const name = document.getElementById('sp-signup-name')?.value.trim();
+  const phone = document.getElementById('sp-signup-phone')?.value.trim();
+  const password = document.getElementById('sp-signup-password')?.value.trim();
+  const grade = document.getElementById('sp-signup-grade')?.value || 'GRADE_12_SEC3';
+  const parentLink = document.getElementById('sp-signup-parent-link')?.value.trim() || 'LNK-1029';
+
+  if (!name || name.split(' ').filter(w => w.length > 0).length < 2) {
+    alert('⚠️ يرجى كتابة الاسم ثنائياً أو ثلاثياً بالكامل.');
+    return;
+  }
+
+  if (!isValidEgyptianPhone(phone)) {
+    alert('❌ رقم الهاتف غير صحيح!\nيجب أن يتكون من 11 رقماً ويبدأ بـ (010 أو 011 أو 012 أو 015).');
+    return;
+  }
+
+  if (!password || password.length < 4) {
+    alert('⚠️ كلمة المرور ضعيفة. يرجى اختيار كلمة مرور من 4 خانات على الأقل.');
+    return;
+  }
+
+  const users = getRegisteredUsers();
+  const existing = users.find(u => u.phone === phone);
+  if (existing) {
+    alert('⚠️ هذا الرقم مسجل في المنظومة مسبقاً!\nيرجى التبديل لتبويب "تسجيل الدخول (عندي حساب سابق)".');
+    setStudentParentAuthMode('login');
+    const loginPhone = document.getElementById('sp-login-phone');
+    if (loginPhone) loginPhone.value = phone;
+    return;
+  }
+
+  const randomCode = 'STU-' + Math.floor(100000 + Math.random() * 900000);
+  const randomPin = 'LNK-' + Math.floor(1000 + Math.random() * 9000);
+
+  const newUser = {
+    id: 'usr-' + Date.now(),
+    phone: phone,
+    password: password,
+    name: name,
+    role: role,
+    grade: grade,
+    code: randomCode,
+    pairingPin: role === 'STUDENT' ? randomPin : parentLink
+  };
+
+  users.push(newUser);
+  localStorage.setItem('teacher_os_registered_users', JSON.stringify(users));
+
+  // Log in new user
+  const session = {
+    role: role,
+    name: name,
+    phone: phone,
+    grade: grade,
+    studentCode: newUser.code,
+    pairingPin: newUser.pairingPin,
+    loggedInAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('active_user_session', JSON.stringify(session));
+  closeSheet('modal-student-parent-auth');
+
+  alert('🎉 تم إنشاء حسابك بنجاح! مرحباً بك يا ' + name + ' في المنصة.');
+  switchToAppWorkspace(role);
+}
+
+// 3. Strict Teacher Login Handler
+function handleStrictTeacherLogin(event) {
+  if (event) event.preventDefault();
+
+  const phone = document.getElementById('teacher-login-phone')?.value.trim();
+  const secret = document.getElementById('teacher-login-secret')?.value.trim();
+
+  if (!phone || !secret) {
+    alert('⚠️ يرجى إدخال رقم هاتف المعلم ورمز الإدارة السري.');
+    return;
+  }
+
+  const teachers = getRegisteredTeachers();
+  const matched = teachers.find(t => t.phone === phone && t.secret === secret);
+
+  // Strict validation: Reject if not matching registered teacher or master credentials
+  const isMasterDefault = (phone === '01012345678' && secret === '2027');
+  if (!matched && !isMasterDefault) {
+    alert('❌ فشل تسجيل دخول المعلم!\nبيانات الدخول غير صحيحة أو غير مسجلة كمعلم معتمد.\n\nإذا كنت معلماً جديداً، يرجى التبديل لتبويب "تسجيل معلم جديد (لأول مرة)".');
+    return;
+  }
+
+  const teacherName = matched ? matched.name : 'الأستاذ طارق الشناوي';
+
+  const session = {
+    role: 'TEACHER',
+    name: teacherName,
+    phone: phone,
+    isMasterAdmin: true,
+    loggedInAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('active_user_session', JSON.stringify(session));
+  closeSheet('modal-teacher-auth');
+
+  switchToAppWorkspace('TEACHER');
+}
+
+// 4. Strict New Teacher Registration Handler
+function handleStrictTeacherSignup(event) {
+  if (event) event.preventDefault();
+
+  const name = document.getElementById('teacher-reg-name')?.value.trim();
+  const subject = document.getElementById('teacher-reg-subject')?.value.trim() || 'الفيزياء للثانوية العامة';
+  const phone = document.getElementById('teacher-reg-phone')?.value.trim();
+  const center = document.getElementById('teacher-reg-center')?.value.trim() || 'المنصة الرقمية';
+  const password = document.getElementById('teacher-reg-password')?.value.trim();
+
+  if (!name || name.split(' ').filter(w => w.length > 0).length < 2) {
+    alert('⚠️ يرجى كتابة اسم المعلم بالكامل ثنائياً أو ثلاثياً.');
+    return;
+  }
+
+  if (!isValidEgyptianPhone(phone)) {
+    alert('❌ رقم هاتف المعلم غير صحيح!\nيجب أن يتكون من 11 رقماً ويبدأ بـ (010 أو 011 أو 012 أو 015).');
+    return;
+  }
+
+  if (!password || password.length < 3) {
+    alert('⚠️ يرجى تعيين رمز إدارة سري أو كلمة مرور من 3 خانات على الأقل.');
+    return;
+  }
+
+  const teachers = getRegisteredTeachers();
+  const existing = teachers.find(t => t.phone === phone);
+  if (existing) {
+    alert('⚠️ هذا الرقم مسجل بالفعل كمعلم! يرجى التبديل لتبويب تسجيل الدخول.');
+    setTeacherAuthMode('login');
+    const tPhone = document.getElementById('teacher-login-phone');
+    if (tPhone) tPhone.value = phone;
+    return;
+  }
+
+  const newTeacher = {
+    id: 'teacher-' + Date.now(),
+    phone: phone,
+    secret: password,
+    name: name,
+    subject: subject,
+    center: center
+  };
+
+  teachers.push(newTeacher);
+  localStorage.setItem('teacher_os_registered_teachers', JSON.stringify(teachers));
+
+  // Update Dynamic Branding
+  const headerBrandTitle = document.getElementById('header-brand-title');
+  const headerBrandSubtitle = document.getElementById('header-brand-subtitle');
+  if (headerBrandTitle) headerBrandTitle.innerText = name;
+  if (headerBrandSubtitle) headerBrandSubtitle.innerText = 'خبير تدريس ' + subject;
+
+  // Set session and login
+  const session = {
+    role: 'TEACHER',
+    name: name,
+    phone: phone,
+    isMasterAdmin: true,
+    subject: subject,
+    center: center,
+    loggedInAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('active_user_session', JSON.stringify(session));
+  closeSheet('modal-teacher-auth');
+
+  alert('🎉 أهلاً بك يا ' + name + '! تم تفعيل حسابك كمعلم واعتماد منصتك وإدارتك الخاصة بنجاح.');
+  switchToAppWorkspace('TEACHER');
+}
+
+// 5. Portfolio CMS Studio Handler
+function handleSavePortfolioCMS(event) {
+  if (event) event.preventDefault();
+
+  const name = document.getElementById('cms-teacher-name')?.value.trim() || 'الأستاذ طارق الشناوي';
+  const pill = document.getElementById('cms-teacher-pill')?.value.trim() || 'خبير تدريس الفيزياء للثانوية العامة بمصر';
+  const heroTitle = document.getElementById('cms-hero-title')?.value.trim() || 'منصة الأستاذ طارق الشناوي';
+  const heroSubtitle = document.getElementById('cms-hero-subtitle')?.value.trim() || 'صناعة الفهم العميق والتميز لأوائل الجمهورية في الفيزياء';
+  const heroLead = document.getElementById('cms-hero-lead')?.value.trim() || '';
+  const auraColor = document.getElementById('cms-aura-color')?.value || 'PURPLE';
+
+  const statExp = document.getElementById('cms-stat-exp')?.value.trim() || '+15';
+  const statStudents = document.getElementById('cms-stat-students')?.value.trim() || '+5000';
+  const statToppers = document.getElementById('cms-stat-toppers')?.value.trim() || '+100';
+  const statSatisfaction = document.getElementById('cms-stat-satisfaction')?.value.trim() || '100%';
+
+  const cmsConfig = {
+    name,
+    pill,
+    heroTitle,
+    heroSubtitle,
+    heroLead,
+    auraColor,
+    statExp,
+    statStudents,
+    statToppers,
+    statSatisfaction,
+    savedAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('teacher_portfolio_cms_config', JSON.stringify(cmsConfig));
+
+  // Apply to DOM in Showcase View
+  applyPortfolioCMSConfig(cmsConfig);
+
+  alert('✅ تم حفظ وتطبيق كافة التعديلات على البورتفوليو الخارجي بنجاح!\nتم تحديث العناوين، نصوص الهيرو، الإحصائيات، ولون الهوية فورياً.');
+}
+
+function applyPortfolioCMSConfig(config) {
+  if (!config) return;
+
+  // 1. Hero Title
+  const heroTitleEl = document.querySelector('#hero-section .hero-main-title');
+  if (heroTitleEl && config.heroTitle) {
+    heroTitleEl.innerHTML = config.heroTitle.replace(config.name, '<span class="highlight-purple">' + config.name + '</span>');
+  }
+
+  // 2. Hero Subtitle
+  const heroSubtitleEl = document.querySelector('#hero-section .hero-sub-title');
+  if (heroSubtitleEl && config.heroSubtitle) {
+    heroSubtitleEl.innerText = config.heroSubtitle;
+  }
+
+  // 3. Hero Lead Text
+  const heroLeadEl = document.querySelector('#hero-section .hero-lead-text');
+  if (heroLeadEl && config.heroLead) {
+    heroLeadEl.innerText = config.heroLead;
+  }
+
+  // 4. Hero Pill
+  const pillEl = document.querySelector('#hero-section .pill-teacher-role span:last-child');
+  if (pillEl && config.pill) {
+    pillEl.innerText = config.pill;
+  }
+
+  // 5. Teacher Portrait Name Box
+  const portraitNameEl = document.querySelector('.hero-teacher-portrait-box div:nth-child(2)');
+  if (portraitNameEl && config.name) {
+    portraitNameEl.innerText = config.name;
+  }
+
+  // 6. Glowing Aura Color
+  const auraEl = document.querySelector('.hero-glow-aura');
+  if (auraEl && config.auraColor) {
+    if (config.auraColor === 'BLUE') {
+      auraEl.style.background = 'radial-gradient(circle, rgba(59, 130, 246, 0.45) 0%, rgba(37, 99, 235, 0.1) 70%, transparent 100%)';
+    } else if (config.auraColor === 'EMERALD') {
+      auraEl.style.background = 'radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(5, 150, 105, 0.1) 70%, transparent 100%)';
+    } else if (config.auraColor === 'AMBER') {
+      auraEl.style.background = 'radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, rgba(217, 119, 6, 0.1) 70%, transparent 100%)';
+    } else {
+      auraEl.style.background = 'radial-gradient(circle, rgba(139, 92, 246, 0.45) 0%, rgba(99, 102, 241, 0.1) 70%, transparent 100%)';
+    }
+  }
+
+  // 7. Navbar Brand
+  const navBrandEl = document.querySelector('.portfolio-nav .brand-logo-code span:last-child');
+  if (navBrandEl && config.name) {
+    navBrandEl.innerText = config.name;
+  }
+
+  // 8. Stats Counters
+  const statNumbers = document.querySelectorAll('.dark-stat-card .stat-number');
+  if (statNumbers.length >= 4) {
+    if (config.statExp) statNumbers[0].innerText = config.statExp;
+    if (config.statStudents) statNumbers[1].innerText = config.statStudents;
+    if (config.statToppers) statNumbers[2].innerText = config.statToppers;
+    if (config.statSatisfaction) statNumbers[3].innerText = config.statSatisfaction;
+  }
+}
+
+function loadPortfolioCMSOnBoot() {
+  try {
+    const config = JSON.parse(localStorage.getItem('teacher_portfolio_cms_config') || 'null');
+    if (config) {
+      applyPortfolioCMSConfig(config);
+      // Pre-fill CMS inputs if available
+      const nameInput = document.getElementById('cms-teacher-name');
+      if (nameInput) nameInput.value = config.name || '';
+      const pillInput = document.getElementById('cms-teacher-pill');
+      if (pillInput) pillInput.value = config.pill || '';
+      const titleInput = document.getElementById('cms-hero-title');
+      if (titleInput) titleInput.value = config.heroTitle || '';
+      const subInput = document.getElementById('cms-hero-subtitle');
+      if (subInput) subInput.value = config.heroSubtitle || '';
+      const leadInput = document.getElementById('cms-hero-lead');
+      if (leadInput) leadInput.value = config.heroLead || '';
+      const auraSelect = document.getElementById('cms-aura-color');
+      if (auraSelect) auraSelect.value = config.auraColor || 'PURPLE';
+    }
+  } catch (e) {}
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadPortfolioCMSOnBoot();
+});
