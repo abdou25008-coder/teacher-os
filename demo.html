@@ -11,6 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css?v=20260927_strict_v7">
+  <link rel="stylesheet" href="demo.css?v=20260927_strict_v7">
 </head>
 <body style="background: #0B0F19; margin: 0; padding: 0;">
 
@@ -39,9 +40,6 @@
 
       <div style="display: flex; align-items: center; gap: 10px;">
         <!-- Discrete Teacher Admin Entry Link -->
-        <a href="demo.html" class="tech-pill" style="text-decoration: none; background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.5); color: #FCD34D; font-weight: 800; padding: 6px 12px; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 4px;">
-          <span>🎬 العرض التجريبي (Demo)</span>
-        </a>
         <button type="button" class="btn-hero-outline" onclick="openTeacherAuthModal()" style="padding: 7px 14px; font-size: 0.8rem; border-color: rgba(139, 92, 246, 0.4); color: #C4B5FD; min-height: 36px;">
           <span>🔒 دخول المعلم</span>
         </button>
@@ -91,10 +89,6 @@
         </p>
 
         <div class="hero-actions-row" style="justify-content: center; gap: 14px; margin-bottom: 30px; display: flex; flex-wrap: wrap;">
-          <a href="demo.html" class="btn" style="min-height: 50px; font-size: 1rem; padding: 0 24px; background: linear-gradient(135deg, #F59E0B, #D97706); color: #FFFFFF; font-weight: 900; text-decoration: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); display: inline-flex; align-items: center; gap: 8px;">
-            <span>🎬 جولة العرض التجريبي والتسويقي (Demo Tour)</span>
-            <span>➔</span>
-          </a>
           <button type="button" class="btn-hero-primary" onclick="openStudentParentAuth('STUDENT')" style="min-height: 50px; font-size: 1.05rem; padding: 0 28px;">
             <span>تسجيل دخول الطالب وولي الأمر</span>
             <span>↗</span>
@@ -2235,5 +2229,123 @@
     </div>
   </div>
 
+  <!-- ==================== FLOATING DEMO ROLE SWITCHER DOCK ==================== -->
+  <div class="demo-floating-dock">
+    <div class="demo-dock-label">
+      <span class="live-dot"></span>
+      <span>العرض التجريبي:</span>
+    </div>
+
+    <button type="button" class="demo-role-btn active" id="demo-btn-teacher" onclick="switchToDemoRole('teacher')">
+      <span>👨‍🏫</span>
+      <span>لوحة المعلم والمدير</span>
+    </button>
+
+    <button type="button" class="demo-role-btn" id="demo-btn-student" onclick="switchToDemoRole('student')">
+      <span>🎓</span>
+      <span>بوابة الطالب (أحمد)</span>
+    </button>
+
+    <button type="button" class="demo-role-btn" id="demo-btn-parent" onclick="switchToDemoRole('parent')">
+      <span>👨‍👩‍👧</span>
+      <span>بوابة ولي الأمر</span>
+    </button>
+
+    <button type="button" class="demo-role-btn" id="demo-btn-portfolio" onclick="switchToDemoRole('portfolio')">
+      <span>🌐</span>
+      <span>البورتفوليو والمتجر</span>
+    </button>
+
+    <button type="button" class="demo-pitch-btn" onclick="openSalesPitchModal()">
+      <span>💡</span>
+      <span>نقاط القوة البيعية</span>
+    </button>
+
+    <button type="button" class="demo-reset-btn" onclick="resetDemoState()" title="إعادة تعيين البيانات للحالة الافتراضية">
+      <span>🔄 إعادة ضبط</span>
+    </button>
+  </div>
+
+  <!-- MODAL: SALES PITCH & MARKETING HIGHLIGHTS -->
+  <div id="modal-sales-pitch" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-sales-pitch')">
+    <div class="m-sheet-content" style="max-height: 95vh; background: #0F172A; color: #FFFFFF; border: 2px solid #F59E0B;">
+      <div class="m-sheet-handle" style="background: #334155;"></div>
+      <div class="m-sheet-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px;">
+        <div>
+          <div style="font-size: 0.74rem; font-weight: 800; color: #FCD34D;">دليل المسوق والعارض الميداني</div>
+          <h3 class="m-sheet-title" style="color: #FFFFFF; font-size: 1.15rem; margin-top: 2px;">
+            💎 5 أسباب تجعل المعلم لا يستغني عن المنصة
+          </h3>
+        </div>
+        <button class="m-sheet-close" onclick="closeSheet('modal-sales-pitch')" style="background: rgba(255,255,255,0.1); color: #fff;">✕</button>
+      </div>
+
+      <div style="margin: 14px 0;">
+        
+        <!-- Pitch 1 -->
+        <div class="pitch-point-item">
+          <div class="pitch-icon">👑</div>
+          <div>
+            <div class="pitch-title">1. الاستقلالية الكاملة والعلامة التجارية الخاصة</div>
+            <div class="pitch-desc">
+              التطبيق يحمل اسم المعلم وشعاره وألوانه بالكامل، وليس منصة مجمعة تضع المعلم في مقارنة مع منافسيه أو تضيع علامته الشخصية.
+            </div>
+          </div>
+        </div>
+
+        <!-- Pitch 2 -->
+        <div class="pitch-point-item">
+          <div class="pitch-icon">⚡</div>
+          <div>
+            <div class="pitch-title">2. إثبات الحضور والغياب في 3 ثوانٍ فقط</div>
+            <div class="pitch-desc">
+              بضغطة زر واحدة (تحضير الكل) أو مسح كود الطالب بالباركود عند باب القاعة، مع إشعار غياب فوري لواتساب ولي الأمر يضمن التزام الطلاب التام.
+            </div>
+          </div>
+        </div>
+
+        <!-- Pitch 3 -->
+        <div class="pitch-point-item">
+          <div class="pitch-icon">💵</div>
+          <div>
+            <div class="pitch-title">3. تحصيل مالي مباشر 100% بدون وسيط</div>
+            <div class="pitch-desc">
+              أموال الاشتراكات الشهرية وثمن المذكرات تحول مباشرة على محفظة فودافون كاش أو إنستاباي الخاصة بالمعلم دون أي خصومات أو وسيط.
+            </div>
+          </div>
+        </div>
+
+        <!-- Pitch 4 -->
+        <div class="pitch-point-item">
+          <div class="pitch-icon">🤖</div>
+          <div>
+            <div class="pitch-title">4. مساعد ذكاء اصطناعي ومدرب سقراطي مدرب على أسلوبه</div>
+            <div class="pitch-desc">
+              يقوم المعلم بتغذية المنهج والقوانين الهامة ليرد المساعد الذكي على الطلاب بنفس طريقة شرح المعلم، مع مولد امتحانات فوري مطابق لمواصفات الثانوية.
+            </div>
+          </div>
+        </div>
+
+        <!-- Pitch 5 -->
+        <div class="pitch-point-item">
+          <div class="pitch-icon">🛒</div>
+          <div>
+            <div class="pitch-title">5. متجر بيع الكورسات والمذكرات لطلاب المحافظات</div>
+            <div class="pitch-desc">
+              يفتح للمعلم رافد دخل جديد عبر بيع المحاضرات المسجلة والمذكرات الرقمية لآلاف الطلاب في محافظات مصر المختلفة بنظام تحويل بنكي فوري.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button type="button" class="btn btn-hero-primary btn-block" onclick="closeSheet('modal-sales-pitch')" style="min-height: 44px; font-weight: 800;">
+        <span>فهمت — العودة إلى العرض التجريبي ➔</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Demo Scripts -->
+  <script src="demo.js?v=20260927_strict_v7"></script>
 </body>
 </html>
