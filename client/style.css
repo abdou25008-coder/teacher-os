@@ -2142,3 +2142,172 @@ body {
     box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
   }
 }
+
+
+/* ==========================================================================
+   ATTENDANCE, EVALUATION & PACKAGES MODULE STYLES
+   ========================================================================== */
+.m-att-card, .m-eval-card {
+  background: #1E293B;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.m-att-card:hover, .m-eval-card:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+.att-header, .eval-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.att-toggle-group {
+  display: flex;
+  gap: 4px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 4px;
+  flex-wrap: wrap;
+}
+
+.att-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: #94A3B8;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.att-btn:hover {
+  color: #FFFFFF;
+}
+
+.att-btn.active-present {
+  background: #059669 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+}
+
+.att-btn.active-absent {
+  background: #DC2626 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35);
+}
+
+.att-btn.active-late {
+  background: #D97706 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35);
+}
+
+.att-btn.active-excused {
+  background: #6366F1 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+}
+
+/* Evaluation Styles */
+.eval-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+@media (max-width: 640px) {
+  .eval-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eval-score-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.eval-score-input {
+  width: 64px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(15, 23, 42, 0.7);
+  color: #FFFFFF;
+  font-weight: 800;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+/* Package Card Styles */
+.m-package-card {
+  background: #1E293B;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.m-package-card.highlight {
+  border-color: #6366F1;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.25);
+}
+
+.pkg-price-badge {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #38BDF8;
+}
+
+.pkg-period-label {
+  font-size: 0.76rem;
+  color: #94A3B8;
+  font-weight: 600;
+}
+
+.pkg-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  font-size: 0.8rem;
+  color: #CBD5E1;
+  line-height: 1.7;
+}
+
+.pkg-feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.m-overdue-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}

@@ -5772,3 +5772,675 @@ function loadPortfolioCMSOnBoot() {
 window.addEventListener('DOMContentLoaded', () => {
   loadPortfolioCMSOnBoot();
 });
+
+
+/* ==========================================================================
+   ATTENDANCE & EVALUATION & PACKAGES CONTROLLERS
+   ========================================================================== */
+
+// 1. Initial Packages Definition
+const DEFAULT_PACKAGES = [
+  {
+    id: 'pkg-1',
+    name: 'باقة السنتر الشاملة (Golden Elite)',
+    price: 350,
+    period: 'شهرياً',
+    features: [
+      '8 حصص شرح وتطبيق بالقاعة شهرياً',
+      'استلام مذكرات الشرح والخرائط الذهنية مطبوعة مجاناً',
+      'كويز أسبوعي وتصحيح تفصيلي',
+      'تقارير أداء دورية لولي الأمر عبر واتساب'
+    ],
+    studentCount: 26,
+    isPopular: true
+  },
+  {
+    id: 'pkg-2',
+    name: 'باقة الأونلاين والزووم (Online Pro)',
+    price: 250,
+    period: 'شهرياً',
+    features: [
+      'بث مباشر تفاعلي لجميع الحصص عبر Zoom',
+      'تسجيلات الحصص بجودة HD متاحة طوال العام',
+      'تحميل ملازم وشيتات الشرح بصيغة PDF',
+      'دخول اختبارات المنصة الإلكترونية'
+    ],
+    studentCount: 14,
+    isPopular: false
+  },
+  {
+    id: 'pkg-3',
+    name: 'باقة الامتحانات وبنك الأسئلة (Exam Pass)',
+    price: 150,
+    period: 'شهرياً',
+    features: [
+      'الوصول لبنك أسئلة الوزارة ونماذج الامتحانات السابقة',
+      'تصحيح ضوئي ذكي لورقة الإجابة بالكاميرا (OCR)',
+      'تحدي اليوم الفيزيائي ورادار الفجوات المفاهيمية'
+    ],
+    studentCount: 8,
+    isPopular: false
+  },
+  {
+    id: 'pkg-4',
+    name: 'باقة الحصة المنفصلة (Pay As You Go)',
+    price: 70,
+    period: 'لكل حصة',
+    features: [
+      'حضور حصة واحدة بقاعة السنتر',
+      'استلام شيت الحصة والاختبار القصير'
+    ],
+    studentCount: 5,
+    isPopular: false
+  }
+];
+
+function getStoredPackages() {
+  try {
+    const raw = localStorage.getItem('teacher_os_packages');
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  localStorage.setItem('teacher_os_packages', JSON.stringify(DEFAULT_PACKAGES));
+  return DEFAULT_PACKAGES;
+}
+
+function getStoredAttendanceRecords() {
+  try {
+    const raw = localStorage.getItem('teacher_os_attendance_records');
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return {};
+}
+
+function saveStoredAttendanceRecords(records) {
+  try {
+    localStorage.setItem('teacher_os_attendance_records', JSON.stringify(records));
+  } catch (e) {}
+}
+
+function getStoredEvaluations() {
+  try {
+    const raw = localStorage.getItem('teacher_os_evaluations');
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return {};
+}
+
+function saveStoredEvaluations(evals) {
+  try {
+    localStorage.setItem('teacher_os_evaluations', JSON.stringify(evals));
+  } catch (e) {}
+}
+
+// 2. Attendance Roster Renderer
+function renderAttendanceRoster() {
+  const container = document.getElementById('attendance-roster-container');
+  if (!container) return;
+
+  const groupFilter = document.getElementById('attendance-group-select')?.value || 'ALL';
+  const dateInput = document.getElementById('attendance-date-input');
+  
+  if (dateInput && !dateInput.value) {
+    dateInput.value = new Date().toISOString().split('T')[0];
+  }
+  const sessionDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
+
+  let list = state.students || [];
+  if (groupFilter === 'GRP-1') {
+    list = list.filter(s => (s.group_name || '').includes('السبت') || s.group_id === 'grp-001');
+  } else if (groupFilter === 'GRP-2') {
+    list = list.filter(s => (s.group_name || '').includes('الأحد') || s.group_id === 'grp-002');
+  }
+
+  const allRecords = getStoredAttendanceRecords();
+  const dayRecords = allRecords[sessionDate] || {};
+
+  let presentCount = 0;
+  let absentCount = 0;
+  let lateCount = 0;
+  let excusedCount = 0;
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="m-card" style="text-align: center; padding: 24px; color: #94A3B8;">
+        <div style="font-size: 2rem; margin-bottom: 6px;">👥</div>
+        <div style="font-weight: 700;">لا يوجد طلاب في هذه المجموعة حالياً</div>
+      </div>
+    `;
+    return;
+  }
+
+  const html = list.map((s, idx) => {
+    // Determine status for this date
+    const currentStatus = dayRecords[s.id] || 'PRESENT';
+    if (currentStatus === 'PRESENT') presentCount++;
+    else if (currentStatus === 'ABSENT') absentCount++;
+    else if (currentStatus === 'LATE') lateCount++;
+    else if (currentStatus === 'EXCUSED') excusedCount++;
+
+    const initial = s.full_name ? s.full_name.trim()[0] : 'ط';
+    const isPaid = s.subscription_status === 'ساري';
+
+    return `
+      <div class="m-att-card" id="att-row-${s.id}">
+        <div class="att-header">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="m-student-avatar">${initial}</div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.94rem; color: #FFFFFF;">${s.full_name}</div>
+              <div style="font-size: 0.76rem; color: #94A3B8;">
+                كود: <span style="color: #60A5FA; font-weight: 700;">${s.academic_code || 'STU-102931'}</span> • ${s.group_name || 'مجموعة 3ث'}
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="badge ${isPaid ? 'badge-good' : 'badge-warning'}" style="font-size: 0.72rem;">
+              ${isPaid ? 'ساري ✅' : 'متأخر ⚠️'}
+            </span>
+            <button type="button" class="btn btn-whatsapp" onclick="sendIndividualAttendanceWhatsApp('${s.parent_phone || '01011112222'}', '${s.full_name}', '${currentStatus}', '${sessionDate}')" style="padding: 4px 8px; font-size: 0.74rem; min-height: 32px;" title="إرسال إشعار للولي الأمر عبر واتساب">
+              <span>📲 إشعار</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;">
+          <span style="font-size: 0.76rem; color: #94A3B8; font-weight: 700;">حالة الحضور:</span>
+          
+          <div class="att-toggle-group">
+            <button type="button" class="att-btn ${currentStatus === 'PRESENT' ? 'active-present' : ''}" onclick="setStudentAttendanceStatus('${s.id}', 'PRESENT')">
+              <span>✅ حاضر</span>
+            </button>
+            <button type="button" class="att-btn ${currentStatus === 'ABSENT' ? 'active-absent' : ''}" onclick="setStudentAttendanceStatus('${s.id}', 'ABSENT')">
+              <span>❌ غائب</span>
+            </button>
+            <button type="button" class="att-btn ${currentStatus === 'LATE' ? 'active-late' : ''}" onclick="setStudentAttendanceStatus('${s.id}', 'LATE')">
+              <span>⏱️ متأخر</span>
+            </button>
+            <button type="button" class="att-btn ${currentStatus === 'EXCUSED' ? 'active-excused' : ''}" onclick="setStudentAttendanceStatus('${s.id}', 'EXCUSED')">
+              <span>📝 معذور</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = html;
+
+  // Update Summary Badges
+  const total = list.length;
+  const ratePct = total > 0 ? Math.round(((presentCount + lateCount) / total) * 100) : 100;
+
+  const presentBadge = document.getElementById('att-present-count');
+  if (presentBadge) presentBadge.textContent = presentCount + ' حاضر ✅';
+
+  const absentBadge = document.getElementById('att-absent-count');
+  if (absentBadge) absentBadge.textContent = absentCount + ' غائب ❌';
+
+  const lateBadge = document.getElementById('att-late-count');
+  if (lateBadge) lateBadge.textContent = lateCount + ' متأخر ⏱️';
+
+  const rateBadge = document.getElementById('att-rate-badge');
+  if (rateBadge) rateBadge.textContent = 'نسبة الحضور: ' + ratePct + '%';
+
+  // Also update Copilot home attendance rate
+  const copilotAttRate = document.getElementById('stat-attendance-rate');
+  if (copilotAttRate) copilotAttRate.textContent = ratePct + '%';
+}
+
+// Set Attendance for specific student
+function setStudentAttendanceStatus(studentId, status) {
+  const dateInput = document.getElementById('attendance-date-input');
+  const sessionDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
+
+  const records = getStoredAttendanceRecords();
+  if (!records[sessionDate]) records[sessionDate] = {};
+  records[sessionDate][studentId] = status;
+  saveStoredAttendanceRecords(records);
+
+  renderAttendanceRoster();
+}
+
+// Mark All Present
+function markAllPresent() {
+  const groupFilter = document.getElementById('attendance-group-select')?.value || 'ALL';
+  const dateInput = document.getElementById('attendance-date-input');
+  const sessionDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
+
+  let list = state.students || [];
+  if (groupFilter === 'GRP-1') {
+    list = list.filter(s => (s.group_name || '').includes('السبت') || s.group_id === 'grp-001');
+  } else if (groupFilter === 'GRP-2') {
+    list = list.filter(s => (s.group_name || '').includes('الأحد') || s.group_id === 'grp-002');
+  }
+
+  const records = getStoredAttendanceRecords();
+  if (!records[sessionDate]) records[sessionDate] = {};
+
+  list.forEach(s => {
+    records[sessionDate][s.id] = 'PRESENT';
+  });
+
+  saveStoredAttendanceRecords(records);
+  renderAttendanceRoster();
+  alert('⚡ تم تحضير جميع طلاب المجموعة (' + list.length + ' طالباً) حاضر بنجاح!');
+}
+
+// Quick Barcode / Code Check-in
+function handleQuickCheckinSubmit() {
+  const input = document.getElementById('quick-checkin-input');
+  const alertBox = document.getElementById('quick-checkin-alert');
+  if (!input || !alertBox) return;
+
+  const val = input.value.trim().toLowerCase();
+  if (!val) {
+    alert('يرجى كتابة كود الطالب أو اسمه أولاً');
+    return;
+  }
+
+  const list = state.students || [];
+  const found = list.find(s => 
+    (s.academic_code || '').toLowerCase() === val ||
+    (s.academic_code || '').toLowerCase().includes(val) ||
+    (s.full_name || '').toLowerCase().includes(val) ||
+    (s.parent_phone || '').includes(val)
+  );
+
+  alertBox.style.display = 'block';
+
+  if (found) {
+    setStudentAttendanceStatus(found.id, 'PRESENT');
+    alertBox.style.background = 'rgba(16, 185, 129, 0.15)';
+    alertBox.style.border = '1px solid #10B981';
+    alertBox.style.color = '#34D399';
+    alertBox.innerHTML = '✅ تم إثبات حضور الطالب (' + found.full_name + ' — ' + (found.academic_code || '') + ') في تمام ' + new Date().toLocaleTimeString('ar-EG') + ' بنجاح!';
+    input.value = '';
+    input.focus();
+  } else {
+    alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+    alertBox.style.border = '1px solid #EF4444';
+    alertBox.style.color = '#FCA5A5';
+    alertBox.innerHTML = '❌ لم يتم العثور على طالب يطابق ("' + val + '"). يرجى التحقق من الكود!';
+  }
+}
+
+// Send Absence Alerts to All Absent Students via WhatsApp
+function sendAbsenceWhatsAppAlerts() {
+  const dateInput = document.getElementById('attendance-date-input');
+  const sessionDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
+
+  const allRecords = getStoredAttendanceRecords();
+  const dayRecords = allRecords[sessionDate] || {};
+
+  const list = state.students || [];
+  const absentStudents = list.filter(s => dayRecords[s.id] === 'ABSENT');
+
+  if (absentStudents.length === 0) {
+    alert('🎉 لا يوجد أي طلاب غائبين في كشف هذه الحصة، ما شاء الله!');
+    return;
+  }
+
+  // Open WhatsApp for the first absent student and notify about remaining
+  const first = absentStudents[0];
+  const cleanPhone = (first.parent_phone || '01011112222').replace(/\D/g, '');
+  const e164 = cleanPhone.startsWith('20') ? cleanPhone : ('20' + cleanPhone.replace(/^0+/, ''));
+  
+  const text = encodeURIComponent(
+    'السلام عليكم ورحمة الله وبركاته،\nتحية طيبة من إدارة الأستاذ طارق الشناوي،\nنود إحاطة سيادتكم علماً بغياب نجلكم (' + first.full_name + ') عن حصة الفيزياء المقررة اليوم (' + sessionDate + ').\nيرجى التواصل معنا لتعويض ما فاته وحل الشيت المقرر.\nشاكرين حرصكم الدائم على مستقبل الطالب.'
+  );
+
+  window.open('https://wa.me/' + e164 + '?text=' + text, '_blank');
+
+  if (absentStudents.length > 1) {
+    alert('📢 تم فتح واتساب لإرسال إنذار لولي أمر (' + first.full_name + '). يتبقى (' + (absentStudents.length - 1) + ') طلاب غائبين يمكنك إرسال إشعاراتهم من زر "📲 إشعار" بجانب كل طالب.');
+  }
+}
+
+// Send Individual Attendance WhatsApp
+function sendIndividualAttendanceWhatsApp(phone, name, status, date) {
+  const cleanPhone = (phone || '01011112222').replace(/\D/g, '');
+  const e164 = cleanPhone.startsWith('20') ? cleanPhone : ('20' + cleanPhone.replace(/^0+/, ''));
+
+  let statusText = 'حاضر وملتزم بموعد الحصة ما شاء الله ✅';
+  if (status === 'ABSENT') statusText = 'غائب عن حصة اليوم ❌';
+  else if (status === 'LATE') statusText = 'حضر متأخراً عن موعد بدء الحصة ⏱️';
+  else if (status === 'EXCUSED') statusText = 'غائب بعذر مسبق مقبول 📝';
+
+  const text = encodeURIComponent(
+    'السلام عليكم ورحمة الله وبركاته،\nتحية طيبة من إدارة الأستاذ طارق الشناوي،\nإفادة بحالة حضور الطالب (' + name + ') لحصة الفيزياء بتاريخ (' + date + '):\nالحالة: ' + statusText + '\nشاكرين لسيادتكم حسن التعاون والحرص المستمر.'
+  );
+
+  window.open('https://wa.me/' + e164 + '?text=' + text, '_blank');
+}
+
+
+// 3. Student Evaluation Roster Renderer
+function renderEvaluationRoster() {
+  const container = document.getElementById('evaluation-roster-container');
+  if (!container) return;
+
+  const groupFilter = document.getElementById('eval-group-select')?.value || 'ALL';
+  const assessmentTitle = document.getElementById('eval-assessment-title')?.value || 'اختبار الفصل الأول';
+  const maxScore = Number(document.getElementById('eval-assessment-max')?.value || 60);
+
+  let list = state.students || [];
+  if (groupFilter === 'GRP-1') {
+    list = list.filter(s => (s.group_name || '').includes('السبت') || s.group_id === 'grp-001');
+  } else if (groupFilter === 'GRP-2') {
+    list = list.filter(s => (s.group_name || '').includes('الأحد') || s.group_id === 'grp-002');
+  }
+
+  const storedEvals = getStoredEvaluations();
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="m-card" style="text-align: center; padding: 24px; color: #94A3B8;">
+        <div style="font-size: 2rem; margin-bottom: 6px;">📝</div>
+        <div style="font-weight: 700;">لا يوجد طلاب في هذه المجموعة</div>
+      </div>
+    `;
+    return;
+  }
+
+  const html = list.map((s, idx) => {
+    const defaultScore = idx === 0 ? 56 : (idx === 1 ? 52 : (idx === 2 ? 45 : 38));
+    const studentEval = storedEvals[s.id] || {
+      score: defaultScore,
+      homework: idx === 3 ? 'MISSING' : (idx === 2 ? 'PARTIAL' : 'COMPLETED'),
+      note: idx === 0 ? 'متميز جداً في استنتاجات كيرشوف' : 'يحتاج تدريب إضافي على أجهزة القياس'
+    };
+
+    const pct = Math.round((Number(studentEval.score) / maxScore) * 100);
+    let levelBadge = 'badge-good';
+    let levelTitle = 'ممتاز (أوائل) 🌟';
+    if (pct < 60) {
+      levelBadge = 'badge-urgent';
+      levelTitle = 'يحتاج دعم وتدريب 🔴';
+    } else if (pct < 75) {
+      levelBadge = 'badge-warning';
+      levelTitle = 'متوسط 🟡';
+    } else if (pct < 90) {
+      levelBadge = 'badge-primary';
+      levelTitle = 'جيد جداً 🟢';
+    }
+
+    const initial = s.full_name ? s.full_name.trim()[0] : 'ط';
+
+    return `
+      <div class="m-eval-card" id="eval-row-${s.id}">
+        <div class="eval-header">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="m-student-avatar">${initial}</div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.94rem; color: #FFFFFF;">${s.full_name}</div>
+              <div style="font-size: 0.76rem; color: #94A3B8;">${s.academic_code || 'STU-102931'} • ${s.group_name || '3ث'}</div>
+            </div>
+          </div>
+          <span class="badge ${levelBadge}" id="eval-level-${s.id}">${levelTitle} (${pct}%)</span>
+        </div>
+
+        <div class="eval-grid">
+          <div>
+            <label class="m-input-label">درجة الامتحان (من ${maxScore}):</label>
+            <div class="eval-score-box">
+              <input type="number" id="eval-score-${s.id}" class="eval-score-input" value="${studentEval.score}" min="0" max="${maxScore}" oninput="updateEvaluationScorePreview('${s.id}', this.value, ${maxScore})">
+              <span style="font-size: 0.88rem; font-weight: 800; color: #94A3B8;">/ ${maxScore}</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="m-input-label">تقييم الواجب المنزلي:</label>
+            <select id="eval-hw-${s.id}" class="m-input" style="margin-bottom: 0;">
+              <option value="COMPLETED" ${studentEval.homework === 'COMPLETED' ? 'selected' : ''}>🌟 كامل ومتميز</option>
+              <option value="PARTIAL" ${studentEval.homework === 'PARTIAL' ? 'selected' : ''}>⚠️ حل جزئي / ناقص</option>
+              <option value="MISSING" ${studentEval.homework === 'MISSING' ? 'selected' : ''}>❌ لم يقدم الواجب</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top: 8px;">
+          <label class="m-input-label">ملاحظة وتوجيه الأستاذ الشخصي للطالب:</label>
+          <input type="text" id="eval-note-${s.id}" class="m-input" value="${studentEval.note || ''}" placeholder="اكتب ملاحظة أو توجيه للطالب..." style="margin-bottom: 8px;">
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px;">
+          <button type="button" class="btn btn-outline" onclick="handleSaveStudentEvaluation('${s.id}')" style="min-height: 36px; font-size: 0.78rem;">
+            <span>💾 حفظ التقييم</span>
+          </button>
+          <button type="button" class="btn btn-whatsapp" onclick="sendStudentEvaluationWhatsApp('${s.id}', '${s.full_name}', '${s.parent_phone || '01011112222'}')" style="min-height: 36px; font-size: 0.78rem;">
+            <span>📲 إرسال التقرير للولي (واتساب)</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = html;
+}
+
+function updateEvaluationScorePreview(studentId, scoreVal, maxScore) {
+  const badge = document.getElementById('eval-level-' + studentId);
+  if (!badge) return;
+
+  const score = Number(scoreVal) || 0;
+  const pct = Math.round((score / maxScore) * 100);
+
+  let levelBadge = 'badge-good';
+  let levelTitle = 'ممتاز (أوائل) 🌟';
+  if (pct < 60) {
+    levelBadge = 'badge-urgent';
+    levelTitle = 'يحتاج دعم وتدريب 🔴';
+  } else if (pct < 75) {
+    levelBadge = 'badge-warning';
+    levelTitle = 'متوسط 🟡';
+  } else if (pct < 90) {
+    levelBadge = 'badge-primary';
+    levelTitle = 'جيد جداً 🟢';
+  }
+
+  badge.className = 'badge ' + levelBadge;
+  badge.textContent = levelTitle + ' (' + pct + '%)';
+}
+
+function handleSaveStudentEvaluation(studentId) {
+  const score = document.getElementById('eval-score-' + studentId)?.value || 0;
+  const homework = document.getElementById('eval-hw-' + studentId)?.value || 'COMPLETED';
+  const note = document.getElementById('eval-note-' + studentId)?.value || '';
+
+  const evals = getStoredEvaluations();
+  evals[studentId] = { score, homework, note };
+  saveStoredEvaluations(evals);
+
+  alert('✅ تم حفظ التقييم ودرجات الطالب بنجاح!');
+}
+
+function sendStudentEvaluationWhatsApp(studentId, name, phone) {
+  handleSaveStudentEvaluation(studentId);
+
+  const cleanPhone = (phone || '01011112222').replace(/\D/g, '');
+  const e164 = cleanPhone.startsWith('20') ? cleanPhone : ('20' + cleanPhone.replace(/^0+/, ''));
+
+  const score = document.getElementById('eval-score-' + studentId)?.value || 0;
+  const maxScore = document.getElementById('eval-assessment-max')?.value || 60;
+  const hw = document.getElementById('eval-hw-' + studentId)?.value || 'COMPLETED';
+  const note = document.getElementById('eval-note-' + studentId)?.value || 'طالب متميز';
+  const assessmentTitle = document.getElementById('eval-assessment-title')?.value || 'اختبار الفيزياء';
+
+  let hwText = 'كامل ومتميز 🌟';
+  if (hw === 'PARTIAL') hwText = 'حل جزئي وناقص ⚠️';
+  else if (hw === 'MISSING') hwText = 'لم يقدم الواجب ❌';
+
+  const pct = Math.round((Number(score) / Number(maxScore)) * 100);
+
+  const text = encodeURIComponent(
+    'السلام عليكم ورحمة الله وبركاته،\nتحية طيبة من أ/ طارق الشناوي،\nإليكم بطاقة تقييم أداء الطالب (' + name + ') في (' + assessmentTitle + '):\n' +
+    '📊 الدرجة: ' + score + ' من ' + maxScore + ' (' + pct + '%)\n' +
+    '📖 الواجب المنزلي: ' + hwText + '\n' +
+    '💡 ملاحظة الأستاذ: ' + note + '\n' +
+    'شاكرين لسيادتكم دوام التعاون والحرص على التفوق.'
+  );
+
+  window.open('https://wa.me/' + e164 + '?text=' + text, '_blank');
+}
+
+
+// 4. Packages Manager & Financials Controller
+function renderTeacherPackages() {
+  const container = document.getElementById('teacher-packages-container');
+  if (!container) return;
+
+  const packages = getStoredPackages();
+  
+  container.innerHTML = packages.map((pkg, idx) => {
+    return `
+      <div class="m-package-card ${pkg.isPopular ? 'highlight' : ''}">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+            <div style="font-weight: 800; font-size: 1rem; color: #FFFFFF;">${pkg.name}</div>
+            ${pkg.isPopular ? '<span class="badge badge-primary">الأكثر طلباً ⭐</span>' : ''}
+          </div>
+
+          <div style="display: flex; align-items: baseline; gap: 6px; margin: 8px 0;">
+            <span class="pkg-price-badge">${pkg.price} ج.م</span>
+            <span class="pkg-period-label">/ ${pkg.period}</span>
+          </div>
+
+          <ul class="pkg-feature-list">
+            ${pkg.features.map(f => `<li><span>✔</span> <span>${f}</span></li>`).join('')}
+          </ul>
+        </div>
+
+        <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.78rem; color: #94A3B8;">👥 المشتركون: <strong style="color: #60A5FA;">${pkg.studentCount || 0} طالباً</strong></span>
+          <button type="button" class="btn btn-outline" onclick="handleDeletePackage('${pkg.id}')" style="padding: 4px 8px; font-size: 0.72rem; min-height: 28px; border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5;">
+            <span>حذف</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Update Overdue Students Container
+  renderOverdueStudentsList();
+}
+
+function renderOverdueStudentsList() {
+  const container = document.getElementById('overdue-students-container');
+  if (!container) return;
+
+  const list = state.students || [];
+  const overdueList = list.filter(s => s.subscription_status === 'متأخر' || s.subscription_status === 'معلق للتأخر' || s.subscription_status === 'ينتهي قريباً');
+
+  if (overdueList.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 14px; color: #34D399; font-size: 0.84rem; font-weight: 700;">
+        🎉 جميع الطلاب مسددون للاشتراكات بانتظام!
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = overdueList.map(s => {
+    return `
+      <div class="m-overdue-card">
+        <div>
+          <div style="font-weight: 800; font-size: 0.88rem; color: #FFFFFF;">${s.full_name}</div>
+          <div style="font-size: 0.74rem; color: #94A3B8;">${s.academic_code || 'STU-102931'} • ${s.group_name || 'مجموعة 3ث'}</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="badge badge-warning" style="font-size: 0.72rem;">متأخر 350 ج.م</span>
+          <button type="button" class="btn btn-whatsapp" onclick="sendOverdueWhatsAppReminder('${s.parent_phone || '01011112222'}', '${s.full_name}', 350)" style="padding: 4px 10px; font-size: 0.74rem; min-height: 32px;">
+            <span>📲 تذكير واتساب</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function sendOverdueWhatsAppReminder(phone, name, amount) {
+  const cleanPhone = (phone || '01011112222').replace(/\D/g, '');
+  const e164 = cleanPhone.startsWith('20') ? cleanPhone : ('20' + cleanPhone.replace(/^0+/, ''));
+
+  const text = encodeURIComponent(
+    'السلام عليكم ورحمة الله وبركاته،\nتحية طيبة من إدارة الأستاذ طارق الشناوي،\nنود تذكير سيادتكم بلطف بسداد اشتراك الحصص بقيمة (' + amount + ' ج.م) لنجلكم (' + name + ') لضمان استمرار حضوره الحصص واستلام المذكرات والاختبارات الأسبوعية بانتظام.\nشاكرين لسيادتكم حسن التعاون والحرص الدائم.'
+  );
+
+  window.open('https://wa.me/' + e164 + '?text=' + text, '_blank');
+}
+
+function openCreatePackageModal() {
+  const modal = document.getElementById('modal-create-package');
+  if (modal) modal.classList.add('active');
+}
+
+function handleSaveNewPackage(event) {
+  if (event) event.preventDefault();
+
+  const name = document.getElementById('new-pkg-name')?.value.trim();
+  const price = Number(document.getElementById('new-pkg-price')?.value) || 300;
+  const period = document.getElementById('new-pkg-period')?.value || 'شهرياً';
+  const featuresRaw = document.getElementById('new-pkg-features')?.value.trim();
+
+  if (!name || !featuresRaw) {
+    alert('يرجى ملء جميع الحقول المطلوبة');
+    return;
+  }
+
+  const features = featuresRaw.split('\n').map(f => f.trim()).filter(Boolean);
+
+  const packages = getStoredPackages();
+  const newPkg = {
+    id: 'pkg-' + Date.now(),
+    name,
+    price,
+    period,
+    features,
+    studentCount: 0,
+    isPopular: false
+  };
+
+  packages.push(newPkg);
+  localStorage.setItem('teacher_os_packages', JSON.stringify(packages));
+
+  closeSheet('modal-create-package');
+  renderTeacherPackages();
+  alert('🎉 تم إنشاء وتفعيل الباقة الجديدة (' + name + ') بنجاح!');
+}
+
+function handleDeletePackage(pkgId) {
+  if (!confirm('هل أنت متأكد من حذف هذه الباقة؟')) return;
+
+  let packages = getStoredPackages();
+  packages = packages.filter(p => p.id !== pkgId);
+  localStorage.setItem('teacher_os_packages', JSON.stringify(packages));
+  renderTeacherPackages();
+}
+
+// 5. Enhance switchTeacherTab to invoke new tab renderers
+const originalSwitchTeacherTab = switchTeacherTab;
+switchTeacherTab = function(tabId, el) {
+  if (typeof originalSwitchTeacherTab === 'function') {
+    originalSwitchTeacherTab(tabId, el);
+  }
+
+  if (tabId === 'tab-attendance') {
+    renderAttendanceRoster();
+  } else if (tabId === 'tab-evaluation') {
+    renderEvaluationRoster();
+  } else if (tabId === 'tab-packages') {
+    renderTeacherPackages();
+  }
+};
+
+// Initial boot initialization
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    try {
+      renderAttendanceRoster();
+      renderTeacherPackages();
+    } catch(e) {}
+  }, 600);
+});

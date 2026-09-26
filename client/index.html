@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=20260927_strict_v5">
+  <link rel="stylesheet" href="style.css?v=20260927_strict_v6">
 </head>
 <body style="background: #0B0F19; margin: 0; padding: 0;">
 
@@ -498,6 +498,15 @@
             <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-curriculum-brain', this)">
               <span>🧠</span><span>مركز تغذية المنهج والمعرفة</span>
             </button>
+            <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-attendance', this)">
+              <span>📋</span><span>كشف الحضور والغياب</span>
+            </button>
+            <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-evaluation', this)">
+              <span>⭐</span><span>تقييم الطلاب والدرجات</span>
+            </button>
+            <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-packages', this)">
+              <span>💎</span><span>الباقات والماليات</span>
+            </button>
             <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-students', this)">
               <span>👥</span><span>الطلاب والمجموعات</span>
             </button>
@@ -574,17 +583,25 @@
 
             <!-- Quick Action Touch Buttons -->
             <div class="m-quick-actions-grid">
-              <button class="m-action-btn primary" onclick="openAddStudentSheet()">
+              <button class="m-action-btn primary" onclick="switchTeacherTab('tab-attendance')">
+                <span>📋</span>
+                <span>كشف الحضور السريع</span>
+              </button>
+              <button class="m-action-btn" onclick="switchTeacherTab('tab-evaluation')">
+                <span>⭐</span>
+                <span>رصد درجات وتقييم</span>
+              </button>
+              <button class="m-action-btn" onclick="switchTeacherTab('tab-packages')">
+                <span>💎</span>
+                <span>الباقات والاشتراكات</span>
+              </button>
+              <button class="m-action-btn" onclick="openAddStudentSheet()">
                 <span>➕</span>
                 <span>إضافة طالب جديد</span>
               </button>
               <button class="m-action-btn" onclick="openCameraOcrSheet()">
                 <span>📸</span>
                 <span>تصحيح بالكاميرا</span>
-              </button>
-              <button class="m-action-btn" onclick="openRemediationSheet()">
-                <span>💡</span>
-                <span>خطة علاجية AI</span>
               </button>
               <button class="m-action-btn" onclick="switchTeacherTab('tab-quizzes')">
                 <span>📝</span>
@@ -762,7 +779,206 @@
 
           </div>
 
-<div id="tab-students" class="m-tab-pane">
+<!-- ==========================================================================
+               TAB: ATTENDANCE (كشف الحضور والغياب الذكي وإثبات الحضور)
+               ========================================================================== -->
+          <div id="tab-attendance" class="m-tab-pane">
+            <div class="m-card">
+              <div class="m-card-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.3rem;">📋</span>
+                  <h3 class="m-card-title">كشف الحضور والغياب وإثبات الحضور الذكي</h3>
+                </div>
+                <span class="badge badge-primary" id="attendance-session-badge">حصة اليوم 🔴</span>
+              </div>
+              <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 12px;">
+                تحكم في إثبات حضور وغياب الطلاب بنقرة واحدة، ومسح كود الطالب، وإرسال تنبيهات غياب فورية لأولياء الأمور عبر واتساب:
+              </p>
+
+              <!-- Controls Grid -->
+              <div class="desktop-grid-3col" style="gap: 8px; margin-bottom: 12px;">
+                <div>
+                  <label class="m-input-label">المجموعة التعليمية:</label>
+                  <select id="attendance-group-select" class="m-input" onchange="renderAttendanceRoster()">
+                    <option value="ALL">جميع المجموعات</option>
+                    <option value="GRP-1" selected>مجموعة السبت (3ث - 4:00م)</option>
+                    <option value="GRP-2">مجموعة الأحد (2ث - 6:00م)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="m-input-label">تاريخ الحصة:</label>
+                  <input type="date" id="attendance-date-input" class="m-input" onchange="renderAttendanceRoster()">
+                </div>
+                <div>
+                  <label class="m-input-label">مكان ونوع الحضور:</label>
+                  <select id="attendance-type-select" class="m-input">
+                    <option value="CENTER" selected>حضور سنتر وقاعة</option>
+                    <option value="ONLINE">حضور أونلاين وبث Zoom</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Quick Barcode / Academic Code Scanner -->
+              <div class="quick-checkin-box" style="background: rgba(37, 99, 235, 0.08); border: 1px dashed #3B82F6; border-radius: 12px; padding: 12px; margin-bottom: 14px;">
+                <div style="font-weight: 800; font-size: 0.84rem; color: #93C5FD; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                  <span>🔍 إثبات الحضور السريع (كود الطالب الأكاديمي أو الاسم):</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" id="quick-checkin-input" class="m-input" placeholder="اكتب كود الطالب (مثلاً STU-102931) أو الاسم ثم اضغط Enter..." style="margin-bottom: 0; flex: 1;" onkeypress="if(event.key === 'Enter') handleQuickCheckinSubmit()">
+                  <button type="button" class="btn btn-primary" onclick="handleQuickCheckinSubmit()" style="min-height: 42px; padding: 0 16px;">
+                    <span>إثبات الحضور ✅</span>
+                  </button>
+                </div>
+                <div id="quick-checkin-alert" style="display: none; margin-top: 8px; font-size: 0.82rem; font-weight: 700; padding: 8px 12px; border-radius: 8px;"></div>
+              </div>
+
+              <!-- Action Bar & Stats Summary -->
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-hero-primary" onclick="markAllPresent()" style="min-height: 38px; font-size: 0.8rem;">
+                    <span>⚡ تحضير الكل حاضر بنقرة واحدة</span>
+                  </button>
+                  <button type="button" class="btn btn-whatsapp" onclick="sendAbsenceWhatsAppAlerts()" style="min-height: 38px; font-size: 0.8rem;">
+                    <span>📢 إرسال إنذار غياب للغائبين (واتساب)</span>
+                  </button>
+                </div>
+                <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                  <span class="badge badge-good" id="att-present-count">0 حاضر ✅</span>
+                  <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #FCA5A5;" id="att-absent-count">0 غائب ❌</span>
+                  <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D;" id="att-late-count">0 متأخر ⏱️</span>
+                  <span class="badge badge-primary" id="att-rate-badge">نسبة الحضور: 100%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Attendance List Container -->
+            <div id="attendance-roster-container">
+              <!-- Dynamically populated by renderAttendanceRoster() -->
+            </div>
+          </div>
+
+          <!-- ==========================================================================
+               TAB: EVALUATION (استوديو تقييم الطلاب ورصد الدرجات والواجبات)
+               ========================================================================== -->
+          <div id="tab-evaluation" class="m-tab-pane">
+            <div class="m-card">
+              <div class="m-card-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.3rem;">⭐</span>
+                  <h3 class="m-card-title">استوديو تقييم الطلاب ورصد الدرجات والواجبات</h3>
+                </div>
+                <span class="badge badge-good">نظام الرصد والتقييم الذكي</span>
+              </div>
+              <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 12px;">
+                رصد درجات الاختبارات، تقييم الواجبات وسلوك الحصة، وإصدار بطاقة تقرير ولي الأمر وإرسالها فورياً عبر واتساب:
+              </p>
+
+              <!-- Controls -->
+              <div class="desktop-grid-2col" style="gap: 8px; margin-bottom: 12px;">
+                <div>
+                  <label class="m-input-label">عنوان الاختبار أو التقييم الحالي:</label>
+                  <input type="text" id="eval-assessment-title" class="m-input" value="اختبار الفصل الأول: قانون أوم وقوانين كيرشوف" placeholder="مثال: امتحان كيرشوف الشامل...">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                  <div>
+                    <label class="m-input-label">الدرجة العظمى (النهائية):</label>
+                    <input type="number" id="eval-assessment-max" class="m-input" value="60" onchange="renderEvaluationRoster()">
+                  </div>
+                  <div>
+                    <label class="m-input-label">المجموعة المستهدفة:</label>
+                    <select id="eval-group-select" class="m-input" onchange="renderEvaluationRoster()">
+                      <option value="ALL">جميع المجموعات</option>
+                      <option value="GRP-1" selected>مجموعة السبت (3ث)</option>
+                      <option value="GRP-2">مجموعة الأحد (2ث)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Student Evaluation Roster Container -->
+            <div id="evaluation-roster-container">
+              <!-- Dynamically populated by renderEvaluationRoster() -->
+            </div>
+          </div>
+
+          <!-- ==========================================================================
+               TAB: PACKAGES (مدير الباقات والاشتراكات والنموذج المالي للمعلم)
+               ========================================================================== -->
+          <div id="tab-packages" class="m-tab-pane">
+            
+            <!-- 1. Revenue Pulse & Business Overview -->
+            <div class="m-card" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border-color: rgba(99, 102, 241, 0.35);">
+              <div class="m-card-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.3rem;">💵</span>
+                  <h3 class="m-card-title">لوحة الأرباح والنموذج المالي للمعلم</h3>
+                </div>
+                <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399;">أرباحك الشهرية المباشرة 📈</span>
+              </div>
+              <p style="font-size: 0.8rem; color: #CBD5E1; margin-bottom: 14px;">
+                تحكم في باقاتك وأسعار الاشتراكات الشهرية لطلابك، وتابع التدفق النقدي والمتحصلات بدقة:
+              </p>
+
+              <!-- 3-Col Financial Highlights -->
+              <div class="desktop-grid-3col" style="gap: 10px; margin-bottom: 12px;">
+                <div style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); border-radius: 12px; padding: 12px; text-align: center;">
+                  <div style="font-size: 0.76rem; color: #93C5FD;">الدخل الشهري المتوقع (تقديري)</div>
+                  <div style="font-size: 1.4rem; font-weight: 900; color: #60A5FA; margin-top: 4px;" id="fin-expected-revenue">14,400 ج.م</div>
+                  <div style="font-size: 0.7rem; color: #94A3B8; margin-top: 2px;">بناءً على الطلاب المشتركين</div>
+                </div>
+
+                <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 12px; text-align: center;">
+                  <div style="font-size: 0.76rem; color: #A7F3D0;">المحصل فعلياً هذا الشهر</div>
+                  <div style="font-size: 1.4rem; font-weight: 900; color: #34D399; margin-top: 4px;" id="fin-collected-revenue">12,250 ج.م</div>
+                  <div style="font-size: 0.7rem; color: #34D399; margin-top: 2px;">سداد نقدي وإنستاباي ساري ✅</div>
+                </div>
+
+                <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 12px; text-align: center;">
+                  <div style="font-size: 0.76rem; color: #FDE68A;">المتبقي قيد التحصيل</div>
+                  <div style="font-size: 1.4rem; font-weight: 900; color: #FBBF24; margin-top: 4px;" id="fin-pending-revenue">2,150 ج.م</div>
+                  <div style="font-size: 0.7rem; color: #F59E0B; margin-top: 2px;">طلاب متأخرون عن السداد</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Packages Grid & Management -->
+            <div class="m-card">
+              <div class="m-card-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.3rem;">💎</span>
+                  <h3 class="m-card-title">باقاتك الحالية المتاحة للطلاب</h3>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="openCreatePackageModal()" style="padding: 6px 12px; font-size: 0.8rem; min-height: 36px;">
+                  <span>➕ إضافة باقة جديدة</span>
+                </button>
+              </div>
+
+              <!-- Packages Container -->
+              <div id="teacher-packages-container" class="desktop-grid-2col" style="gap: 12px;">
+                <!-- Dynamically populated by renderTeacherPackages() -->
+              </div>
+            </div>
+
+            <!-- 3. Overdue Students Dunning & WhatsApp Reminders -->
+            <div class="m-card">
+              <div class="m-card-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.3rem;">⚠️</span>
+                  <h3 class="m-card-title">الطلاب المتأخرون عن سداد الاشتراك الشهري</h3>
+                </div>
+                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #FCA5A5;">متابعة التحصيل</span>
+              </div>
+              <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 10px;">
+                أرسل تذكيراً مهذباً ومحترماً لولي الأمر عبر واتساب لسداد المصروفات دون إحراج الطالب:
+              </p>
+              <div id="overdue-students-container">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-students" class="m-tab-pane">
             <div class="m-card" style="padding: 12px 14px;">
               <div style="display: flex; gap: 8px; margin-bottom: 8px;">
                 <input type="text" id="search-students-input" class="m-input" placeholder="🔍 ابحث بالاسم، الكود، أو المجموعة..." oninput="handleSearchStudents(this.value)" style="margin-bottom: 0; flex: 1;">
@@ -1409,21 +1625,21 @@
           <span class="icon">🤖</span>
           <span>المساعد</span>
         </button>
+        <button class="m-nav-tab" id="b-tab-attendance" onclick="switchTeacherTab('tab-attendance', this)">
+          <span class="icon">📋</span>
+          <span>الحضور</span>
+        </button>
+        <button class="m-nav-tab" id="b-tab-evaluation" onclick="switchTeacherTab('tab-evaluation', this)">
+          <span class="icon">⭐</span>
+          <span>التقييم</span>
+        </button>
+        <button class="m-nav-tab" id="b-tab-packages" onclick="switchTeacherTab('tab-packages', this)">
+          <span class="icon">💎</span>
+          <span>الباقات</span>
+        </button>
         <button class="m-nav-tab" id="b-tab-students" onclick="switchTeacherTab('tab-students', this)">
           <span class="icon">👥</span>
           <span>الطلاب</span>
-        </button>
-        <button class="m-nav-tab" id="b-tab-quizzes" onclick="switchTeacherTab('tab-quizzes', this)">
-          <span class="icon">📝</span>
-          <span>الاختبارات</span>
-        </button>
-        <button class="m-nav-tab" id="b-tab-classes" onclick="switchTeacherTab('tab-classes', this)">
-          <span class="icon">📅</span>
-          <span>الحصص</span>
-        </button>
-        <button class="m-nav-tab" id="b-tab-branding" onclick="switchTeacherTab('tab-branding', this)">
-          <span class="icon">🎨</span>
-          <span>الهوية</span>
         </button>
       </nav>
 
@@ -1829,6 +2045,43 @@
   </div>
 
   <!-- Core Scripts -->
-  <script src="app.js?v=20260927_strict_v5"></script>
+  <script src="app.js?v=20260927_strict_v6"></script>
+  <!-- MODAL: CREATE PACKAGE -->
+  <div id="modal-create-package" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-create-package')">
+    <div class="m-sheet-content">
+      <div class="m-sheet-handle"></div>
+      <div class="m-sheet-header">
+        <h3 class="m-sheet-title">💎 تصميم وإضافة باقة جديدة للطلاب</h3>
+        <button class="m-sheet-close" onclick="closeSheet('modal-create-package')">✕</button>
+      </div>
+      <form onsubmit="handleSaveNewPackage(event)">
+        <label class="m-input-label">اسم الباقة التعليمية:</label>
+        <input type="text" id="new-pkg-name" class="m-input" placeholder="مثال: باقة المراجعة المكثفة ليلة الامتحان" required>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <label class="m-input-label">سعر الباقة (جنيه مصري):</label>
+            <input type="number" id="new-pkg-price" class="m-input" placeholder="مثال: 300" required>
+          </div>
+          <div>
+            <label class="m-input-label">دورية السداد:</label>
+            <select id="new-pkg-period" class="m-input">
+              <option value="شهرياً" selected>شهرياً</option>
+              <option value="لكل حصة">لكل حصة</option>
+              <option value="دفعة واحدة (ترم كامل)">دفعة واحدة (ترم كامل)</option>
+            </select>
+          </div>
+        </div>
+
+        <label class="m-input-label">تفاصيل ومزايا الباقة:</label>
+        <textarea id="new-pkg-features" class="m-input" rows="3" placeholder="مثال: 8 حصص شهرياً + مذكرات PDF + كويزات أسبوعية ومتابعة ولي الأمر" required style="resize: vertical;"></textarea>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px; min-height: 44px;">
+          <span>💾 تفعيل الباقة وحفظها فورياً ➔</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>
