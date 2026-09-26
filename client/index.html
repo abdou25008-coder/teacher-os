@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=20260927_strict_v6">
+  <link rel="stylesheet" href="style.css?v=20260927_strict_v7">
 </head>
 <body style="background: #0B0F19; margin: 0; padding: 0;">
 
@@ -236,60 +236,29 @@
       </div>
     </section>
 
-    <!-- 5. Featured Courses & Booklets (Inspired by mo3lem-eg.com) -->
+    <!-- 5. Featured Courses & Digital Store (Inspired by mo3lem-eg.com) -->
     <section id="courses-section" class="showcase-projects-section">
       <div style="text-align: center;">
-        <div class="pill-teacher-role">مكتبة المنظومة المجانية</div>
-        <h2 style="font-size: 1.85rem; font-weight: 900; color: #FFFFFF; margin-bottom: 8px;">
-          الكورسات والمذكرات المتاحة للجميع مجاناً
+        <div class="pill-teacher-role">متجر المحتوى الرقمي والأكاديمي</div>
+        <h2 style="font-size: 1.85rem; font-weight: 900; color: #FFFFFF; margin-bottom: 8px;" id="portfolio-courses-title">
+          الكورسات والمذكرات الرقمية المعتمدة
         </h2>
-        <p style="font-size: 0.88rem; color: #94A3B8; max-width: 600px; margin: 0 auto;">
-          منظومة متكاملة من أول يوم لحد ليلة الامتحان: كورسات فيديو، بنوك أسئلة، ومذكرات رقمية
+        <p style="font-size: 0.88rem; color: #94A3B8; max-width: 650px; margin: 0 auto;" id="portfolio-courses-subtitle">
+          محتوى احترافي متكامل: محاضرات فيديو مسجلة، بنوك أسئلة نواتج التعلم، وملازم رقمية متاحة للتحميل الفوري والشراء
         </p>
+
+        <!-- Digital Store Category Filter Tabs -->
+        <div style="display: flex; justify-content: center; gap: 8px; margin-top: 18px; flex-wrap: wrap;" id="digital-store-filter-bar">
+          <button type="button" class="tech-pill active" onclick="filterDigitalStore('ALL', this)" style="cursor: pointer; padding: 6px 14px; font-size: 0.82rem; font-weight: 800;">الكل</button>
+          <button type="button" class="tech-pill" onclick="filterDigitalStore('COURSE', this)" style="cursor: pointer; padding: 6px 14px; font-size: 0.82rem;">🎬 كورسات ومحاضرات</button>
+          <button type="button" class="tech-pill" onclick="filterDigitalStore('BOOKLET', this)" style="cursor: pointer; padding: 6px 14px; font-size: 0.82rem;">📖 مذكرات وملفات PDF</button>
+          <button type="button" class="tech-pill" onclick="filterDigitalStore('QUESTION_BANK', this)" style="cursor: pointer; padding: 6px 14px; font-size: 0.82rem;">🎯 بنوك الأسئلة</button>
+        </div>
       </div>
 
-      <div class="projects-cards-grid">
-        <!-- Project 01 -->
-        <div class="dark-project-card">
-          <div class="project-number-tag">01 • كورس فيديو مجاني</div>
-          <div class="project-preview-mock">⚡</div>
-          <div class="project-card-title">كورس تأسيس الفيزياء وقوانين كيرشوف</div>
-          <div class="project-card-desc">
-            12 محاضرة فيديو عالية الدقة تغطي الدوائر الكهربية، فرق الجهد، حساب المقاومات، وحل الدوائر المعقدة بطريقة النقط وقوانين كيرشوف مع كويز إلكتروني لكل درس.
-          </div>
-          <div class="project-card-cta" onclick="openCoursePlayerSheet('كورس تأسيس الفيزياء وقوانين كيرشوف')">
-            <span>ابدأ مشاهدة الحصص الآن</span>
-            <span>↗</span>
-          </div>
-        </div>
-
-        <!-- Project 02 -->
-        <div class="dark-project-card">
-          <div class="project-number-tag">02 • بنك الأسئلة الذكي</div>
-          <div class="project-preview-mock">📚</div>
-          <div class="project-card-title">بنك أسئلة الأوائل والتفكير الابتكاري</div>
-          <div class="project-card-desc">
-            أكثر من 1500 مسألة تفكير عليا من امتحانات الأعوام السابقة وبنك المعرفة المصري، مصنفة حسب الأبواب ومدعمة بالإجابات النموذجية المفصلة خطوة بخطوة.
-          </div>
-          <div class="project-card-cta" onclick="openStudentParentAuth('STUDENT')">
-            <span>تسجيل وحل الامتحانات التدريبية</span>
-            <span>↗</span>
-          </div>
-        </div>
-
-        <!-- Project 03 -->
-        <div class="dark-project-card">
-          <div class="project-number-tag">03 • مذكرة رقمية PDF</div>
-          <div class="project-preview-mock">📖</div>
-          <div class="project-card-title">مذكرة المراجعة الشاملة والخرائط الذهنية</div>
-          <div class="project-card-desc">
-            المرجع الأقوى لطلاب 3 ثانوي: تجميعة كافة القوانين، العلاقات البيانية، والرسومات الهندسية لأجهزة القياس والمحولات في كتيب رقمي أنيق وجاهز للطباعة.
-          </div>
-          <div class="project-card-cta" onclick="openBookletDownloadSheet()">
-            <span>تحميل المذكرة فوراً (PDF)</span>
-            <span>📥</span>
-          </div>
-        </div>
+      <!-- Dynamic Digital Products Grid -->
+      <div class="projects-cards-grid" id="portfolio-digital-store-container" style="margin-top: 24px;">
+        <!-- Dynamically populated by renderPortfolioDigitalStore() -->
       </div>
     </section>
 
@@ -1207,6 +1176,27 @@
                 </button>
               </form>
             </div>
+
+            <!-- Digital Products & Courses Manager Studio in CMS -->
+            <div class="m-card" style="margin-top: 16px;">
+              <div class="m-card-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.3rem;">🛒</span>
+                  <h3 class="m-card-title">إدارة متجر الكورسات والملفات الرقمية وتحديد الأسعار</h3>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="openCreateDigitalProductModal()" style="padding: 6px 12px; font-size: 0.8rem; min-height: 36px;">
+                  <span>➕ إضافة كورس / مذكرة جديدة</span>
+                </button>
+              </div>
+              <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 14px;">
+                تحكم في نشر أو حجب أي كورس فيديو أو مذكرة PDF تظهر في البورتفوليو، وحدد ما إذا كانت مجانية أو مدفوعة بسعر محدد بالجنيه المصري:
+              </p>
+
+              <!-- Products Management Table / Cards -->
+              <div id="cms-digital-products-list" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Dynamically populated by renderCMSDigitalProducts() -->
+              </div>
+            </div>
           </div>
 
 <div id="tab-branding" class="m-tab-pane">
@@ -1732,6 +1722,28 @@
           <input type="tel" id="sp-signup-phone" class="m-input" placeholder="010XXXXXXXX أو 011/012/015" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff; direction: ltr; text-align: left;">
 
           <!-- Conditional Field: Student Grade -->
+          <!-- Student Profile Picture (Upload or Pick Avatar) -->
+          <div id="auth-student-photo-field">
+            <label class="m-input-label" style="color: #E2E8F0;">الصورة الشخصية للطالب:</label>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px;">
+              <div id="sp-signup-photo-preview" style="width: 52px; height: 52px; border-radius: 50%; background: #334155; border: 2px solid #8B5CF6; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; overflow: hidden; flex-shrink: 0;">
+                <img id="sp-signup-photo-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" style="width: 100%; height: 100%; object-fit: cover;">
+              </div>
+              <div style="flex: 1;">
+                <input type="file" id="sp-signup-photo-input" accept="image/*" style="display: none;" onchange="handleStudentPhotoSelected(this, 'sp-signup-photo-img', 'sp-signup-photo-data')">
+                <input type="hidden" id="sp-signup-photo-data" value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80">
+                <button type="button" class="btn btn-outline btn-block" onclick="document.getElementById('sp-signup-photo-input').click()" style="padding: 4px 10px; font-size: 0.76rem; border-color: rgba(139,92,246,0.5); color: #C4B5FD; min-height: 32px;">
+                  <span>📷 رفع صورة شخصية من جهازك</span>
+                </button>
+                <div style="display: flex; gap: 4px; margin-top: 6px;">
+                  <button type="button" class="tech-pill" onclick="selectPresetAvatar('boy1', 'sp-signup-photo-img', 'sp-signup-photo-data')" style="font-size: 0.68rem; padding: 2px 6px;">👨‍🎓 طالب 1</button>
+                  <button type="button" class="tech-pill" onclick="selectPresetAvatar('girl1', 'sp-signup-photo-img', 'sp-signup-photo-data')" style="font-size: 0.68rem; padding: 2px 6px;">👩‍🎓 طالبة</button>
+                  <button type="button" class="tech-pill" onclick="selectPresetAvatar('boy2', 'sp-signup-photo-img', 'sp-signup-photo-data')" style="font-size: 0.68rem; padding: 2px 6px;">🧑 طالب 2</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <div id="auth-student-grade-field">
             <label class="m-input-label" style="color: #E2E8F0;">الصف الدراسي:</label>
             <select id="sp-signup-grade" class="m-input" style="background: #1E293B; border-color: rgba(255,255,255,0.18); color: #fff;">
@@ -1868,6 +1880,26 @@
         <button class="m-sheet-close" onclick="closeSheet('sheet-add-student')">✕</button>
       </div>
       <form onsubmit="handleSaveStudent(event)">
+        <!-- Student Photo Upload in Teacher Sheet -->
+        <label class="m-input-label">الصورة الشخصية للطالب (أو اختر رمزاً):</label>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 12px; padding: 10px;">
+          <div style="width: 50px; height: 50px; border-radius: 50%; background: #E2E8F0; border: 2px solid #2563EB; overflow: hidden; flex-shrink: 0;">
+            <img id="sheet-student-photo-img" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&auto=format&fit=crop&q=80" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div style="flex: 1;">
+            <input type="file" id="sheet-student-photo-input" accept="image/*" style="display: none;" onchange="handleStudentPhotoSelected(this, 'sheet-student-photo-img', 'sheet-student-photo-data')">
+            <input type="hidden" id="sheet-student-photo-data" value="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&auto=format&fit=crop&q=80">
+            <button type="button" class="btn btn-outline btn-block" onclick="document.getElementById('sheet-student-photo-input').click()" style="padding: 4px 10px; font-size: 0.76rem; min-height: 32px;">
+              <span>📷 رفع صورة الطالب</span>
+            </button>
+            <div style="display: flex; gap: 4px; margin-top: 4px;">
+              <button type="button" class="tech-pill" onclick="selectPresetAvatar('boy1', 'sheet-student-photo-img', 'sheet-student-photo-data')" style="font-size: 0.68rem; padding: 2px 6px;">👨‍🎓 طالب</button>
+              <button type="button" class="tech-pill" onclick="selectPresetAvatar('girl1', 'sheet-student-photo-img', 'sheet-student-photo-data')" style="font-size: 0.68rem; padding: 2px 6px;">👩‍🎓 طالبة</button>
+              <button type="button" class="tech-pill" onclick="selectPresetAvatar('boy2', 'sheet-student-photo-img', 'sheet-student-photo-data')" style="font-size: 0.68rem; padding: 2px 6px;">🧑 متفوق</button>
+            </div>
+          </div>
+        </div>
+
         <label class="m-input-label">اسم الطالب ثلاثي:</label>
         <input type="text" id="sheet-student-name" class="m-input" placeholder="مثال: يوسف أحمد رضوان" required>
 
@@ -2045,7 +2077,7 @@
   </div>
 
   <!-- Core Scripts -->
-  <script src="app.js?v=20260927_strict_v6"></script>
+  <script src="app.js?v=20260927_strict_v7"></script>
   <!-- MODAL: CREATE PACKAGE -->
   <div id="modal-create-package" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-create-package')">
     <div class="m-sheet-content">
@@ -2078,6 +2110,119 @@
 
         <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px; min-height: 44px;">
           <span>💾 تفعيل الباقة وحفظها فورياً ➔</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: BUY DIGITAL PRODUCT (Vodafone Cash / InstaPay) -->
+  <div id="modal-buy-product" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-buy-product')">
+    <div class="m-sheet-content" style="max-height: 95vh; background: #0F172A; color: #FFFFFF; border: 2px solid #3B82F6;">
+      <div class="m-sheet-handle" style="background: #334155;"></div>
+      <div class="m-sheet-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px;">
+        <h3 class="m-sheet-title" style="color: #FFFFFF; font-size: 1.15rem;">
+          💳 شراء وتحميل المحتوى الرقمي المعتمد
+        </h3>
+        <button class="m-sheet-close" onclick="closeSheet('modal-buy-product')" style="background: rgba(255,255,255,0.1); color: #fff;">✕</button>
+      </div>
+
+      <div style="background: rgba(37,99,235,0.1); border: 1px solid rgba(37,99,235,0.3); border-radius: 12px; padding: 12px; margin: 14px 0;">
+        <div style="font-size: 0.78rem; color: #93C5FD;">أنت الآن بصدد شراء:</div>
+        <div style="font-size: 1.1rem; font-weight: 900; color: #FFFFFF; margin-top: 4px;" id="buy-modal-prod-title">
+          كورس دوائر التيار المتردد والمكثفات
+        </div>
+        <div style="font-size: 1.35rem; font-weight: 900; color: #FBBF24; margin-top: 4px;" id="buy-modal-prod-price">
+          150 ج.م
+        </div>
+      </div>
+
+      <div style="font-size: 0.85rem; font-weight: 800; color: #FFFFFF; margin-bottom: 8px;">
+        طرق الدفع والتحويل المباشر للأستاذ طارق الشناوي:
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
+        <!-- Vodafone Cash -->
+        <div style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 0.74rem; color: #FCA5A5; font-weight: 700;">محفظة فودافون كاش الرسمية:</div>
+            <div style="font-size: 1.05rem; font-weight: 900; color: #FFFFFF; letter-spacing: 1px;" id="buy-vodafone-number">01099887766</div>
+          </div>
+          <button type="button" class="tech-pill" onclick="copyToClipboard('01099887766', 'تم نسخ رقم فودافون كاش!')" style="cursor: pointer;">📋 نسخ</button>
+        </div>
+
+        <!-- InstaPay -->
+        <div style="background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.3); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 0.74rem; color: #C4B5FD; font-weight: 700;">معرف إنستاباي (InstaPay):</div>
+            <div style="font-size: 1.05rem; font-weight: 900; color: #FFFFFF;" id="buy-instapay-address">tarek-physics@instapay</div>
+          </div>
+          <button type="button" class="tech-pill" onclick="copyToClipboard('tarek-physics@instapay', 'تم نسخ عنوان إنستاباي!')" style="cursor: pointer;">📋 نسخ</button>
+        </div>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px; font-size: 0.78rem; color: #CBD5E1; line-height: 1.6; margin-bottom: 14px;">
+        💡 <strong>خطوة التفعيل الفوري:</strong> بعد تحويل المبلغ عبر فودافون كاش أو إنستاباي، اضغط على الزر أدناه لإرسال لقطة شاشة لإيصال التحويل عبر واتساب ليتم تفعيل الكورس فوراً في حسابك!
+      </div>
+
+      <button type="button" class="btn btn-hero-primary btn-block" onclick="sendPaymentReceiptWhatsApp()" style="min-height: 48px; font-size: 1rem; font-weight: 800;">
+        <span>📲 إرسال إيصال التحويل عبر واتساب للتفعيل الفوري ➔</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: CREATE / EDIT DIGITAL PRODUCT IN CMS -->
+  <div id="modal-create-digital-product" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-create-digital-product')">
+    <div class="m-sheet-content" style="max-height: 95vh; background: #0F172A; color: #FFFFFF; border: 2px solid #8B5CF6;">
+      <div class="m-sheet-handle" style="background: #334155;"></div>
+      <div class="m-sheet-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px;">
+        <h3 class="m-sheet-title" style="color: #FFFFFF; font-size: 1.15rem;">
+          🛒 إضافة كورس أو مذكرة رقمية للبورتفوليو
+        </h3>
+        <button class="m-sheet-close" onclick="closeSheet('modal-create-digital-product')" style="background: rgba(255,255,255,0.1); color: #fff;">✕</button>
+      </div>
+
+      <form onsubmit="handleSaveNewDigitalProduct(event)">
+        <label class="m-input-label" style="color: #E2E8F0;">عنوان الكورس أو المذكرة:</label>
+        <input type="text" id="new-prod-title" class="m-input" placeholder="مثال: كورس المراجعة النهائية ليلة الامتحان" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff;">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <label class="m-input-label" style="color: #E2E8F0;">نوع المحتوى:</label>
+            <select id="new-prod-category" class="m-input" style="background: #1E293B; border-color: rgba(255,255,255,0.18); color: #fff;">
+              <option value="COURSE">🎬 كورس فيديو مسجل</option>
+              <option value="BOOKLET">📖 مذكرة رقمية PDF</option>
+              <option value="QUESTION_BANK">🎯 بنك أسئلة وامتحانات</option>
+            </select>
+          </div>
+          <div>
+            <label class="m-input-label" style="color: #E2E8F0;">التسعير والإتاحة:</label>
+            <select id="new-prod-pricing-type" class="m-input" onchange="toggleNewProductPricingInput(this.value)" style="background: #1E293B; border-color: rgba(255,255,255,0.18); color: #fff;">
+              <option value="PAID" selected>💰 مدفوع بمقابل</option>
+              <option value="FREE">🎁 مجاناً 100%</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="new-prod-price-box">
+          <label class="m-input-label" style="color: #FCD34D;">السعر (جنيه مصري EGP):</label>
+          <input type="number" id="new-prod-price" class="m-input" value="120" style="background: rgba(15,23,42,0.9); border-color: #FCD34D; color: #fff; font-weight: 800; font-size: 1.1rem;">
+        </div>
+
+        <label class="m-input-label" style="color: #E2E8F0;">مدة الكورس أو عدد الصفحات:</label>
+        <input type="text" id="new-prod-duration" class="m-input" placeholder="مثال: 10 محاضرات • 15 ساعة فيديو أو 80 صفحة ملونة" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff;">
+
+        <label class="m-input-label" style="color: #E2E8F0;">الوصف التعريفي والموضوعات المشمولة:</label>
+        <textarea id="new-prod-desc" class="m-input" rows="3" placeholder="اكتب نبذة توضح ما سيتعلمه الطالب من هذا المحتوى..." required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff; resize: vertical;"></textarea>
+
+        <div style="display: flex; align-items: center; gap: 8px; margin: 10px 0;">
+          <input type="checkbox" id="new-prod-publish-chk" checked style="width: 18px; height: 18px; accent-color: #10B981;">
+          <label for="new-prod-publish-chk" style="font-size: 0.82rem; color: #34D399; font-weight: 700; cursor: pointer;">
+            نشر المنتج فورياً في البورتفوليو لجميع الزوار 🟢
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px; min-height: 46px; font-weight: 800;">
+          <span>💾 حفظ ونشر الكورس في البورتفوليو فورياً ➔</span>
         </button>
       </form>
     </div>

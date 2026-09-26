@@ -2311,3 +2311,183 @@ body {
   flex-wrap: wrap;
   gap: 8px;
 }
+
+
+/* ==========================================================================
+   RICH STUDENT CARDS & DIGITAL STORE MODULE STYLES
+   ========================================================================== */
+
+/* Rich Student Card */
+.m-student-card-rich {
+  background: #1E293B;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.m-student-card-rich:hover {
+  border-color: rgba(99, 102, 241, 0.45);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.student-top-flex {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.student-photo-box {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #10B981;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);
+  flex-shrink: 0;
+  background: #334155;
+}
+
+.student-photo-box.overdue {
+  border-color: #EF4444;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.35);
+}
+
+.student-photo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.student-info-main {
+  flex: 1;
+  min-width: 200px;
+}
+
+.student-full-name {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+/* Complete Data Grid of Student Metadata */
+.student-data-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 6px;
+  margin: 12px 0;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.student-data-chip {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.72rem;
+}
+
+.student-data-chip .chip-label {
+  color: #94A3B8;
+  font-weight: 600;
+}
+
+.student-data-chip .chip-val {
+  color: #E2E8F0;
+  font-weight: 800;
+  margin-top: 1px;
+}
+
+/* Compact Controls Toolbar */
+.student-compact-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn-compact {
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: #E2E8F0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-compact:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+}
+
+.btn-compact.primary {
+  background: #2563EB;
+  border-color: #2563EB;
+  color: #FFFFFF;
+}
+
+.btn-compact.whatsapp {
+  background: #059669;
+  border-color: #059669;
+  color: #FFFFFF;
+}
+
+.btn-compact.danger {
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #FCA5A5;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Digital Products CMS Rows */
+.cms-product-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.cms-product-card:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.cms-product-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cms-product-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.2);
+  color: #C4B5FD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}

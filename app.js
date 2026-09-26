@@ -6444,3 +6444,719 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch(e) {}
   }, 600);
 });
+
+
+/* ==========================================================================
+   STUDENT PHOTOS & RICH PROFILE & DIGITAL PRODUCTS STORE CONTROLLERS
+   ========================================================================== */
+
+// 1. Preset Avatars for Instant Selection
+const PRESET_AVATARS = {
+  boy1: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+  girl1: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
+  boy2: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+  girl2: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80'
+};
+
+function selectPresetAvatar(avatarKey, imgId, inputId) {
+  const url = PRESET_AVATARS[avatarKey] || PRESET_AVATARS.boy1;
+  const imgEl = document.getElementById(imgId);
+  const inputEl = document.getElementById(inputId);
+  if (imgEl) imgEl.src = url;
+  if (inputEl) inputEl.value = url;
+}
+
+function handleStudentPhotoSelected(inputEl, imgId, inputDataId) {
+  if (!inputEl || !inputEl.files || !inputEl.files[0]) return;
+  const file = inputEl.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    const imgEl = document.getElementById(imgId);
+    const hiddenEl = document.getElementById(inputDataId);
+    if (imgEl) imgEl.src = dataUrl;
+    if (hiddenEl) hiddenEl.value = dataUrl;
+  };
+  reader.readAsDataURL(file);
+}
+
+// 2. Enhance Student State with Realistic Photos & Complete Details
+function ensureStudentsHavePhotosAndDetails() {
+  if (!state.students || !Array.isArray(state.students)) return;
+
+  const defaultPhotos = [
+    PRESET_AVATARS.boy1,
+    PRESET_AVATARS.girl1,
+    PRESET_AVATARS.boy2,
+    PRESET_AVATARS.girl2
+  ];
+
+  state.students.forEach((s, idx) => {
+    if (!s.photo_url) {
+      s.photo_url = defaultPhotos[idx % defaultPhotos.length];
+    }
+    if (!s.student_phone) {
+      s.student_phone = '010' + (12345670 + idx);
+    }
+    if (!s.grade_name) {
+      s.grade_name = (s.grade_level === 'GRADE_11_SEC2') ? 'الصف الثاني الثانوي' : 'الصف الثالث الثانوي';
+    }
+    if (!s.last_quiz_score) {
+      s.last_quiz_score = idx === 0 ? '58 / 60 (97% - ممتاز 🌟)' : (idx === 1 ? '55 / 60 (92% - ممتاز 🌟)' : (idx === 2 ? '48 / 60 (80% - جيد جداً 🟢)' : '54 / 60 (90% - ممتاز 🌟)'));
+    }
+    if (!s.package_name) {
+      s.package_name = idx === 2 ? 'باقة الأونلاين والزووم' : 'باقة السنتر الشاملة';
+    }
+    if (!s.package_fee) {
+      s.package_fee = idx === 2 ? 250 : 350;
+    }
+  });
+}
+
+// 3. Upgrade renderMobileStudentsList to Rich Display with All Details & Compact Toolbar
+function renderMobileStudentsList(searchQuery = '') {
+  const container = document.getElementById('mobile-students-list');
+  if (!container) return;
+
+  ensureStudentsHavePhotosAndDetails();
+
+  let list = state.students || [];
+
+  if (currentStudentsFilter === 'GRP-1') {
+    list = list.filter(s => (s.group_name || '').includes('السبت') || s.group_id === 'grp-001');
+  } else if (currentStudentsFilter === 'GRP-2') {
+    list = list.filter(s => (s.group_name || '').includes('الأحد') || s.group_id === 'grp-002');
+  }
+
+  if (searchQuery && searchQuery.trim().length > 0) {
+    const q = searchQuery.toLowerCase().trim();
+    list = list.filter(s =>
+      (s.full_name || '').toLowerCase().includes(q) ||
+      (s.academic_code || '').toLowerCase().includes(q) ||
+      (s.student_phone || '').includes(q) ||
+      (s.parent_phone || '').includes(q) ||
+      (s.group_name || '').toLowerCase().includes(q)
+    );
+  }
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="m-card" style="text-align: center; padding: 24px; color: #94A3B8;">
+        <div style="font-size: 2rem; margin-bottom: 6px;">🔍</div>
+        <div style="font-weight: 700;">لا يوجد طلاب مطابقين للبحث</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = list.map((s, idx) => {
+    const pin = s.pairing_pin || ('LNK-' + (1020 + idx));
+    const isPaid = s.subscription_status === 'ساري';
+    const isOverdue = s.subscription_status === 'متأخر' || s.subscription_status === 'معلق للتأخر';
+    const photo = s.photo_url || PRESET_AVATARS.boy1;
+
+    return `
+      <div class="m-student-card-rich" id="rich-student-${s.id}">
+        <!-- Top Row: Photo + Name + Status Badges -->
+        <div class="student-top-flex">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="student-photo-box ${isOverdue ? 'overdue' : ''}">
+              <img src="${photo}" alt="${s.full_name}" onerror="this.src='${PRESET_AVATARS.boy1}'">
+            </div>
+            <div>
+              <div class="student-full-name">${s.full_name}</div>
+              <div style="font-size: 0.76rem; color: #94A3B8; margin-top: 2px;">
+                كود: <span style="color: #60A5FA; font-weight: 800;">${s.academic_code || 'STU-102931'}</span>
+                • ${s.group_name || 'مجموعة 3ث'}
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+            <span class="badge ${isPaid ? 'badge-good' : 'badge-urgent'}" style="font-size: 0.74rem;">
+              ${isPaid ? ('ساري ' + (s.package_fee || 350) + ' ج.م ✅') : ('متأخر ' + (s.package_fee || 350) + ' ج.م ⚠️')}
+            </span>
+            <span class="tech-pill" style="font-size: 0.68rem; padding: 2px 6px;">${s.package_name || 'باقة السنتر'}</span>
+          </div>
+        </div>
+
+        <!-- Comprehensive Student Details Data Grid -->
+        <div class="student-data-chips-grid">
+          <div class="student-data-chip">
+            <span class="chip-label">🎓 الصف الدراسي:</span>
+            <span class="chip-val">${s.grade_name || 'الصف الثالث الثانوي'}</span>
+          </div>
+          <div class="student-data-chip">
+            <span class="chip-label">📱 موبايل الطالب:</span>
+            <span class="chip-val" style="direction: ltr; text-align: right;">${s.student_phone || '01012345678'}</span>
+          </div>
+          <div class="student-data-chip">
+            <span class="chip-label">👨‍👩‍👧 موبايل الولي:</span>
+            <span class="chip-val" style="direction: ltr; text-align: right;">${s.parent_phone || '01011112222'}</span>
+          </div>
+          <div class="student-data-chip">
+            <span class="chip-label">🔑 كود ربط الولي:</span>
+            <span class="chip-val" style="color: #FCD34D;">${pin}</span>
+          </div>
+          <div class="student-data-chip">
+            <span class="chip-label">📅 نسبة الحضور:</span>
+            <span class="chip-val" style="color: #34D399;">${s.attendance_rate_pct || 95}% منتظم</span>
+          </div>
+          <div class="student-data-chip">
+            <span class="chip-label">📝 آخر تقييم واختبار:</span>
+            <span class="chip-val" style="color: #A78BFA;">${s.last_quiz_score || '56 / 60'}</span>
+          </div>
+        </div>
+
+        <!-- Compact Action Toolbar -->
+        <div class="student-compact-toolbar">
+          <button type="button" class="btn-compact primary" onclick="quickToggleAttendance('${s.id}')" title="تسجيل الحضور السريع">
+            <span>📋</span><span>تحضير</span>
+          </button>
+          <button type="button" class="btn-compact" onclick="openStudentEvaluationFromList('${s.id}')" title="رصد الدرجات والتقييم">
+            <span>⭐</span><span>تقييم</span>
+          </button>
+          <button type="button" class="btn-compact" onclick="openRecordPaymentSheet('${s.id}', '${s.full_name}')" title="تسجيل استلام الاشتراك">
+            <span>💳</span><span>سداد</span>
+          </button>
+          <button type="button" class="btn-compact whatsapp" onclick="sendWhatsAppStudent('${s.parent_phone || '01011112222'}', '${s.full_name}')" title="إرسال تقرير شامل لولي الأمر">
+            <span>📲</span><span>تقرير واتساب</span>
+          </button>
+          <button type="button" class="btn-compact" onclick="copyToClipboard('${pin}', 'تم نسخ كود ربط ولي الأمر: ${pin}')" title="نسخ كود الربط">
+            <span>🔑</span><span>كود الربط</span>
+          </button>
+          <button type="button" class="btn-compact danger" onclick="handleDeleteStudent('${s.id}')" title="حذف الطالب">
+            <span>🗑️</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function quickToggleAttendance(studentId) {
+  const dateStr = new Date().toISOString().split('T')[0];
+  const records = getStoredAttendanceRecords();
+  if (!records[dateStr]) records[dateStr] = {};
+  
+  const current = records[dateStr][studentId] || 'PRESENT';
+  const next = current === 'PRESENT' ? 'ABSENT' : 'PRESENT';
+  records[dateStr][studentId] = next;
+  saveStoredAttendanceRecords(records);
+
+  alert('تم تغيير حالة حضور الطالب إلى: ' + (next === 'PRESENT' ? 'حاضر ✅' : 'غائب ❌'));
+  renderMobileStudentsList();
+  if (typeof renderAttendanceRoster === 'function') renderAttendanceRoster();
+}
+
+function openStudentEvaluationFromList(studentId) {
+  switchTeacherTab('tab-evaluation');
+  setTimeout(() => {
+    const row = document.getElementById('eval-row-' + studentId);
+    if (row) {
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      row.style.borderColor = '#8B5CF6';
+      row.style.boxShadow = '0 0 15px rgba(139, 92, 246, 0.4)';
+    }
+  }, 250);
+}
+
+function handleDeleteStudent(studentId) {
+  const stu = (state.students || []).find(s => s.id === studentId);
+  if (!stu) return;
+  if (!confirm('هل أنت متأكد من حذف الطالب (' + stu.full_name + ') من المنصة؟')) return;
+
+  state.students = (state.students || []).filter(s => s.id !== studentId);
+  try {
+    localStorage.setItem('teacher_os_registered_students', JSON.stringify(state.students));
+  } catch(e) {}
+
+  renderMobileStudentsList();
+  if (typeof renderAttendanceRoster === 'function') renderAttendanceRoster();
+  alert('تم حذف الطالب بنجاح.');
+}
+
+// 4. DIGITAL PRODUCTS & COURSES STORE MODULE
+
+const DEFAULT_DIGITAL_PRODUCTS = [
+  {
+    id: 'prod-1',
+    title: 'كورس تأسيس الفيزياء وقوانين كيرشوف وتجزئة الجهد',
+    category: 'COURSE',
+    categoryLabel: '🎬 كورس فيديو مسجل',
+    description: '12 محاضرة فيديو عالية الدقة تغطي الدوائر الكهربية، فرق الجهد، حساب المقاومات، وحل الدوائر المعقدة بطريقة النقط وقوانين كيرشوف مع كويز إلكتروني لكل درس.',
+    duration: '12 محاضرة • 18 ساعة فيديو HD',
+    isPublished: true,
+    isFree: true,
+    price: 0,
+    coverIcon: '⚡',
+    actionType: 'VIDEO'
+  },
+  {
+    id: 'prod-2',
+    title: 'بنك أسئلة الأوائل ونواتج التعلم للثانوية العامة 2026',
+    category: 'QUESTION_BANK',
+    categoryLabel: '🎯 بنك أسئلة ونماذج امتحانات',
+    description: 'أكثر من 1500 مسألة تفكير عليا من امتحانات الأعوام السابقة وبنك المعرفة المصري، مصنفة حسب الأبواب ومدعمة بالإجابات النموذجية المفصلة خطوة بخطوة.',
+    duration: '1500 مسألة مجابة بالخطوات',
+    isPublished: true,
+    isFree: false,
+    price: 90,
+    coverIcon: '📚',
+    actionType: 'QUIZ'
+  },
+  {
+    id: 'prod-3',
+    title: 'مذكرة المراجعة الشاملة والخرائط الذهنية وأطلس الأجهزة (PDF)',
+    category: 'BOOKLET',
+    categoryLabel: '📖 مذكرة رقمية PDF',
+    description: 'المرجع الأقوى لطلاب 3 ثانوي: تجميعة كافة القوانين، العلاقات البيانية، والرسومات الهندسية لأجهزة القياس والمحولات في كتيب رقمي أنيق وجاهز للطباعة.',
+    duration: '124 صفحة ملونة بجودة طباعة فائقة',
+    isPublished: true,
+    isFree: false,
+    price: 50,
+    coverIcon: '📖',
+    actionType: 'PDF'
+  },
+  {
+    id: 'prod-4',
+    title: 'كورس دوائر التيار المتردد والمكثفات والمعاوقة RLC',
+    category: 'COURSE',
+    categoryLabel: '🎬 كورس فيديو مسجل',
+    description: 'شرح معمق بالرسومات ثلاثية الأبعاد لدوائر الرنين وحالات التردد والطور مع حل 120 مسألة متقدمة من امتحانات الوزارة ونماذج التفوق.',
+    duration: '8 محاضرات • 12 ساعة فيديو',
+    isPublished: true,
+    isFree: false,
+    price: 150,
+    coverIcon: '🔬',
+    actionType: 'VIDEO'
+  }
+];
+
+function getStoredDigitalProducts() {
+  try {
+    const raw = localStorage.getItem('teacher_os_digital_products');
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  localStorage.setItem('teacher_os_digital_products', JSON.stringify(DEFAULT_DIGITAL_PRODUCTS));
+  return DEFAULT_DIGITAL_PRODUCTS;
+}
+
+function saveStoredDigitalProducts(prods) {
+  try {
+    localStorage.setItem('teacher_os_digital_products', JSON.stringify(prods));
+  } catch(e) {}
+}
+
+let activeDigitalStoreCategory = 'ALL';
+
+function filterDigitalStore(category, btn) {
+  activeDigitalStoreCategory = category;
+  document.querySelectorAll('#digital-store-filter-bar .tech-pill').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderPortfolioDigitalStore();
+}
+
+// 5. Render Digital Store in the Public Portfolio
+function renderPortfolioDigitalStore() {
+  const container = document.getElementById('portfolio-digital-store-container');
+  if (!container) return;
+
+  const allProds = getStoredDigitalProducts();
+  let list = allProds.filter(p => p.isPublished === true);
+
+  if (activeDigitalStoreCategory !== 'ALL') {
+    list = list.filter(p => p.category === activeDigitalStoreCategory);
+  }
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #94A3B8;">
+        <div style="font-size: 2.4rem; margin-bottom: 8px;">🛒</div>
+        <div style="font-weight: 800; font-size: 1.1rem; color: #FFFFFF;">لا توجد منتجات منشورة في هذا القسم حالياً</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = list.map((p, idx) => {
+    const isFree = p.isFree || Number(p.price) === 0;
+
+    return `
+      <div class="dark-project-card" id="portfolio-prod-${p.id}">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div class="project-number-tag">0${idx + 1} • ${p.categoryLabel}</div>
+          ${isFree 
+            ? '<span class="badge badge-good" style="font-size: 0.74rem;">🎁 مجاناً 100%</span>' 
+            : '<span class="badge" style="background: rgba(245,158,11,0.2); color: #FCD34D; font-weight: 900; font-size: 0.85rem; border: 1px solid rgba(245,158,11,0.4);">' + p.price + ' ج.م</span>'}
+        </div>
+
+        <div class="project-preview-mock">${p.coverIcon || '⚡'}</div>
+        <div class="project-card-title">${p.title}</div>
+        <div class="project-card-desc">${p.description}</div>
+
+        <div style="font-size: 0.76rem; color: #94A3B8; margin-top: 8px; font-weight: 700;">
+          ⏳ ${p.duration}
+        </div>
+
+        <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08);">
+          ${isFree ? `
+            <div class="project-card-cta" onclick="handleAccessFreeProduct('${p.id}')">
+              <span>مشاهدة / تحميل مجاني</span>
+              <span>📥</span>
+            </div>
+          ` : `
+            <div class="project-card-cta" onclick="openBuyProductModal('${p.id}')" style="background: linear-gradient(135deg, #2563EB, #1D4ED8); color: #FFFFFF; font-weight: 900;">
+              <span>شراء الكورس (${p.price} ج.م)</span>
+              <span>💳</span>
+            </div>
+          `}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function handleAccessFreeProduct(productId) {
+  const prods = getStoredDigitalProducts();
+  const prod = prods.find(p => p.id === productId);
+  if (!prod) return;
+
+  if (prod.actionType === 'PDF' || prod.category === 'BOOKLET') {
+    openBookletDownloadSheet();
+  } else {
+    openCoursePlayerSheet(prod.title);
+  }
+}
+
+// 6. Buy Product Modal & WhatsApp Instant Checkout
+let selectedBuyProduct = null;
+
+function openBuyProductModal(productId) {
+  const prods = getStoredDigitalProducts();
+  selectedBuyProduct = prods.find(p => p.id === productId) || prods[1];
+
+  const titleEl = document.getElementById('buy-modal-prod-title');
+  const priceEl = document.getElementById('buy-modal-prod-price');
+
+  if (titleEl) titleEl.textContent = selectedBuyProduct.title;
+  if (priceEl) priceEl.textContent = selectedBuyProduct.price + ' ج.م';
+
+  const modal = document.getElementById('modal-buy-product');
+  if (modal) modal.classList.add('active');
+}
+
+function sendPaymentReceiptWhatsApp() {
+  const prod = selectedBuyProduct || { title: 'كورس فيزياء', price: 150 };
+  const phone = '201099887766';
+  const text = encodeURIComponent(
+    'السلام عليكم ورحمة الله وبركاته،\nتحية طيبة لأستاذ طارق الشناوي وإدارة المنصة،\nأود إفادتكم بتحويل مبلغ (' + prod.price + ' ج.م) لشراء (' + prod.title + ').\nمرفق لسيادتكم لقطة شاشة لإيصال التحويل عبر فودافون كاش / إنستاباي لتفعيل الحساب فوراً.\nالاسم: ...\nرقم الهاتف المسجل: ...'
+  );
+  window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+  closeSheet('modal-buy-product');
+}
+
+// 7. Teacher CMS: Manage Digital Products & Pricing Controls
+function renderCMSDigitalProducts() {
+  const container = document.getElementById('cms-digital-products-list');
+  if (!container) return;
+
+  const prods = getStoredDigitalProducts();
+
+  container.innerHTML = prods.map(p => {
+    return `
+      <div class="cms-product-card" id="cms-prod-row-${p.id}">
+        <div class="cms-product-meta">
+          <div class="cms-product-icon">${p.coverIcon || '⚡'}</div>
+          <div>
+            <div style="font-weight: 800; font-size: 0.94rem; color: #FFFFFF;">${p.title}</div>
+            <div style="font-size: 0.76rem; color: #94A3B8;">${p.categoryLabel} • ${p.duration}</div>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <!-- Publish Toggle -->
+          <button type="button" class="btn-compact ${p.isPublished ? 'whatsapp' : ''}" onclick="toggleDigitalProductPublish('${p.id}')">
+            <span>${p.isPublished ? '🟢 منشور بالبورتفوليو' : '🔒 محجوب (مسودة)'}</span>
+          </button>
+
+          <!-- Pricing Toggle -->
+          <button type="button" class="btn-compact" onclick="toggleDigitalProductPricing('${p.id}')" style="background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.3); color: #FCD34D;">
+            <span>${p.isFree ? '🎁 مجاني' : ('💰 ' + p.price + ' ج.م')}</span>
+          </button>
+
+          <!-- Delete Action -->
+          <button type="button" class="btn-compact danger" onclick="handleDeleteDigitalProduct('${p.id}')">
+            <span>🗑️</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleDigitalProductPublish(productId) {
+  const prods = getStoredDigitalProducts();
+  const prod = prods.find(p => p.id === productId);
+  if (!prod) return;
+
+  prod.isPublished = !prod.isPublished;
+  saveStoredDigitalProducts(prods);
+
+  renderCMSDigitalProducts();
+  renderPortfolioDigitalStore();
+  alert('تم تحديث حالة النشر إلى: ' + (prod.isPublished ? '🟢 منشور للجميع في البورتفوليو' : '🔒 محجوب ومخفي'));
+}
+
+function toggleDigitalProductPricing(productId) {
+  const prods = getStoredDigitalProducts();
+  const prod = prods.find(p => p.id === productId);
+  if (!prod) return;
+
+  if (prod.isFree) {
+    const newPrice = prompt('حدد سعر المنتج بالجنيه المصري (EGP):', '120');
+    if (newPrice && !isNaN(Number(newPrice))) {
+      prod.isFree = false;
+      prod.price = Number(newPrice);
+    }
+  } else {
+    if (confirm('هل تريد تحويل هذا الكورس/المذكرة ليكون مجانياً 100% لجميع الطلاب؟')) {
+      prod.isFree = true;
+      prod.price = 0;
+    }
+  }
+
+  saveStoredDigitalProducts(prods);
+  renderCMSDigitalProducts();
+  renderPortfolioDigitalStore();
+}
+
+function handleDeleteDigitalProduct(productId) {
+  if (!confirm('هل أنت متأكد من حذف هذا الكورس/الملف من البورتفوليو؟')) return;
+
+  let prods = getStoredDigitalProducts();
+  prods = prods.filter(p => p.id !== productId);
+  saveStoredDigitalProducts(prods);
+
+  renderCMSDigitalProducts();
+  renderPortfolioDigitalStore();
+}
+
+function openCreateDigitalProductModal() {
+  const modal = document.getElementById('modal-create-digital-product');
+  if (modal) modal.classList.add('active');
+}
+
+function toggleNewProductPricingInput(type) {
+  const box = document.getElementById('new-prod-price-box');
+  if (box) {
+    box.style.display = (type === 'FREE') ? 'none' : 'block';
+  }
+}
+
+function handleSaveNewDigitalProduct(event) {
+  if (event) event.preventDefault();
+
+  const title = document.getElementById('new-prod-title')?.value.trim();
+  const category = document.getElementById('new-prod-category')?.value || 'COURSE';
+  const pricingType = document.getElementById('new-prod-pricing-type')?.value || 'PAID';
+  const price = (pricingType === 'FREE') ? 0 : (Number(document.getElementById('new-prod-price')?.value) || 120);
+  const duration = document.getElementById('new-prod-duration')?.value.trim() || 'شرح شامل';
+  const desc = document.getElementById('new-prod-desc')?.value.trim() || '';
+  const isPublished = document.getElementById('new-prod-publish-chk')?.checked !== false;
+
+  if (!title) {
+    alert('يرجى كتابة عنوان الكورس أو المذكرة');
+    return;
+  }
+
+  let catLabel = '🎬 كورس فيديو مسجل';
+  let icon = '⚡';
+  let actionType = 'VIDEO';
+  if (category === 'BOOKLET') {
+    catLabel = '📖 مذكرة رقمية PDF';
+    icon = '📖';
+    actionType = 'PDF';
+  } else if (category === 'QUESTION_BANK') {
+    catLabel = '🎯 بنك أسئلة وامتحانات';
+    icon = '📚';
+    actionType = 'QUIZ';
+  }
+
+  const prods = getStoredDigitalProducts();
+  const newProduct = {
+    id: 'prod-' + Date.now(),
+    title,
+    category,
+    categoryLabel: catLabel,
+    description: desc,
+    duration,
+    isPublished,
+    isFree: (pricingType === 'FREE' || price === 0),
+    price,
+    coverIcon: icon,
+    actionType
+  };
+
+  prods.push(newProduct);
+  saveStoredDigitalProducts(prods);
+
+  closeSheet('modal-create-digital-product');
+  renderCMSDigitalProducts();
+  renderPortfolioDigitalStore();
+  alert('🎉 تم إنشاء وإضافة (' + title + ') إلى المتجر بنجاح!');
+}
+
+// 8. Capture Photo on Student Signup & Save
+const originalStrictStudentParentSignup = handleStrictStudentParentSignup;
+handleStrictStudentParentSignup = function(event) {
+  if (event) event.preventDefault();
+
+  const role = document.getElementById('auth-selected-role')?.value || 'STUDENT';
+  const name = document.getElementById('sp-signup-name')?.value.trim();
+  const phone = document.getElementById('sp-signup-phone')?.value.trim();
+  const password = document.getElementById('sp-signup-password')?.value.trim();
+  const grade = document.getElementById('sp-signup-grade')?.value || 'GRADE_12_SEC3';
+  const photo = document.getElementById('sp-signup-photo-data')?.value || PRESET_AVATARS.boy1;
+
+  if (!name || !phone || !password) {
+    alert('⚠️ يرجى ملء كافة الحقول الإلزامية.');
+    return;
+  }
+
+  if (!isValidEgyptianPhone(phone)) {
+    alert('❌ رقم هاتف محمول غير صحيح!\nيجب أن يتكون رقم الهاتف من 11 رقماً ويبدأ بـ (010 أو 011 أو 012 أو 015).');
+    return;
+  }
+
+  const registeredUsers = getStoredRegisteredUsers();
+  const existing = registeredUsers.find(u => u.phone === phone);
+  if (existing) {
+    alert('❌ رقم الهاتف (' + phone + ') مسجل لدينا مسبقاً!\nيرجى الضغط على "تسجيل الدخول" بحسابك السابق.');
+    return;
+  }
+
+  const academicCode = 'STU-' + Math.floor(100000 + Math.random() * 900000);
+  const pairingPin = 'LNK-' + Math.floor(1000 + Math.random() * 9000);
+
+  const newUser = {
+    id: 'usr-' + Date.now(),
+    role: role,
+    full_name: name,
+    phone: phone,
+    password: password,
+    grade_level: grade,
+    academic_code: academicCode,
+    pairing_pin: pairingPin,
+    photo_url: photo,
+    created_at: new Date().toISOString()
+  };
+
+  registeredUsers.push(newUser);
+  saveStoredRegisteredUsers(registeredUsers);
+
+  // If role is STUDENT, also add to teacher's state.students list!
+  if (role === 'STUDENT') {
+    state.students.unshift({
+      id: newUser.id,
+      full_name: name,
+      academic_code: academicCode,
+      grade_level: grade,
+      grade_name: grade === 'GRADE_11_SEC2' ? 'الصف الثاني الثانوي' : 'الصف الثالث الثانوي',
+      group_name: 'مجموعة النخبة (السبت 4:00م)',
+      student_phone: phone,
+      parent_phone: '01011112222',
+      attendance_rate_pct: 100,
+      subscription_status: 'ساري',
+      photo_url: photo,
+      pairing_pin: pairingPin,
+      last_quiz_score: '60 / 60 (100% - ممتاز 🌟)',
+      package_name: 'باقة السنتر الشاملة',
+      package_fee: 350
+    });
+    try {
+      localStorage.setItem('teacher_os_registered_students', JSON.stringify(state.students));
+    } catch(e) {}
+    renderMobileStudentsList();
+  }
+
+  alert('🎉 تم إنشاء حسابك بنجاح!\nكودك الأكاديمي: ' + academicCode + '\nكود ربط ولي الأمر: ' + pairingPin);
+  closeSheet('modal-student-parent-auth');
+
+  if (role === 'STUDENT') {
+    state.currentRole = 'student';
+    state.currentStudent = newUser;
+    showPortalView('portal-student');
+    const greetingEl = document.getElementById('student-greeting-name');
+    if (greetingEl) greetingEl.textContent = 'أهلاً بك يا ' + name + '! ⚡';
+    const codeEl = document.getElementById('student-code-badge');
+    if (codeEl) codeEl.textContent = 'كود: ' + academicCode;
+    const pinEl = document.getElementById('student-pairing-pin-display');
+    if (pinEl) pinEl.textContent = pairingPin;
+  } else {
+    state.currentRole = 'parent';
+    showPortalView('portal-parent');
+  }
+};
+
+// 9. Capture Photo on Teacher Manual Add Student
+const originalHandleSaveStudent = handleSaveStudent;
+handleSaveStudent = function(event) {
+  if (event) event.preventDefault();
+
+  const name = document.getElementById('sheet-student-name')?.value.trim();
+  const studentPhone = document.getElementById('sheet-student-phone')?.value.trim();
+  const parentPhone = document.getElementById('sheet-parent-phone')?.value.trim();
+  const group = document.getElementById('sheet-student-group')?.value || 'GRP-1';
+  const photo = document.getElementById('sheet-student-photo-data')?.value || PRESET_AVATARS.boy1;
+
+  if (!name || !studentPhone || !parentPhone) {
+    alert('يرجى ملء جميع الحقول المطلوبة');
+    return;
+  }
+
+  const groupName = group === 'GRP-1' ? 'مجموعة السبت والثلاثاء (3ث)' : 'مجموعة الأحد والأربعاء (2ث)';
+  const academicCode = 'STU-' + Math.floor(100000 + Math.random() * 900000);
+  const pairingPin = 'LNK-' + Math.floor(1000 + Math.random() * 9000);
+
+  const newStu = {
+    id: 'stu-' + Date.now(),
+    full_name: name,
+    academic_code: academicCode,
+    grade_level: group === 'GRP-1' ? 'GRADE_12_SEC3' : 'GRADE_11_SEC2',
+    grade_name: group === 'GRP-1' ? 'الصف الثالث الثانوي' : 'الصف الثاني الثانوي',
+    group_name: groupName,
+    student_phone: studentPhone,
+    parent_phone: parentPhone,
+    attendance_rate_pct: 100,
+    subscription_status: 'ساري',
+    photo_url: photo,
+    pairing_pin: pairingPin,
+    last_quiz_score: '60 / 60 (100% - ممتاز 🌟)',
+    package_name: 'باقة السنتر الشاملة',
+    package_fee: 350
+  };
+
+  state.students.unshift(newStu);
+  try {
+    localStorage.setItem('teacher_os_registered_students', JSON.stringify(state.students));
+  } catch(e) {}
+
+  closeSheet('sheet-add-student');
+  renderMobileStudentsList();
+  if (typeof renderAttendanceRoster === 'function') renderAttendanceRoster();
+
+  alert('🎉 تم إضافة الطالب (' + name + ') بنجاح!\nكود الطالب: ' + academicCode + '\nكود ربط ولي الأمر: ' + pairingPin);
+};
+
+// Initial boot initialization of Digital Store and Rich Students
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    try {
+      ensureStudentsHavePhotosAndDetails();
+      renderMobileStudentsList();
+      renderPortfolioDigitalStore();
+      renderCMSDigitalProducts();
+    } catch(e) {}
+  }, 500);
+});
