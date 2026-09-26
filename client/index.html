@@ -52,38 +52,55 @@
     </header>
 
     <!-- 2. Hero Section -->
-    <section id="hero-section" class="portfolio-hero-section">
-      <div class="hero-text-column">
-        <div class="pill-teacher-role">
+    <section id="hero-section" class="portfolio-hero-section" style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 40px 20px 60px 20px;">
+      
+      <!-- Top Glowing Portrait Box with Realistic Teacher Photo -->
+      <div style="position: relative; margin-bottom: 24px; display: inline-flex; flex-direction: column; align-items: center;">
+        <div class="hero-glow-aura" style="position: absolute; width: 220px; height: 220px; background: radial-gradient(circle, rgba(139, 92, 246, 0.45) 0%, rgba(99, 102, 241, 0.1) 70%, transparent 100%); filter: blur(35px); z-index: 1;"></div>
+        
+        <div class="hero-teacher-portrait-box" style="position: relative; z-index: 2; padding: 18px 26px; border-radius: 24px; background: rgba(15, 23, 42, 0.85); border: 2px solid rgba(139, 92, 246, 0.5); backdrop-filter: blur(12px); box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
+          <img src="assets/teacher_tarek_portrait.jpg" alt="الأستاذ طارق الشناوي" class="hero-teacher-photo">
+          <div style="font-weight: 900; font-size: 1.35rem; color: #FFFFFF; margin-top: 4px;">الأستاذ طارق الشناوي</div>
+          <div style="font-size: 0.86rem; color: #C4B5FD; font-weight: 700; margin-top: 4px;">خبير تدريس الفيزياء وإعداد أوائل الجمهورية</div>
+          <div style="display: flex; gap: 8px; justify-content: center; margin-top: 10px;">
+            <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 0.76rem;">متاح للمتابعة 🟢</span>
+            <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #A5B4FC; border: 1px solid rgba(99, 102, 241, 0.4); font-size: 0.76rem;">دفعة 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Centered Text Column -->
+      <div class="hero-text-column" style="max-width: 860px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center;">
+        <div class="pill-teacher-role" style="margin-bottom: 16px;">
           <span>⚡</span>
-          <span>خبير تدريس الفيزياء للثانوية العامة</span>
+          <span>خبير تدريس الفيزياء للثانوية العامة بمصر</span>
         </div>
 
-        <h1 class="hero-main-title">
-          أهلاً بك، أنا <span class="highlight-purple">أ/ طارق الشناوي</span>
+        <h1 class="hero-main-title" style="font-size: 2.85rem; font-weight: 900; line-height: 1.25; margin-bottom: 12px; color: #FFFFFF;">
+          منصة <span class="highlight-purple">الأستاذ طارق الشناوي</span>
         </h1>
-        <h2 class="hero-sub-title">
-          أصنع تفوقك وتميزك في الفيزياء للثانوية العامة.
+        <h2 class="hero-sub-title" style="font-size: 1.45rem; font-weight: 700; color: #E2E8F0; margin-bottom: 18px;">
+          صناعة الفهم العميق والتميز لأوائل الجمهورية في الفيزياء
         </h2>
 
-        <p class="hero-lead-text">
-          معلم ومحاضر متخصص في تبسيط أعقد المفاهيم الفيزيائية، حل مسائل مستويات التفكير العليا، واستخدام أحدث أدوات المحاكاة ثلاثية الأبعاد ومساعد الذكاء الاصطناعي الخاص لإعداد أوائل الجمهورية.
+        <p class="hero-lead-text" style="font-size: 1.05rem; color: #94A3B8; line-height: 1.75; max-width: 720px; margin: 0 auto 26px auto;">
+          البيئة التعليمية الذكية الأقوى لطلاب الثانوية العامة — شروحات تفاعلية، حل مسائل مستويات التفكير الابتكاري، وتدريب مستمر بأحدث نماذج المحاكاة ثلاثية الأبعاد ومساعد الذكاء الاصطناعي الخاص لإعداد متفوقي الجمهورية.
         </p>
 
-        <div class="hero-actions-row">
-          <button type="button" class="btn-hero-primary" onclick="openStudentParentAuth('STUDENT')">
+        <div class="hero-actions-row" style="justify-content: center; gap: 14px; margin-bottom: 30px; display: flex; flex-wrap: wrap;">
+          <button type="button" class="btn-hero-primary" onclick="openStudentParentAuth('STUDENT')" style="min-height: 50px; font-size: 1.05rem; padding: 0 28px;">
             <span>تسجيل دخول الطالب وولي الأمر</span>
             <span>↗</span>
           </button>
-          <button type="button" class="btn-hero-outline" onclick="openBookletDownloadSheet()">
+          <button type="button" class="btn-hero-outline" onclick="openBookletDownloadSheet()" style="min-height: 50px; font-size: 1rem; padding: 0 24px;">
             <span>تحميل مذكرة التأسيس مجاناً</span>
             <span>📥</span>
           </button>
         </div>
 
-        <div class="hero-tech-stack">
-          <div class="tech-stack-title">الفروع والمحاور الأساسية للمنهج:</div>
-          <div class="tech-pills-row">
+        <div class="hero-tech-stack" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+          <div class="tech-stack-title" style="margin-bottom: 10px;">الفروع والمحاور الأساسية للمنهج:</div>
+          <div class="tech-pills-row" style="justify-content: center;">
             <span class="tech-pill">⚡ التيار وقانون أوم</span>
             <span class="tech-pill">🧲 قوانين كيرشوف</span>
             <span class="tech-pill">🧭 التأثير المغناطيسي</span>
@@ -91,38 +108,6 @@
             <span class="tech-pill">🌊 دوائر التيار المتردد</span>
             <span class="tech-pill">🔬 الفيزياء الحديثة</span>
           </div>
-        </div>
-      </div>
-
-      <!-- Right Visual Column with Glowing Aura & Floating Code Box -->
-      <div class="hero-visual-column">
-        <div class="hero-glow-aura"></div>
-
-        <div class="hero-teacher-portrait-box">
-          <div style="font-size: 5rem; margin-bottom: 12px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));">👨‍🏫</div>
-          <div style="font-weight: 900; font-size: 1.25rem; color: #FFFFFF;">أ/ طارق الشناوي</div>
-          <div style="font-size: 0.82rem; color: #A78BFA; font-weight: 700; margin-top: 4px;">خبير أوائل الجمهورية في الفيزياء</div>
-          <div style="display: flex; gap: 6px; margin-top: 14px;">
-            <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3);">متاح للمتابعة 🟢</span>
-            <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #A5B4FC; border: 1px solid rgba(99, 102, 241, 0.3);">دفعة 2026</span>
-          </div>
-        </div>
-
-        <!-- Floating Code Box (Matching Image Template) -->
-        <div class="floating-code-card">
-          <div class="code-header-bar">
-            <span style="color: #94A3B8; font-size: 0.72rem;">&lt;/&gt; Teacher_Profile.js</span>
-            <span class="code-header-dot"></span>
-          </div>
-          <div style="color: #F43F5E;">const <span style="color: #60A5FA;">teacher</span> = {</div>
-          <div style="padding-left: 12px; color: #E2E8F0;">
-            name: <span style="color: #FBBF24;">"طارق الشناوي"</span>,<br>
-            subject: <span style="color: #FBBF24;">"الفيزياء للثانوية العامة"</span>,<br>
-            method: [<span style="color: #34D399;">"فهم عميق"</span>, <span style="color: #34D399;">"محاكاة 3D"</span>],<br>
-            platform: <span style="color: #A78BFA;">"مجاني 100% للجميع"</span>,<br>
-            motto: <span style="color: #FBBF24;">"الفيزياء فهم واستنتاج مش حفظ"</span>
-          </div>
-          <div style="color: #F43F5E;">};</div>
         </div>
       </div>
     </section>
@@ -456,7 +441,7 @@
         <div class="topbar-main-row">
           <div class="teacher-brand-badge">
             <div class="teacher-avatar-circle" id="header-teacher-avatar">
-              <span>👨‍🏫</span>
+              <img src="assets/teacher_tarek_portrait.jpg" alt="أ/ طارق" class="topbar-avatar-img">
               <span class="online-dot" title="متصل الآن"></span>
             </div>
             <div class="teacher-title-wrap">
@@ -688,17 +673,49 @@
               </div>
             </div>
 
-            <!-- Curriculum Upload Card -->
+            <!-- Real Curriculum & PDF Vault for Teacher -->
             <div class="m-card">
               <div class="m-card-header">
-                <h3 class="m-card-title">📚 رفع وتغذية المنهج الدراسي</h3>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.3rem;">🗂️</span>
+                  <h3 class="m-card-title">خزينة المناهج والمذكرات والذكاء الاصطناعي</h3>
+                </div>
+                <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4);" id="vault-total-count-badge">3 مذكرات مخزنة</span>
               </div>
-              <div class="upload-dropzone" onclick="document.getElementById('file-upload-curriculum').click()">
-                <div style="font-size: 2rem; margin-bottom: 6px;">📖</div>
-                <div style="font-weight: 800; font-size: 0.9rem; color: #1E293B;">اضغط لرفع كتاب الوزارة أو المذكرة (PDF)</div>
-                <div style="font-size: 0.76rem; color: #64748B; margin-top: 4px;">يقوم الذكاء الاصطناعي بتحليل الكتاب وتوليد الأسئلة منه تلقائياً</div>
+              
+              <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 12px;">
+                ارفع كتاب الوزارة أو ملازمك (PDF). يتم تخزينها فعلياً، تحليلها بالذكاء الاصطناعي، والتحكم في نشرها أو حجبها عن الطلاب بنقرة واحدة:
+              </p>
+
+              <!-- Real File Input -->
+              <input type="file" id="file-upload-curriculum" style="display: none;" accept=".pdf,.doc,.docx,.txt" onchange="handleTeacherCurriculumUpload(this)">
+
+              <!-- Clickable Upload Dropzone -->
+              <div class="upload-dropzone-dark" onclick="document.getElementById('file-upload-curriculum').click()">
+                <div style="font-size: 2.4rem; margin-bottom: 6px;">📥</div>
+                <div style="font-weight: 800; font-size: 0.95rem; color: #FFFFFF;">اضغط لاختيار كتاب الوزارة أو المذكرة (PDF)</div>
+                <div style="font-size: 0.76rem; color: #94A3B8; margin-top: 4px;">يتم حفظ وتخزين الملف فورياً، قراءته بالذكاء الاصطناعي، وإضافته لقائمة مذكراتك</div>
               </div>
-              <input type="file" id="file-upload-curriculum" style="display: none;" accept=".pdf,.doc,.docx,.txt" onchange="handleUploadCurriculum(this)">
+
+              <!-- Storage & Visibility Stats -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 14px 0;">
+                <div style="background: #1E293B; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px; text-align: center;">
+                  <div style="font-size: 0.74rem; color: #94A3B8;">المذكرات المنشورة للطلاب</div>
+                  <div style="font-size: 1.15rem; font-weight: 900; color: #34D399;" id="vault-published-count">2 مذكرة</div>
+                </div>
+                <div style="background: #1E293B; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px; text-align: center;">
+                  <div style="font-size: 0.74rem; color: #94A3B8;">المذكرات المحجوبة (مسودات)</div>
+                  <div style="font-size: 1.15rem; font-weight: 900; color: #F59E0B;" id="vault-hidden-count">1 مذكرة</div>
+                </div>
+              </div>
+
+              <!-- Dynamic Stored Files List -->
+              <div style="font-weight: 800; font-size: 0.85rem; color: #FFFFFF; margin-bottom: 8px;">
+                قائمة الملفات والمذكرات المخزنة والتحكم في نشرها وحجبها:
+              </div>
+              <div id="teacher-vault-files-container">
+                <!-- Dynamically populated by renderTeacherVaultFiles() -->
+              </div>
             </div>
           </div>
 
@@ -811,91 +828,161 @@
 
         <!-- ==================== 2. STUDENT PORTAL (STRICTLY ISOLATED) ==================== -->
         <section id="portal-student" class="portal-view">
-          <!-- Student Greeting Card -->
-          <div class="m-card" style="background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(16,185,129,0.06)); border-color: rgba(37,99,235,0.15);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-              <span class="badge badge-primary">بوابة الطالب الخاصة</span>
-              <span style="font-size: 0.78rem; font-weight: 700; color: #64748B;" id="student-code-badge">كود: STU-884210</span>
-            </div>
-            <h2 style="font-size: 1.15rem; font-weight: 800; color: #1E293B;">أهلاً بك يا بطل! 🎓</h2>
-            <p style="font-size: 0.82rem; color: #475569; margin-top: 2px;">
-              أنت تدرس الآن مع <strong>أ/ طارق الشناوي</strong>. كل حصصك واختباراتك ومساعدك الذكي هنا في مكان واحد.
-            </p>
-          </div>
 
-          <!-- Parent Pairing PIN Card for Student -->
-          <div class="m-card" style="border: 2px dashed #F59E0B; background: #FFFDF5;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-              <div style="font-weight: 800; font-size: 0.88rem; color: #B45309;">🔑 كود ربط ولي الأمر الخاص بك:</div>
-              <span class="pairing-pin-badge" id="student-pairing-pin-display">LNK-1029</span>
-            </div>
-            <p style="font-size: 0.78rem; color: #78350F; line-height: 1.4; margin-bottom: 8px;">
-              شارك هذا الكود المخصص مع ولي أمرك لربط حسابه ومتابعة درجاتك وشهادات تفوقك بأمان.
-            </p>
-            <button class="btn btn-outline btn-block" onclick="copyStudentPairingPin()" style="font-size: 0.78rem; min-height: 36px; border-color: #FCD34D;">
-              <span>📋 نسخ الكود ومشاركته</span>
-            </button>
-          </div>
-
-          <!-- Live Class Alert -->
-          <div class="m-card">
-            <div class="m-card-header">
-              <h3 class="m-card-title">📹 حصتك القادمة مع الأستاذ</h3>
-              <span class="badge badge-good">اليوم 7:00 م</span>
-            </div>
-            <div style="font-weight: 800; font-size: 0.92rem; color: #1E293B; margin-bottom: 4px;">
-              مراجعة هامة: مسائل كيرشوف وقانون أوم للدائرة المغلقة
-            </div>
-            <div style="font-size: 0.78rem; color: #64748B; margin-bottom: 12px;">
-              عبر تطبيق Zoom مع الأستاذ طارق الشناوي مباشرة
-            </div>
-            <button class="btn btn-primary btn-block" onclick="joinStudentLiveZoom()">
-              <span>🚀 انضم إلى البث المباشر الآن</span>
-            </button>
-          </div>
-
-          <!-- Socratic AI Coach for Student -->
-          <div class="m-card">
-            <div class="m-card-header">
-              <h3 class="m-card-title">🧠 المدرب السقراطي لمساعدتك</h3>
-              <span class="badge badge-primary">شرح خطوة بخطوة</span>
-            </div>
-            <p style="font-size: 0.78rem; color: #64748B; margin-bottom: 8px;">
-              لا يعطيك الحل جاهزاً، بل يرشدك للتفكير الصحيح كأن الأستاذ طارق يشرح لك تماماً!
-            </p>
-            <div class="chat-stream-box" id="student-socratic-chat-box">
-              <div class="chat-bubble ai">
-                أهلاً بك يا بطل! إذا واجهتك أي مسألة صعبة في الفيزياء، اكتبها لي وسنفكر في طريقة حلها خطوة بخطوة.
+          <!-- 1. Student Greeting & Code -->
+          <div class="m-card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.25)); border-color: rgba(139, 92, 246, 0.45);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+              <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4);">بوابة الطالب الذكية 🎓</span>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 0.74rem; font-weight: 700; color: #C4B5FD;" id="student-code-badge">كود: STU-884210</span>
+                <!-- Compact Elegant Pairing PIN Button -->
+                <button type="button" class="tech-pill" onclick="copyStudentPairingPin()" title="اضغط لنسخ كود ربط ولي الأمر ومشاركته" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #FCD34D; font-size: 0.72rem; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; border-radius: 8px;">
+                  <span>🔑 كود ولي الأمر:</span>
+                  <span id="student-pairing-pin-display" style="font-weight: 800; letter-spacing: 0.5px;">LNK-1029</span>
+                  <span style="font-size: 0.68rem; opacity: 0.85;">📋 نسخ</span>
+                </button>
               </div>
             </div>
-            <div class="chat-input-bar">
-              <input type="text" id="student-socratic-input" class="m-input" placeholder="اكتب سؤالك أو النقطة الصعبة..." style="margin-bottom: 0;">
-              <button class="btn btn-primary" onclick="handleStudentSocraticAsk()" style="min-height: 44px; padding: 0 16px;">
-                <span>اسأل</span>
+            <h2 style="font-size: 1.2rem; font-weight: 800; color: #FFFFFF;" id="student-greeting-name">أهلاً بك يا أحمد! ⚡</h2>
+            <p style="font-size: 0.84rem; color: #CBD5E1; margin-top: 2px;">
+              منصتك المتكاملة مع <strong>الأستاذ طارق الشناوي</strong>: مذكرات، محاضرات فيديو، اختبارات تفاعلية، ومساعد الذكاء الاصطناعي لحل الواجبات.
+            </p>
+          </div>
+
+          <!-- 2. Live Teacher Announcement Banner -->
+          <div class="teacher-announcement-card">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="font-size: 1.2rem;">📢</span>
+              <span style="font-weight: 800; font-size: 0.88rem; color: #93C5FD;">تنبيه هام ومباشر من الأستاذ طارق:</span>
+              <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #FCA5A5; font-size: 0.68rem; margin-right: auto;">عاجل 🔴</span>
+            </div>
+            <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.5;" id="student-live-announcement-text">
+              📌 شباب دفعة 2026: تم فتح باب استقبال حلول شيت كيرشوف الثاني عبر التطبيق حتى مساء الخميس. واستعدوا للاختبار الشامل على الفصل الأول يوم الجمعة 8:00 مساءً إلكترونياً!
+            </div>
+          </div>
+
+          <!-- 3. Student Booklets Vault (Dynamically Loaded & Downloadable) -->
+          <div class="m-card">
+            <div class="m-card-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.3rem;">📚</span>
+                <h3 class="m-card-title">مكتبة المذكرات والملازم المعتمدة (PDF)</h3>
+              </div>
+              <span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #C4B5FD;" id="student-booklet-count-badge">3 مذكرات</span>
+            </div>
+            <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 12px;">
+              المذكرات والخرائط الذهنية المرفوعة والمنشورة لك من قِبل الأستاذ طارق الشناوي:
+            </p>
+            <div id="student-published-booklets-container">
+              <!-- Dynamically populated by renderStudentPublishedBooklets() -->
+            </div>
+          </div>
+
+          <!-- 4. Video Lessons & Recorded Lectures -->
+          <div class="m-card">
+            <div class="m-card-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.3rem;">🎥</span>
+                <h3 class="m-card-title">محاضرات الشرح وحصص المراجعة</h3>
+              </div>
+              <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399;">متاحة بالكامل 🟢</span>
+            </div>
+            
+            <!-- Lesson 1 -->
+            <div class="student-lesson-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 800; font-size: 0.88rem; color: #FFFFFF;">⚡ المحاضرة 01: تجزئة الجهد والتيار وقانون أوم للدائرة المغلقة</span>
+                <span style="font-size: 0.72rem; color: #94A3B8;">48 دقيقة</span>
+              </div>
+              <div style="font-size: 0.76rem; color: #94A3B8;">
+                تتضمن شرح المقاومة النوعية والتوصيلية، حالات انعدام المقاومة، وحل 6 مسائل وزارية.
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 4px;">
+                <button class="btn btn-primary" onclick="openCoursePlayerSheet('المحاضرة 01: قانون أوم وقوانين كيرشوف')" style="flex: 1; min-height: 36px; font-size: 0.78rem;">
+                  <span>▶️ مشاهدة الحصة</span>
+                </button>
+                <button class="btn btn-outline" onclick="alert('📝 اختبار المحاضرة الأولى: 10 أسئلة متدرجة الصعوبة')" style="flex: 1; min-height: 36px; font-size: 0.78rem; border-color: rgba(255,255,255,0.15); color: #E2E8F0;">
+                  <span>📝 حل كويز الحصة</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Lesson 2 -->
+            <div class="student-lesson-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 800; font-size: 0.88rem; color: #FFFFFF;">🧲 المحاضرة 02: إتقان قوانين كيرشوف وحل الدوائر المعقدة</span>
+                <span style="font-size: 0.72rem; color: #94A3B8;">55 دقيقة</span>
+              </div>
+              <div style="font-size: 0.76rem; color: #94A3B8;">
+                طريقة النقط، فرض اتجاهات التيار، وتكوين المعادلات وحلها بالآلة الحاسبة.
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 4px;">
+                <button class="btn btn-primary" onclick="openCoursePlayerSheet('المحاضرة 02: إتقان قوانين كيرشوف وحل الدوائر المعقدة')" style="flex: 1; min-height: 36px; font-size: 0.78rem;">
+                  <span>▶️ مشاهدة الحصة</span>
+                </button>
+                <button class="btn btn-outline" onclick="alert('📝 اختبار كيرشوف التفاعلي')" style="flex: 1; min-height: 36px; font-size: 0.78rem; border-color: rgba(255,255,255,0.15); color: #E2E8F0;">
+                  <span>📝 حل كويز الحصة</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Daily Cognitive Challenge & Skill Booster -->
+          <div class="student-challenge-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 1.3rem;">🎯</span>
+                <span style="font-weight: 900; font-size: 0.95rem; color: #FCD34D;">تحدي اليوم الفيزيائي (سؤال تفكير عليا للعباقرة):</span>
+              </div>
+              <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FBBF24; font-size: 0.72rem;">+50 نقطة تميز ⚡</span>
+            </div>
+            
+            <p style="font-size: 0.84rem; color: #FEF3C7; line-height: 1.6; margin-bottom: 10px;" id="daily-challenge-question">
+              في دائرة كهربية تحتوي على بطارية لها مقاومة داخلية (r > 0) ومقاومة متغيرة (R): ماذا يحدث لقراءة الفولتميتر المتصل بين قطبي البطارية عند زيادة قيمة المقاومة المتغيرة R؟
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 8px;" id="daily-challenge-options">
+              <button class="btn btn-outline" onclick="answerDailyPhysicsChallenge('A')" style="text-align: right; justify-content: flex-start; border-color: rgba(252, 211, 77, 0.3); color: #FFFFFF; font-size: 0.8rem; min-height: 38px;">
+                أ) تزداد قراءة الفولتميتر
+              </button>
+              <button class="btn btn-outline" onclick="answerDailyPhysicsChallenge('B')" style="text-align: right; justify-content: flex-start; border-color: rgba(252, 211, 77, 0.3); color: #FFFFFF; font-size: 0.8rem; min-height: 38px;">
+                ب) تقل قراءة الفولتميتر
+              </button>
+              <button class="btn btn-outline" onclick="answerDailyPhysicsChallenge('C')" style="text-align: right; justify-content: flex-start; border-color: rgba(252, 211, 77, 0.3); color: #FFFFFF; font-size: 0.8rem; min-height: 38px;">
+                جـ) تظل قراءة الفولتميتر ثابتة
               </button>
             </div>
+
+            <div id="daily-challenge-feedback" style="display: none; padding: 10px; border-radius: 10px; font-size: 0.82rem; margin-top: 8px;"></div>
+
+            <!-- Mastery Radar -->
+            <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(245, 158, 11, 0.2);">
+              <div style="font-size: 0.76rem; color: #FDE68A; font-weight: 700; margin-bottom: 6px;">مؤشر تمكنك من مهارات الفيزياء:</div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #E2E8F0;">
+                    <span>الفهم الفيزيائي العميق</span>
+                    <span>94%</span>
+                  </div>
+                  <div class="dark-skill-bar-track" style="height: 6px;"><div class="dark-skill-bar-fill" style="width: 94%;"></div></div>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #E2E8F0;">
+                    <span>التحليل وحل المسائل المركبة</span>
+                    <span>89%</span>
+                  </div>
+                  <div class="dark-skill-bar-track" style="height: 6px;"><div class="dark-skill-bar-fill" style="width: 89%;"></div></div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Student Performance Pulse -->
-          <div class="m-card">
-            <div class="m-card-header">
-              <h3 class="m-card-title">📊 مستواك الدراسي الأخير</h3>
-            </div>
-            <div class="m-stats-grid">
-              <div class="m-stat-box">
-                <div class="m-stat-icon" style="background: #ECFDF5; color: #059669;">🎯</div>
-                <div>
-                  <div class="m-stat-val">92%</div>
-                  <div class="m-stat-lbl">متوسط الاختبارات</div>
-                </div>
-              </div>
-              <div class="m-stat-box">
-                <div class="m-stat-icon" style="background: #EFF6FF; color: #2563EB;">✅</div>
-                <div>
-                  <div class="m-stat-val">96%</div>
-                  <div class="m-stat-lbl">نسبة الالتزام بالحضور</div>
-                </div>
-              </div>
+          
+            <div class="chat-input-bar" style="margin-top: 10px;">
+              <input type="text" id="student-socratic-input" class="m-input" placeholder="اكتب سؤالك هنا..." style="margin-bottom: 0;" onkeydown="if(event.key==='Enter') handleStudentSocraticAsk()">
+              <button class="btn btn-primary" onclick="handleStudentSocraticAsk()" style="min-height: 42px; padding: 0 16px;">
+                <span>إرسال</span>
+              </button>
             </div>
           </div>
         </section>
@@ -1029,74 +1116,120 @@
   <!-- ==========================================================================
        MODAL 1: STUDENT & PARENT AUTH (DEDICATED & SEPARATED FROM TEACHER)
        ========================================================================== -->
+  
+  <!-- ==========================================================================
+       MODAL 1: STUDENT & PARENT AUTH (STRICT LOGIN & SIGNUP TABS)
+       ========================================================================== -->
   <div id="modal-student-parent-auth" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-student-parent-auth')">
-    <div class="m-sheet-content" style="max-height: 95vh; background: #0F172A; color: #FFFFFF; border: 1px solid rgba(139, 92, 246, 0.3);">
+    <div class="m-sheet-content" style="max-height: 95vh; background: #0F172A; color: #FFFFFF; border: 1px solid rgba(139, 92, 246, 0.35); overflow-y: auto;">
       <div class="m-sheet-handle" style="background: #334155;"></div>
-      <div class="m-sheet-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px;">
+      <div class="m-sheet-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px;">
         <div>
-          <div style="font-size: 0.76rem; font-weight: 800; color: #A78BFA;">منصة أ/ طارق الشناوي</div>
+          <div style="font-size: 0.76rem; font-weight: 800; color: #A78BFA;">منصة الأستاذ طارق الشناوي</div>
           <h3 class="m-sheet-title" style="color: #FFFFFF; font-size: 1.15rem; margin-top: 2px;">
-            🎓 دخول واشتراك الطلاب وأولياء الأمور
+            🎓 بوابة الطلاب وأولياء الأمور
           </h3>
         </div>
         <button class="m-sheet-close" onclick="closeSheet('modal-student-parent-auth')" style="background: rgba(255,255,255,0.1); color: #fff;">✕</button>
       </div>
 
-      <!-- Role Selector (Students & Parents ONLY) -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0;">
-        <button type="button" class="btn" id="auth-role-student-btn" onclick="selectAuthRole('STUDENT')" style="background: #2563EB; color: #fff; border-radius: 12px; font-weight: 800; border: none;">
-          🎓 حساب طالب
+      <!-- Mode Switcher: Login vs New Account -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 4px; margin: 14px 0 10px 0;">
+        <button type="button" class="btn" id="sp-tab-login-btn" onclick="setStudentParentAuthMode('login')" style="background: #2563EB; color: #FFFFFF; border-radius: 10px; font-weight: 800; font-size: 0.85rem; border: none; min-height: 38px;">
+          🔑 تسجيل الدخول (عندي حساب)
         </button>
-        <button type="button" class="btn" id="auth-role-parent-btn" onclick="selectAuthRole('PARENT')" style="background: rgba(255,255,255,0.06); color: #94A3B8; border-radius: 12px; font-weight: 800; border: 1px solid rgba(255,255,255,0.1);">
-          👨‍👩‍👧 حساب ولي أمر
+        <button type="button" class="btn" id="sp-tab-signup-btn" onclick="setStudentParentAuthMode('signup')" style="background: transparent; color: #94A3B8; border-radius: 10px; font-weight: 800; font-size: 0.85rem; border: none; min-height: 38px;">
+          ✨ إنشاء حساب جديد
         </button>
       </div>
 
-      <!-- Auth Form -->
-      <form onsubmit="handleStudentParentAuth(event)">
-        <input type="hidden" id="auth-selected-role" value="STUDENT">
+      <!-- 1. LOGIN FORM -->
+      <div id="sp-auth-login-view">
+        <form onsubmit="handleStudentParentLogin(event)">
+          <label class="m-input-label" style="color: #E2E8F0;">رقم الهاتف المحمول المسجل به:</label>
+          <input type="tel" id="sp-login-phone" class="m-input" placeholder="010XXXXXXXX" value="01099887766" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff; direction: ltr; text-align: left;">
 
-        <label class="m-input-label" style="color: #E2E8F0;">رقم الهاتف المحمول (مصر):</label>
-        <input type="tel" id="user-auth-phone" class="m-input" placeholder="010XXXXXXXX" value="01099887766" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff; direction: ltr; text-align: left;">
+          <label class="m-input-label" style="color: #E2E8F0;">كلمة المرور أو كود الطالب:</label>
+          <input type="password" id="sp-login-password" class="m-input" placeholder="اكتب كلمة المرور (افتراضي: 123456)" value="123456" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff;">
 
-        <label class="m-input-label" style="color: #E2E8F0;">الاسم بالكامل:</label>
-        <input type="text" id="user-auth-name" class="m-input" placeholder="اكتب اسمك ثلاثي" value="أحمد محمود" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff;">
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px; min-height: 46px; font-size: 0.95rem;">
+            <span>تسجيل الدخول للمنصة ➔</span>
+          </button>
+        </form>
 
-        <!-- Conditional Field: Student Grade -->
-        <div id="auth-student-grade-field">
-          <label class="m-input-label" style="color: #E2E8F0;">الصف الدراسي:</label>
-          <select id="user-auth-grade" class="m-input" style="background: #1E293B; border-color: rgba(255,255,255,0.15); color: #fff;">
-            <option value="GRADE_12_SEC3">الصف الثالث الثانوي (3ث)</option>
-            <option value="GRADE_11_SEC2">الصف الثاني الثانوي (2ث)</option>
-            <option value="GRADE_10_SEC1">الصف الأول الثانوي (1ث)</option>
-          </select>
+        <div style="text-align: center; margin-top: 10px;">
+          <button type="button" onclick="setStudentParentAuthMode('signup')" style="background: none; border: none; color: #60A5FA; font-size: 0.8rem; cursor: pointer; text-decoration: underline;">
+            ليس لديك حساب؟ اضغط هنا للاشتراك والتسجيل الآن
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. SIGNUP FORM -->
+      <div id="sp-auth-signup-view" style="display: none;">
+        <!-- Role Selector -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+          <button type="button" class="btn" id="auth-role-student-btn" onclick="selectAuthRole('STUDENT')" style="background: #2563EB; color: #fff; border-radius: 12px; font-weight: 800; border: none; min-height: 38px;">
+            🎓 حساب طالب
+          </button>
+          <button type="button" class="btn" id="auth-role-parent-btn" onclick="selectAuthRole('PARENT')" style="background: rgba(255,255,255,0.06); color: #94A3B8; border-radius: 12px; font-weight: 800; border: 1px solid rgba(255,255,255,0.1); min-height: 38px;">
+            👨‍👩‍👧 حساب ولي أمر
+          </button>
         </div>
 
-        <!-- Conditional Field: Parent Linked Child PIN -->
-        <div id="auth-parent-pin-field" style="display: none;">
-          <label class="m-input-label" style="color: #FCD34D;">كود ربط الطالب (PIN) أو رقم هاتف الطالب:</label>
-          <input type="text" id="user-auth-parent-link" class="m-input" placeholder="مثال: LNK-1029" value="LNK-1029" style="background: rgba(15,23,42,0.9); border-color: #FCD34D; color: #fff; text-align: center; letter-spacing: 1px; font-weight: 800;">
-        </div>
+        <form onsubmit="handleStudentParentSignup(event)">
+          <input type="hidden" id="auth-selected-role" value="STUDENT">
 
-        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px; min-height: 46px; font-size: 0.95rem;">
-          <span>دخول المنصة مباشرة ➔</span>
-        </button>
-      </form>
+          <label class="m-input-label" style="color: #E2E8F0;">الاسم بالكامل (ثلاثي):</label>
+          <input type="text" id="sp-signup-name" class="m-input" placeholder="مثال: يوسف أحمد إبراهيم" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff;">
+
+          <label class="m-input-label" style="color: #E2E8F0;">رقم الهاتف المحمول (مصر - 11 رقماً):</label>
+          <input type="tel" id="sp-signup-phone" class="m-input" placeholder="010XXXXXXXX أو 011/012/015" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff; direction: ltr; text-align: left;">
+
+          <!-- Conditional Field: Student Grade -->
+          <div id="auth-student-grade-field">
+            <label class="m-input-label" style="color: #E2E8F0;">الصف الدراسي:</label>
+            <select id="sp-signup-grade" class="m-input" style="background: #1E293B; border-color: rgba(255,255,255,0.15); color: #fff;">
+              <option value="GRADE_12_SEC3">الصف الثالث الثانوي (3ث)</option>
+              <option value="GRADE_11_SEC2">الصف الثاني الثانوي (2ث)</option>
+              <option value="GRADE_10_SEC1">الصف الأول الثانوي (1ث)</option>
+            </select>
+          </div>
+
+          <!-- Conditional Field: Parent Linked Child PIN -->
+          <div id="auth-parent-pin-field" style="display: none;">
+            <label class="m-input-label" style="color: #FCD34D;">كود ربط الطالب (PIN) أو رقم هاتف الطالب:</label>
+            <input type="text" id="sp-signup-parent-link" class="m-input" placeholder="مثال: LNK-1029" value="LNK-1029" style="background: rgba(15,23,42,0.9); border-color: #FCD34D; color: #fff; text-align: center; letter-spacing: 1px; font-weight: 800;">
+          </div>
+
+          <label class="m-input-label" style="color: #E2E8F0;">إنشاء كلمة مرور للحساب:</label>
+          <input type="password" id="sp-signup-password" class="m-input" placeholder="4 أرقام أو حروف على الأقل" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff;">
+
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px; min-height: 46px; font-size: 0.95rem;">
+            <span>تأكيد إنشاء الحساب والانضمام ➔</span>
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 10px;">
+          <button type="button" onclick="setStudentParentAuthMode('login')" style="background: none; border: none; color: #60A5FA; font-size: 0.8rem; cursor: pointer; text-decoration: underline;">
+            لديك حساب بالفعل؟ اضغط هنا لتسجيل الدخول
+          </button>
+        </div>
+      </div>
 
       <!-- Google Sign In -->
-      <button type="button" class="btn btn-outline btn-block" onclick="handleGoogleUserAuth()" style="margin-top: 8px; border-color: rgba(255,255,255,0.15); color: #CBD5E1;">
+      <button type="button" class="btn btn-outline btn-block" onclick="handleGoogleUserAuth()" style="margin-top: 12px; border-color: rgba(255,255,255,0.15); color: #CBD5E1;">
         <span>🌐 متابعة سريعة بحساب Google</span>
       </button>
 
       <!-- Quick Demo Chips -->
-      <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
-        <div style="font-size: 0.74rem; font-weight: 700; color: #94A3B8; margin-bottom: 8px;">أو معاينة سريعة كـ (Demo):</div>
+      <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08);">
+        <div style="font-size: 0.74rem; font-weight: 700; color: #94A3B8; margin-bottom: 6px;">حسابات تجريبية موثقة (1-Click Demo):</div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <button type="button" class="tech-pill" onclick="fillStudentDemo()" style="padding: 10px; cursor: pointer; text-align: center; color: #60A5FA; background: rgba(37,99,235,0.15); border-color: rgba(37,99,235,0.3);">
-            🎓 دخول كطالب (أحمد)
+          <button type="button" class="tech-pill" onclick="fillStudentDemo()" style="padding: 8px; cursor: pointer; text-align: center; color: #60A5FA; background: rgba(37,99,235,0.15); border-color: rgba(37,99,235,0.3); font-size: 0.78rem;">
+            🎓 حساب طالب (أحمد)
           </button>
-          <button type="button" class="tech-pill" onclick="fillParentDemo()" style="padding: 10px; cursor: pointer; text-align: center; color: #34D399; background: rgba(5,150,105,0.15); border-color: rgba(5,150,105,0.3);">
-            👨‍👩‍👧 دخول كولي أمر (سلمى)
+          <button type="button" class="tech-pill" onclick="fillParentDemo()" style="padding: 8px; cursor: pointer; text-align: center; color: #34D399; background: rgba(5,150,105,0.15); border-color: rgba(5,150,105,0.3); font-size: 0.78rem;">
+            👨‍👩‍👧 حساب ولي أمر (سلمى)
           </button>
         </div>
       </div>
@@ -1104,56 +1237,104 @@
   </div>
 
   <!-- ==========================================================================
-       MODAL 2: TEACHER MASTER ADMIN LOGIN (DEDICATED FOR THE TEACHER ONLY)
+       MODAL 2: TEACHER MASTER ADMIN LOGIN & REGISTRATION
        ========================================================================== -->
   <div id="modal-teacher-auth" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-teacher-auth')">
-    <div class="m-sheet-content" style="max-height: 95vh; background: #0F172A; color: #FFFFFF; border: 2px solid rgba(139, 92, 246, 0.5);">
+    <div class="m-sheet-content" style="max-height: 95vh; background: #0F172A; color: #FFFFFF; border: 2px solid rgba(139, 92, 246, 0.5); overflow-y: auto;">
       <div class="m-sheet-handle" style="background: #475569;"></div>
-      <div class="m-sheet-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px;">
+      <div class="m-sheet-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #6366F1, #8B5CF6); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
             👨‍🏫
           </div>
           <div>
             <h3 class="m-sheet-title" style="color: #FFFFFF; font-size: 1.15rem; margin-top: 2px;">
-              بوابة دخول المعلم الخاصة
+              بوابة المعلم والإدارة المركزية
             </h3>
-            <div style="font-size: 0.76rem; color: #A78BFA; font-weight: 700;">لوحة التحكم والإدارة المركزية — أ/ طارق الشناوي</div>
+            <div style="font-size: 0.76rem; color: #A78BFA; font-weight: 700;">تسجيل الدخول أو إنشاء حساب معلم جديد</div>
           </div>
         </div>
         <button class="m-sheet-close" onclick="closeSheet('modal-teacher-auth')" style="background: rgba(255,255,255,0.1); color: #fff;">✕</button>
       </div>
 
-      <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 10px 14px; margin: 14px 0; font-size: 0.8rem; color: #C7D2FE;">
-        🔒 هذه البوابة مخصصة حصرياً للأستاذ طارق الشناوي لإدارة المجموعات، كشوف الطلاب، والامتحانات.
-      </div>
-
-      <!-- Teacher Auth Form -->
-      <form onsubmit="handleTeacherMasterAuth(event)">
-        <label class="m-input-label" style="color: #E2E8F0;">رقم هاتف المعلم / اسم المستخدم:</label>
-        <input type="tel" id="teacher-auth-phone" class="m-input" value="01012345678" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff; direction: ltr; text-align: left;">
-
-        <label class="m-input-label" style="color: #E2E8F0;">رمز الإدارة السري أو كلمة المرور:</label>
-        <input type="password" id="teacher-auth-secret" class="m-input" placeholder="اكتب رمز الإدارة (مثال: 2027)" value="2027" required style="background: rgba(15,23,42,0.9); border-color: rgba(139,92,246,0.4); color: #fff; letter-spacing: 2px;">
-
-        <button type="submit" class="btn btn-hero-primary btn-block" style="margin-top: 10px; min-height: 48px; font-size: 0.95rem;">
-          <span>🔐 تأكيد الدخول للوحة تحكم المعلم ➔</span>
+      <!-- Mode Switcher: Teacher Login vs Teacher Signup -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 4px; margin: 14px 0 10px 0;">
+        <button type="button" class="btn" id="teacher-tab-login-btn" onclick="setTeacherAuthMode('login')" style="background: #8B5CF6; color: #FFFFFF; border-radius: 10px; font-weight: 800; font-size: 0.85rem; border: none; min-height: 38px;">
+          🔐 تسجيل دخول المعلم
         </button>
-      </form>
-
-      <!-- 1-Tap Quick Teacher Demo -->
-      <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
-        <button type="button" class="btn btn-outline btn-block" onclick="fillTeacherMasterDemo()" style="border-color: rgba(139, 92, 246, 0.4); color: #C4B5FD;">
-          <span>⚡ دخول فوري للأستاذ طارق (رمز 2027)</span>
+        <button type="button" class="btn" id="teacher-tab-signup-btn" onclick="setTeacherAuthMode('signup')" style="background: transparent; color: #94A3B8; border-radius: 10px; font-weight: 800; font-size: 0.85rem; border: none; min-height: 38px;">
+          👨‍🏫 تسجيل معلم جديد
         </button>
       </div>
+
+      <!-- 1. TEACHER LOGIN FORM -->
+      <div id="teacher-auth-login-view">
+        <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 8px 12px; margin-bottom: 12px; font-size: 0.78rem; color: #C7D2FE;">
+          🔒 هذه البوابة مخصصة حصرياً للمعلم لإدارة المجموعات، بنوك الأسئلة، والتحكم في نشر المذكرات.
+        </div>
+
+        <form onsubmit="handleTeacherLogin(event)">
+          <label class="m-input-label" style="color: #E2E8F0;">رقم هاتف المعلم:</label>
+          <input type="tel" id="teacher-login-phone" class="m-input" value="01012345678" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff; direction: ltr; text-align: left;">
+
+          <label class="m-input-label" style="color: #E2E8F0;">رمز الإدارة السري أو كلمة المرور:</label>
+          <input type="password" id="teacher-login-secret" class="m-input" placeholder="اكتب رمز الإدارة (مثال: 2027)" value="2027" required style="background: rgba(15,23,42,0.9); border-color: rgba(139,92,246,0.4); color: #fff; letter-spacing: 2px;">
+
+          <button type="submit" class="btn btn-hero-primary btn-block" style="margin-top: 10px; min-height: 48px; font-size: 0.95rem;">
+            <span>🔐 تأكيد الدخول للوحة تحكم المعلم ➔</span>
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 10px;">
+          <button type="button" onclick="setTeacherAuthMode('signup')" style="background: none; border: none; color: #A78BFA; font-size: 0.8rem; cursor: pointer; text-decoration: underline;">
+            أنت معلم جديد؟ اضغط هنا لتسجيل بياناتك وإنشاء منصتك الخاصة
+          </button>
+        </div>
+
+        <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08);">
+          <button type="button" class="btn btn-outline btn-block" onclick="fillTeacherMasterDemo()" style="border-color: rgba(139, 92, 246, 0.4); color: #C4B5FD; font-size: 0.82rem;">
+            <span>⚡ دخول تجريبي فوري للأستاذ طارق (رمز 2027)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. TEACHER REGISTRATION FORM -->
+      <div id="teacher-auth-signup-view" style="display: none;">
+        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 8px 12px; margin-bottom: 12px; font-size: 0.78rem; color: #A7F3D0;">
+          ✨ أنشئ حسابك كمعلم لإدارة طلابك مجاناً بالكامل وتخصيص علامتك وهوية منصتك.
+        </div>
+
+        <form onsubmit="handleTeacherSignup(event)">
+          <label class="m-input-label" style="color: #E2E8F0;">اسم المعلم بالكامل (ثلاثي):</label>
+          <input type="text" id="teacher-reg-name" class="m-input" placeholder="مثال: أ/ محمد محمود خليل" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff;">
+
+          <label class="m-input-label" style="color: #E2E8F0;">المادة التعليمية والتخصص:</label>
+          <input type="text" id="teacher-reg-subject" class="m-input" placeholder="مثال: الفيزياء للثانوية العامة" value="الفيزياء للثانوية العامة" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff;">
+
+          <label class="m-input-label" style="color: #E2E8F0;">رقم الهاتف المحمول (مصر - 11 رقماً):</label>
+          <input type="tel" id="teacher-reg-phone" class="m-input" placeholder="010XXXXXXXX" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff; direction: ltr; text-align: left;">
+
+          <label class="m-input-label" style="color: #E2E8F0;">اسم السنتر أو الأكاديمية أو المحافظة:</label>
+          <input type="text" id="teacher-reg-center" class="m-input" placeholder="مثال: أكاديمية القمة - القاهرة" style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.15); color: #fff;">
+
+          <label class="m-input-label" style="color: #E2E8F0;">تعيين رمز الإدارة السري أو كلمة المرور:</label>
+          <input type="password" id="teacher-reg-password" class="m-input" placeholder="رمز الإدارة الخاص بك (مثال: 2027)" required style="background: rgba(15,23,42,0.9); border-color: rgba(139,92,246,0.4); color: #fff; letter-spacing: 2px;">
+
+          <button type="submit" class="btn btn-hero-primary btn-block" style="margin-top: 10px; min-height: 48px; font-size: 0.95rem;">
+            <span>🚀 تفعيل حساب المعلم والدخول فوراً ➔</span>
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 10px;">
+          <button type="button" onclick="setTeacherAuthMode('login')" style="background: none; border: none; color: #A78BFA; font-size: 0.8rem; cursor: pointer; text-decoration: underline;">
+            لديك حساب معلم بالفعل؟ تسجيل الدخول
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
-
-  <!-- ==================== MOBILE BOTTOM SHEETS (MODALS) ==================== -->
-
-  <!-- SHEET: ADD STUDENT -->
-  <div id="sheet-add-student" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'sheet-add-student')">
+<div id="sheet-add-student" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'sheet-add-student')">
     <div class="m-sheet-content">
       <div class="m-sheet-handle"></div>
       <div class="m-sheet-header">
