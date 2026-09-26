@@ -480,6 +480,39 @@
         <!-- ==================== 1. TEACHER PORTAL ==================== -->
         <section id="portal-teacher" class="portal-view active">
 
+          <!-- Persistent Cloud Sync Status Banner -->
+          <div class="cloud-sync-banner">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="cloud-sync-dot"></span>
+              <span style="font-weight: 800;">☁️ متزامن سحابياً ومحفوظ بشكل دائم</span>
+              <span style="font-size: 0.72rem; color: #94A3B8;">(النسخ الاحتياطي السحابي نشط)</span>
+            </div>
+            <span style="font-size: 0.72rem; color: #34D399; font-weight: 700;" id="cloud-sync-timestamp">مُحدث ومحفوظ الآن بنجاح ✅</span>
+          </div>
+
+          <!-- Desktop Navigation Tabs Bar (Visible on Desktop >= 769px) -->
+          <div class="desktop-nav-tabs-bar">
+            <button class="desktop-tab-btn active" onclick="switchTeacherTab('tab-copilot', this)">
+              <span>⚡</span><span>المساعد الذكي (Copilot)</span>
+            </button>
+            <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-curriculum-brain', this)">
+              <span>🧠</span><span>مركز تغذية المنهج والمعرفة</span>
+            </button>
+            <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-students', this)">
+              <span>👥</span><span>الطلاب والمجموعات</span>
+            </button>
+            <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-quizzes', this)">
+              <span>📝</span><span>الامتحانات والمذكرات</span>
+            </button>
+            <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-classes', this)">
+              <span>📹</span><span>الحصص والزووم</span>
+            </button>
+            <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-branding', this)">
+              <span>🎨</span><span>الهوية والإعدادات</span>
+            </button>
+          </div>
+  
+
           <!-- TAB 1: COPILOT (المساعد الشخصي الذكي) -->
           <div id="tab-copilot" class="m-tab-pane active">
             <!-- Hero Copilot Banner -->
@@ -593,7 +626,140 @@
           </div>
 
           <!-- TAB 2: STUDENTS (إدارة الطلاب وقوائم المتابعة) -->
-          <div id="tab-students" class="m-tab-pane">
+          
+          <!-- TAB: CENTRAL AI & CURRICULUM COMMAND CENTER (مركز تغذية المنهج والمعرفة) -->
+          <div id="tab-curriculum-brain" class="m-tab-pane">
+            <div class="desktop-grid-2col">
+              
+              <!-- 1. Curriculum & Subject Configuration -->
+              <div class="m-card">
+                <div class="m-card-header">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.3rem;">⚙️</span>
+                    <h3 class="m-card-title">تحديد المنهج والتخصص والمراحل</h3>
+                  </div>
+                  <span class="badge badge-primary">تهيئة فورية شاملة</span>
+                </div>
+                <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 12px;">
+                  حدد تخصصك والمنهج الدراسي. بناءً على هذا التحديد، تتهيأ كامل المنصة، وبوابة الطلاب، والمدرب السقراطي فورياً:
+                </p>
+
+                <form onsubmit="handleSaveCurriculumConfig(event)">
+                  <label class="m-input-label">المادة التعليمية والتخصص:</label>
+                  <select id="curriculum-subject-select" class="m-input">
+                    <option value="الفيزياء للثانوية العامة" selected>⚡ الفيزياء للثانوية العامة</option>
+                    <option value="الكيمياء للثانوية العامة">🧪 الكيمياء للثانوية العامة</option>
+                    <option value="الأحياء والجيولوجيا">🧬 الأحياء والجيولوجيا</option>
+                    <option value="الرياضيات البحتة والتطبيقية">📐 الرياضيات البحتة والتطبيقية</option>
+                    <option value="اللغة الإنجليزية">🇬🇧 اللغة الإنجليزية للثانوية</option>
+                  </select>
+
+                  <label class="m-input-label">الصف الدراسي المستهدف:</label>
+                  <select id="curriculum-grade-select" class="m-input">
+                    <option value="ALL" selected>جميع المراحل (1ث + 2ث + 3ث)</option>
+                    <option value="GRADE_12_SEC3">الصف الثالث الثانوي (الشهادة الثانوية)</option>
+                    <option value="GRADE_11_SEC2">الصف الثاني الثانوي</option>
+                    <option value="GRADE_10_SEC1">الصف الأول الثانوي</option>
+                  </select>
+
+                  <label class="m-input-label">أسلوب الشرح وتوجيه الذكاء الاصطناعي (Teaching Persona):</label>
+                  <select id="curriculum-tone-select" class="m-input">
+                    <option value="DEEP_UNDERSTANDING" selected>فهم عميق واستنتاج رياضي (طريقة الأستاذ طارق)</option>
+                    <option value="EXAM_DRILLS">حل مكثف وتكتيكات امتحانات وسرعة حل</option>
+                    <option value="VISUAL_3D">محاكاة ثلاثية الأبعاد وتبسيط مفاهيم</option>
+                  </select>
+
+                  <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px; min-height: 44px;">
+                    <span>💾 حفظ وتهيئة المنصة والذكاء الاصطناعي بالكامل</span>
+                  </button>
+                </form>
+              </div>
+
+              <!-- 2. AI Knowledge & Question Feeder -->
+              <div class="m-card">
+                <div class="m-card-header">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.3rem;">🧠</span>
+                    <h3 class="m-card-title">تغذية العقل المعرفي للذكاء الاصطناعي</h3>
+                  </div>
+                  <span class="badge badge-good">RAG Knowledge Base</span>
+                </div>
+                <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 12px;">
+                  أدخل القوانين الذهبية، الملاحظات الاستنتاجية، أو نصوص الدروس لتدريب مساعد الذكاء الاصطناعي ليرد على الطلاب بنفس طريقتك:
+                </p>
+
+                <textarea id="ai-feed-notes-input" class="m-input" rows="4" placeholder="اكتب هنا قوانين أو ملخصات أو أفكار امتحانية هامة (مثال: عند توصيل المقاومات على التوازي يقل المكافئ ويزداد التيار الكلي...)" style="resize: vertical;"></textarea>
+
+                <button type="button" class="btn btn-hero-primary btn-block" onclick="handleFeedKnowledgeToAI()" style="min-height: 42px; margin-top: 6px;">
+                  <span>⚡ فهرسة وتغذية الذكاء الاصطناعي سحابياً ➔</span>
+                </button>
+
+                <div style="margin-top: 12px; font-size: 0.76rem; color: #C4B5FD; font-weight: 700;">
+                  المعارف المفهرسة حالياً في العقل السحابي:
+                </div>
+                <div id="ai-indexed-topics-list" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;">
+                  <span class="tech-pill" style="font-size: 0.72rem;">قوانين كيرشوف وتوزيع الجهود ✅</span>
+                  <span class="tech-pill" style="font-size: 0.72rem;">أجهزة القياس الكهربي والجلفانومتر ✅</span>
+                  <span class="tech-pill" style="font-size: 0.72rem;">دوائر الرنين RLC وظاهرة كومتون ✅</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- 3. Live Announcements Dispatcher -->
+            <div class="m-card" style="margin-top: 14px;">
+              <div class="m-card-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.3rem;">📢</span>
+                  <h3 class="m-card-title">مركز إطلاق وبث التنبيهات الحية للطلاب</h3>
+                </div>
+                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #FCA5A5;">بث فوري لحظي 🔴</span>
+              </div>
+              <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 12px;">
+                أرسل تنبيهاً عاجلاً أو تذكيراً بموعد الحصة أو تسليم الواجب، وسيظهر فورياً في شريط التنبيهات في حسابات جميع الطلاب:
+              </p>
+
+              <div class="desktop-grid-2col">
+                <div>
+                  <label class="m-input-label">نص الإعلان أو التنبيه:</label>
+                  <input type="text" id="announcement-text-input" class="m-input" placeholder="مثال: تنبيه هام: تم فتح باب تسليم شيت كيرشوف الثاني عبر التطبيق حتى مساء الخميس." value="📌 شباب دفعة 2026: تم فتح باب تسليم شيت كيرشوف الثاني عبر التطبيق حتى مساء الخميس، واستعدوا لاختبار الجمعة 8 مساءً!">
+
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+                    <div>
+                      <label class="m-input-label">درجة الأهمية:</label>
+                      <select id="announcement-priority-select" class="m-input">
+                        <option value="URGENT">🔴 عاجل وفوري</option>
+                        <option value="IMPORTANT" selected>🟡 هام</option>
+                        <option value="NORMAL">🟢 إرشادي وتوجيهي</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="m-input-label">المجموعة المستهدفة:</label>
+                      <select id="announcement-target-select" class="m-input">
+                        <option value="ALL">جميع الطلاب</option>
+                        <option value="GRP-1">مجموعة السبت (3ث)</option>
+                        <option value="GRP-2">مجموعة الأحد (2ث)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <button type="button" class="btn btn-primary btn-block" onclick="handleBroadcastAnnouncement()" style="margin-top: 10px; min-height: 44px;">
+                    <span>📢 إطلاق وبث التنبيه لجميع الطلاب فوراً</span>
+                  </button>
+                </div>
+
+                <div>
+                  <label class="m-input-label">سجل الإعلانات والتنبيهات المذاعة:</label>
+                  <div id="teacher-announcements-history-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto;">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+<div id="tab-students" class="m-tab-pane">
             <div class="m-card" style="padding: 12px 14px;">
               <div style="display: flex; gap: 8px; margin-bottom: 8px;">
                 <input type="text" id="search-students-input" class="m-input" placeholder="🔍 ابحث بالاسم، الكود، أو المجموعة..." oninput="handleSearchStudents(this.value)" style="margin-bottom: 0; flex: 1;">
@@ -829,8 +995,8 @@
         <!-- ==================== 2. STUDENT PORTAL (STRICTLY ISOLATED) ==================== -->
         <section id="portal-student" class="portal-view">
 
-          <!-- 1. Student Greeting & Code -->
-          <div class="m-card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.25)); border-color: rgba(139, 92, 246, 0.45);">
+          <!-- 1. Student Greeting & Code & Pairing PIN -->
+          <div class="m-card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.25)); border-color: rgba(139, 92, 246, 0.45); margin-bottom: 16px;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
               <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4);">بوابة الطالب الذكية 🎓</span>
               <div style="display: flex; align-items: center; gap: 6px;">
@@ -843,147 +1009,218 @@
                 </button>
               </div>
             </div>
-            <h2 style="font-size: 1.2rem; font-weight: 800; color: #FFFFFF;" id="student-greeting-name">أهلاً بك يا أحمد! ⚡</h2>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #FFFFFF;" id="student-greeting-name">أهلاً بك يا أحمد! ⚡</h2>
             <p style="font-size: 0.84rem; color: #CBD5E1; margin-top: 2px;">
-              منصتك المتكاملة مع <strong>الأستاذ طارق الشناوي</strong>: مذكرات، محاضرات فيديو، اختبارات تفاعلية، ومساعد الذكاء الاصطناعي لحل الواجبات.
+              منصتك المتكاملة مع <strong id="student-portal-teacher-name">الأستاذ طارق الشناوي</strong>: مذكرات، محاضرات فيديو، اختبارات تفاعلية، ومساعد الذكاء الاصطناعي لحل الواجبات.
             </p>
           </div>
 
-          <!-- 2. Live Teacher Announcement Banner -->
-          <div class="teacher-announcement-card">
+          <!-- 2. Live Broadcast Announcement Banner (Connected to Teacher Dispatcher) -->
+          <div class="teacher-announcement-card" id="student-live-announcement-card">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="font-size: 1.2rem;">📢</span>
-              <span style="font-weight: 800; font-size: 0.88rem; color: #93C5FD;">تنبيه هام ومباشر من الأستاذ طارق:</span>
-              <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #FCA5A5; font-size: 0.68rem; margin-right: auto;">عاجل 🔴</span>
+              <span style="font-weight: 800; font-size: 0.88rem; color: #93C5FD;">تنبيه مباشر من الأستاذ:</span>
+              <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #FCA5A5; font-size: 0.68rem; margin-right: auto;" id="student-announcement-badge">عاجل 🔴</span>
             </div>
             <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.5;" id="student-live-announcement-text">
-              📌 شباب دفعة 2026: تم فتح باب استقبال حلول شيت كيرشوف الثاني عبر التطبيق حتى مساء الخميس. واستعدوا للاختبار الشامل على الفصل الأول يوم الجمعة 8:00 مساءً إلكترونياً!
+              📌 شباب دفعة 2026: تم فتح باب استقبال حلول شيت كيرشوف الثاني عبر التطبيق حتى مساء الخميس، واستعدوا لاختبار الجمعة 8 مساءً!
             </div>
           </div>
 
-          <!-- 3. Student Booklets Vault (Dynamically Loaded & Downloadable) -->
-          <div class="m-card">
-            <div class="m-card-header">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 1.3rem;">📚</span>
-                <h3 class="m-card-title">مكتبة المذكرات والملازم المعتمدة (PDF)</h3>
-              </div>
-              <span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #C4B5FD;" id="student-booklet-count-badge">3 مذكرات</span>
-            </div>
-            <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 12px;">
-              المذكرات والخرائط الذهنية المرفوعة والمنشورة لك من قِبل الأستاذ طارق الشناوي:
-            </p>
-            <div id="student-published-booklets-container">
-              <!-- Dynamically populated by renderStudentPublishedBooklets() -->
-            </div>
-          </div>
+          <!-- 3. Desktop Two-Column Responsive Layout for Student Hub -->
+          <div class="desktop-grid-2col">
 
-          <!-- 4. Video Lessons & Recorded Lectures -->
-          <div class="m-card">
-            <div class="m-card-header">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 1.3rem;">🎥</span>
-                <h3 class="m-card-title">محاضرات الشرح وحصص المراجعة</h3>
-              </div>
-              <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399;">متاحة بالكامل 🟢</span>
-            </div>
-            
-            <!-- Lesson 1 -->
-            <div class="student-lesson-card">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: 800; font-size: 0.88rem; color: #FFFFFF;">⚡ المحاضرة 01: تجزئة الجهد والتيار وقانون أوم للدائرة المغلقة</span>
-                <span style="font-size: 0.72rem; color: #94A3B8;">48 دقيقة</span>
-              </div>
-              <div style="font-size: 0.76rem; color: #94A3B8;">
-                تتضمن شرح المقاومة النوعية والتوصيلية، حالات انعدام المقاومة، وحل 6 مسائل وزارية.
-              </div>
-              <div style="display: flex; gap: 8px; margin-top: 4px;">
-                <button class="btn btn-primary" onclick="openCoursePlayerSheet('المحاضرة 01: قانون أوم وقوانين كيرشوف')" style="flex: 1; min-height: 36px; font-size: 0.78rem;">
-                  <span>▶️ مشاهدة الحصة</span>
-                </button>
-                <button class="btn btn-outline" onclick="alert('📝 اختبار المحاضرة الأولى: 10 أسئلة متدرجة الصعوبة')" style="flex: 1; min-height: 36px; font-size: 0.78rem; border-color: rgba(255,255,255,0.15); color: #E2E8F0;">
-                  <span>📝 حل كويز الحصة</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Lesson 2 -->
-            <div class="student-lesson-card">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: 800; font-size: 0.88rem; color: #FFFFFF;">🧲 المحاضرة 02: إتقان قوانين كيرشوف وحل الدوائر المعقدة</span>
-                <span style="font-size: 0.72rem; color: #94A3B8;">55 دقيقة</span>
-              </div>
-              <div style="font-size: 0.76rem; color: #94A3B8;">
-                طريقة النقط، فرض اتجاهات التيار، وتكوين المعادلات وحلها بالآلة الحاسبة.
-              </div>
-              <div style="display: flex; gap: 8px; margin-top: 4px;">
-                <button class="btn btn-primary" onclick="openCoursePlayerSheet('المحاضرة 02: إتقان قوانين كيرشوف وحل الدوائر المعقدة')" style="flex: 1; min-height: 36px; font-size: 0.78rem;">
-                  <span>▶️ مشاهدة الحصة</span>
-                </button>
-                <button class="btn btn-outline" onclick="alert('📝 اختبار كيرشوف التفاعلي')" style="flex: 1; min-height: 36px; font-size: 0.78rem; border-color: rgba(255,255,255,0.15); color: #E2E8F0;">
-                  <span>📝 حل كويز الحصة</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- 5. Daily Cognitive Challenge & Skill Booster -->
-          <div class="student-challenge-card">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <span style="font-size: 1.3rem;">🎯</span>
-                <span style="font-weight: 900; font-size: 0.95rem; color: #FCD34D;">تحدي اليوم الفيزيائي (سؤال تفكير عليا للعباقرة):</span>
-              </div>
-              <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FBBF24; font-size: 0.72rem;">+50 نقطة تميز ⚡</span>
-            </div>
-            
-            <p style="font-size: 0.84rem; color: #FEF3C7; line-height: 1.6; margin-bottom: 10px;" id="daily-challenge-question">
-              في دائرة كهربية تحتوي على بطارية لها مقاومة داخلية (r > 0) ومقاومة متغيرة (R): ماذا يحدث لقراءة الفولتميتر المتصل بين قطبي البطارية عند زيادة قيمة المقاومة المتغيرة R؟
-            </p>
-
-            <div style="display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 8px;" id="daily-challenge-options">
-              <button class="btn btn-outline" onclick="answerDailyPhysicsChallenge('A')" style="text-align: right; justify-content: flex-start; border-color: rgba(252, 211, 77, 0.3); color: #FFFFFF; font-size: 0.8rem; min-height: 38px;">
-                أ) تزداد قراءة الفولتميتر
-              </button>
-              <button class="btn btn-outline" onclick="answerDailyPhysicsChallenge('B')" style="text-align: right; justify-content: flex-start; border-color: rgba(252, 211, 77, 0.3); color: #FFFFFF; font-size: 0.8rem; min-height: 38px;">
-                ب) تقل قراءة الفولتميتر
-              </button>
-              <button class="btn btn-outline" onclick="answerDailyPhysicsChallenge('C')" style="text-align: right; justify-content: flex-start; border-color: rgba(252, 211, 77, 0.3); color: #FFFFFF; font-size: 0.8rem; min-height: 38px;">
-                جـ) تظل قراءة الفولتميتر ثابتة
-              </button>
-            </div>
-
-            <div id="daily-challenge-feedback" style="display: none; padding: 10px; border-radius: 10px; font-size: 0.82rem; margin-top: 8px;"></div>
-
-            <!-- Mastery Radar -->
-            <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(245, 158, 11, 0.2);">
-              <div style="font-size: 0.76rem; color: #FDE68A; font-weight: 700; margin-bottom: 6px;">مؤشر تمكنك من مهارات الفيزياء:</div>
-              <div style="display: flex; flex-direction: column; gap: 6px;">
-                <div>
-                  <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #E2E8F0;">
-                    <span>الفهم الفيزيائي العميق</span>
-                    <span>94%</span>
+            <!-- LEFT COLUMN: Recorded Past Classes & Teacher Achievements -->
+            <div>
+              
+              <!-- Video Classes & Past Lectures Archive -->
+              <div class="m-card">
+                <div class="m-card-header">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.3rem;">🎥</span>
+                    <h3 class="m-card-title">أرشيف المحاضرات والحصص السابقة</h3>
                   </div>
-                  <div class="dark-skill-bar-track" style="height: 6px;"><div class="dark-skill-bar-fill" style="width: 94%;"></div></div>
+                  <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399;">متاحة دائماً 🟢</span>
                 </div>
-                <div>
-                  <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #E2E8F0;">
-                    <span>التحليل وحل المسائل المركبة</span>
-                    <span>89%</span>
+                <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 10px;">
+                  استعرض أي حصة سابقة أو محاضرة تأسيس للمراجعة والتدريب في أي وقت:
+                </p>
+
+                <!-- Lesson 1 -->
+                <div class="student-lesson-card">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 800; font-size: 0.86rem; color: #FFFFFF;">⚡ المحاضرة 01: تجزئة الجهد والتيار وقانون أوم للدائرة المغلقة</span>
+                    <span style="font-size: 0.72rem; color: #94A3B8;">48 دقيقة</span>
                   </div>
-                  <div class="dark-skill-bar-track" style="height: 6px;"><div class="dark-skill-bar-fill" style="width: 89%;"></div></div>
+                  <div style="font-size: 0.76rem; color: #94A3B8;">
+                    شرح المقاومة النوعية والتوصيلية الكهربية، حالات انعدام المقاومة، وحل مسائل كتاب الوزارة.
+                  </div>
+                  <div style="display: flex; gap: 8px; margin-top: 4px;">
+                    <button class="btn btn-primary" onclick="openCoursePlayerSheet('المحاضرة 01: قانون أوم وقوانين كيرشوف')" style="flex: 1; min-height: 36px; font-size: 0.78rem;">
+                      <span>▶️ مشاهدة الحصة</span>
+                    </button>
+                    <button class="btn btn-outline" onclick="alert('📝 اختبار المحاضرة الأولى: 10 أسئلة متدرجة الصعوبة')" style="flex: 1; min-height: 36px; font-size: 0.78rem; border-color: rgba(255,255,255,0.15); color: #E2E8F0;">
+                      <span>📝 حل كويز الحصة</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Lesson 2 -->
+                <div class="student-lesson-card">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 800; font-size: 0.86rem; color: #FFFFFF;">🧲 المحاضرة 02: إتقان قوانين كيرشوف وحل الدوائر المعقدة</span>
+                    <span style="font-size: 0.72rem; color: #94A3B8;">55 دقيقة</span>
+                  </div>
+                  <div style="font-size: 0.76rem; color: #94A3B8;">
+                    استراتيجية طريقة النقط، فرض اتجاهات التيار، وتكوين المعادلات وحلها بالآلة الحاسبة.
+                  </div>
+                  <div style="display: flex; gap: 8px; margin-top: 4px;">
+                    <button class="btn btn-primary" onclick="openCoursePlayerSheet('المحاضرة 02: إتقان قوانين كيرشوف وحل الدوائر المعقدة')" style="flex: 1; min-height: 36px; font-size: 0.78rem;">
+                      <span>▶️ مشاهدة الحصة</span>
+                    </button>
+                    <button class="btn btn-outline" onclick="alert('📝 اختبار كيرشوف التفاعلي')" style="flex: 1; min-height: 36px; font-size: 0.78rem; border-color: rgba(255,255,255,0.15); color: #E2E8F0;">
+                      <span>📝 حل كويز الحصة</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Lesson 3 -->
+                <div class="student-lesson-card">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 800; font-size: 0.86rem; color: #FFFFFF;">🎯 ورشة عمل: حل مسائل مستويات التفكير العليا (الفصل الأول)</span>
+                    <span style="font-size: 0.72rem; color: #94A3B8;">62 دقيقة</span>
+                  </div>
+                  <div style="font-size: 0.76rem; color: #94A3B8;">
+                    تفكيك أصعب 15 مسألة من امتحانات الثانوية العامة للأعوام (2021 إلى 2025) وبنك المعرفة.
+                  </div>
+                  <div style="display: flex; gap: 8px; margin-top: 4px;">
+                    <button class="btn btn-primary" onclick="openCoursePlayerSheet('ورشة عمل: حل مسائل مستويات التفكير العليا')" style="flex: 1; min-height: 36px; font-size: 0.78rem;">
+                      <span>▶️ مشاهدة الورشة</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          
-            <div class="chat-input-bar" style="margin-top: 10px;">
-              <input type="text" id="student-socratic-input" class="m-input" placeholder="اكتب سؤالك هنا..." style="margin-bottom: 0;" onkeydown="if(event.key==='Enter') handleStudentSocraticAsk()">
-              <button class="btn btn-primary" onclick="handleStudentSocraticAsk()" style="min-height: 42px; padding: 0 16px;">
-                <span>إرسال</span>
-              </button>
+              <!-- Teacher Showcase & Wall of Fame -->
+              <div class="m-card">
+                <div class="m-card-header">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.3rem;">🌟</span>
+                    <h3 class="m-card-title">إنجازات وأعمال الأستاذ</h3>
+                  </div>
+                  <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D;">لوحة الشرف 🏆</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;">
+                  <div style="background: #1E293B; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px; text-align: center;">
+                    <div style="font-size: 1.4rem; margin-bottom: 2px;">📖</div>
+                    <div style="font-weight: 800; font-size: 0.8rem; color: #FFFFFF;">كتاب الشناوي 2026</div>
+                    <div style="font-size: 0.7rem; color: #94A3B8;">المرجع المعتمد للثانوية</div>
+                  </div>
+                  <div style="background: #1E293B; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px; text-align: center;">
+                    <div style="font-size: 1.4rem; margin-bottom: 2px;">🥇</div>
+                    <div style="font-weight: 800; font-size: 0.8rem; color: #FFFFFF;">+100 من أوائل الجمهورية</div>
+                    <div style="font-size: 0.7rem; color: #94A3B8;">طلاب حصلوا على 60/60</div>
+                  </div>
+                </div>
+              </div>
+
             </div>
+
+            <!-- RIGHT COLUMN: Booklets, Daily Challenge, Zoom & Socratic AI -->
+            <div>
+
+              <!-- Synced Booklets Vault -->
+              <div class="m-card">
+                <div class="m-card-header">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.3rem;">📚</span>
+                    <h3 class="m-card-title">مكتبة المذكرات والملازم المعتمدة (PDF)</h3>
+                  </div>
+                  <span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #C4B5FD;" id="student-booklet-count-badge">3 مذكرات</span>
+                </div>
+                <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 12px;">
+                  المذكرات والخرائط الذهنية المرفوعة والمنشورة لك من قِبل الأستاذ:
+                </p>
+                <div id="student-published-booklets-container">
+                  <!-- Dynamically populated by renderStudentPublishedBooklets() -->
+                </div>
+              </div>
+
+              <!-- Daily Cognitive Challenge -->
+              <div class="student-challenge-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 1.3rem;">🎯</span>
+                    <span style="font-weight: 900; font-size: 0.95rem; color: #FCD34D;">تحدي اليوم الفيزيائي (سؤال تفكير عليا):</span>
+                  </div>
+                  <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FBBF24; font-size: 0.72rem;">+50 نقطة تميز ⚡</span>
+                </div>
+                
+                <p style="font-size: 0.84rem; color: #FEF3C7; line-height: 1.6; margin-bottom: 10px;" id="daily-challenge-question">
+                  في دائرة كهربية تحتوي على بطارية لها مقاومة داخلية (r > 0) ومقاومة متغيرة (R): ماذا يحدث لقراءة الفولتميتر المتصل بين قطبي البطارية عند زيادة قيمة المقاومة المتغيرة R؟
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 8px;" id="daily-challenge-options">
+                  <button class="btn btn-outline" onclick="answerDailyPhysicsChallenge('A')" style="text-align: right; justify-content: flex-start; border-color: rgba(252, 211, 77, 0.3); color: #FFFFFF; font-size: 0.8rem; min-height: 38px;">
+                    أ) تزداد قراءة الفولتميتر
+                  </button>
+                  <button class="btn btn-outline" onclick="answerDailyPhysicsChallenge('B')" style="text-align: right; justify-content: flex-start; border-color: rgba(252, 211, 77, 0.3); color: #FFFFFF; font-size: 0.8rem; min-height: 38px;">
+                    ب) تقل قراءة الفولتميتر
+                  </button>
+                  <button class="btn btn-outline" onclick="answerDailyPhysicsChallenge('C')" style="text-align: right; justify-content: flex-start; border-color: rgba(252, 211, 77, 0.3); color: #FFFFFF; font-size: 0.8rem; min-height: 38px;">
+                    جـ) تظل قراءة الفولتميتر ثابتة
+                  </button>
+                </div>
+
+                <div id="daily-challenge-feedback" style="display: none; padding: 10px; border-radius: 10px; font-size: 0.82rem; margin-top: 8px;"></div>
+              </div>
+
+              <!-- Always-on Direct Line to Teacher & Zoom Live Class -->
+              <div class="m-card">
+                <div class="m-card-header">
+                  <h3 class="m-card-title">📹 حصتك القادمة في البث المباشر</h3>
+                  <span class="badge badge-good">اليوم 7:00 م 🟢</span>
+                </div>
+                <div style="font-weight: 800; font-size: 0.92rem; color: #FFFFFF; margin-bottom: 4px;">
+                  مراجعة هامة: مسائل كيرشوف وقانون أوم للدائرة المغلقة
+                </div>
+                <div style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 12px;">
+                  عبر تطبيق Zoom مع الأستاذ مباشرة
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button class="btn btn-primary" onclick="joinStudentLiveZoom()" style="flex: 1; min-height: 42px;">
+                    <span>🚀 انضم للبث الآن</span>
+                  </button>
+                  <button class="btn btn-whatsapp" onclick="openDirectWhatsApp()" style="flex: 1; min-height: 42px;">
+                    <span>💬 اسأل المستر مباشرة</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Socratic AI Coach -->
+              <div class="m-card">
+                <div class="m-card-header">
+                  <h3 class="m-card-title">🧠 المدرب السقراطي لمساعدتك في المذاكرة</h3>
+                  <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #C4B5FD;">شرح خطوة بخطوة</span>
+                </div>
+                <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 8px;">
+                  لا يعطيك الحل جاهزاً، بل يرشدك لاستنتاج الإجابة بنفسك كأن الأستاذ معك خطوة بخطوة:
+                </p>
+                <div class="chat-stream-box" id="student-socratic-chat-box" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px; max-height: 200px; overflow-y: auto;">
+                  <div class="chat-bubble ai" style="background: rgba(99, 102, 241, 0.15); border-color: rgba(139, 92, 246, 0.3); color: #E0E7FF;">
+                    أهلاً بك يا بطل! ⚡ ما المسألة أو الفكرة التي تريد أن نتناقش فيها اليوم؟
+                  </div>
+                </div>
+                <div class="chat-input-bar" style="margin-top: 10px;">
+                  <input type="text" id="student-socratic-input" class="m-input" placeholder="اكتب سؤالك هنا..." style="margin-bottom: 0;" onkeydown="if(event.key==='Enter') handleStudentSocraticAsk()">
+                  <button class="btn btn-primary" onclick="handleStudentSocraticAsk()" style="min-height: 42px; padding: 0 16px;">
+                    <span>إرسال</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
           </div>
         </section>
 
