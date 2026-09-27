@@ -7169,28 +7169,38 @@ document.addEventListener('DOMContentLoaded', () => {
 function showMainView(viewName) {
   const portfolio = document.getElementById('view-dark-showcase');
   const appWorkspace = document.getElementById('view-app-workspace');
+  const pitchView = document.getElementById('view-sales-pitch');
 
-  if (viewName === 'portfolio') {
-    document.body.classList.remove('in-app-mode');
+  if (viewName === 'pitch') {
+    document.body.classList.remove('in-app-mode', 'in-portfolio-mode');
+    document.body.classList.add('in-pitch-mode');
+    if (pitchView) {
+      pitchView.style.display = 'block';
+      pitchView.style.width = '100%';
+    }
+    if (portfolio) portfolio.style.display = 'none';
+    if (appWorkspace) appWorkspace.style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (viewName === 'portfolio') {
+    document.body.classList.remove('in-app-mode', 'in-pitch-mode');
     document.body.classList.add('in-portfolio-mode');
+    if (pitchView) pitchView.style.display = 'none';
     if (portfolio) {
       portfolio.style.display = 'block';
       portfolio.style.width = '100%';
     }
-    if (appWorkspace) {
-      appWorkspace.style.display = 'none';
-    }
+    if (appWorkspace) appWorkspace.style.display = 'none';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } else {
-    document.body.classList.remove('in-portfolio-mode');
+    document.body.classList.remove('in-portfolio-mode', 'in-pitch-mode');
     document.body.classList.add('in-app-mode');
-    if (portfolio) {
-      portfolio.style.display = 'none';
-    }
+    if (pitchView) pitchView.style.display = 'none';
+    if (portfolio) portfolio.style.display = 'none';
     if (appWorkspace) {
       appWorkspace.style.display = 'block';
       appWorkspace.style.width = '100%';
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 

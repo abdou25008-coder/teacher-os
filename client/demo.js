@@ -120,13 +120,20 @@ function updateDockActiveButton(role) {
 }
 
 function switchToDemoRole(role) {
-  if (role === 'teacher') instantDemoLogin('TEACHER');
-  else if (role === 'student') instantDemoLogin('STUDENT');
-  else if (role === 'parent') instantDemoLogin('PARENT');
-  else if (role === 'portfolio') {
+  if (role === 'pitch') {
+    if (typeof showMainView === 'function') showMainView('pitch');
+    updateDockActiveButton('pitch');
+    showDemoToast('💡 تم فتح صفحة نقاط القوة البيعية وأبواب الربح للمنصة!');
+  } else if (role === 'portfolio') {
     if (typeof showMainView === 'function') showMainView('portfolio');
     updateDockActiveButton('portfolio');
     showDemoToast('🌐 تم فتح البورتفوليو التسويقي والمتجر الرقمي!');
+  } else if (role === 'teacher') {
+    instantDemoLogin('TEACHER');
+  } else if (role === 'student') {
+    instantDemoLogin('STUDENT');
+  } else if (role === 'parent') {
+    instantDemoLogin('PARENT');
   }
 }
 
@@ -174,8 +181,8 @@ function showDemoToast(msg) {
 }
 
 function openSalesPitchModal() {
-  const modal = document.getElementById('modal-sales-pitch');
-  if (modal) modal.classList.add('active');
+  switchToDemoRole('pitch');
+    if (typeof updateProfitCalc === 'function') updateProfitCalc();
 }
 
 function resetDemoState() {
@@ -214,6 +221,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Default to teacher view for first impression
-    switchToDemoRole('teacher');
+    switchToDemoRole('pitch');
   }, 250);
 });
+
+
+
+// Interactive Profit Calculator
+function updateProfitCalc() {
+  const studentsRange = document.getElementById('calc-range-students');
+  const feeRange = document.getElementById('calc-range-fee');
+  const booksRange = document.getElementById('calc-range-books');
+
+  const students = studentsRange ? parseInt(studentsRange.value, 10) : 300;
+  const fee = feeRange ? parseInt(feeRange.value, 10) : 250;
+  const books = booksRange ? parseInt(booksRange.value, 10) : 150;
+
+  const valStudentsEl = document.getElementById('calc-val-students');
+  const valFeeEl = document.getElementById('calc-val-fee');
+  const valBooksEl = document.getElementById('calc-val-books');
+
+  if (valStudentsEl) valStudentsEl.textContent = students + ' طالب';
+  if (valFeeEl) valFeeEl.textContent = fee + ' ج.م';
+  if (valBooksEl) valBooksEl.textContent = books + ' نسخة (بـ 60 ج.م)';
+
+  // Monthly Subscriptions Revenue
+  const subRevenue = students * fee;
+  // Digital Products Revenue
+  const bookRevenue = books * 60;
+  // Total Monthly
+  const totalMonthly = subRevenue + bookRevenue;
+  // 20% platform cut that would have been lost on other platforms
+  const savedCut = Math.round(totalMonthly * 0.20);
+  // Annual Revenue (12 months)
+  const totalAnnual = totalMonthly * 12;
+
+  const resMonthlyEl = document.getElementById('calc-res-monthly');
+  const resSavedEl = document.getElementById('calc-res-saved');
+  const resAnnualEl = document.getElementById('calc-res-annual');
+
+  if (resMonthlyEl) resMonthlyEl.textContent = totalMonthly.toLocaleString('en-US') + ' ج.م';
+  if (resSavedEl) resSavedEl.textContent = savedCut.toLocaleString('en-US') + ' ج.م شهرياً';
+  if (resAnnualEl) resAnnualEl.textContent = totalAnnual.toLocaleString('en-US') + ' ج.م';
+}
+
+window.updateProfitCalc = updateProfitCalc;
