@@ -88,6 +88,24 @@
           البيئة التعليمية الذكية الأقوى لطلاب الثانوية العامة — شروحات تفاعلية، حل مسائل مستويات التفكير الابتكاري، وتدريب مستمر بأحدث نماذج المحاكاة ثلاثية الأبعاد ومساعد الذكاء الاصطناعي الخاص لإعداد متفوقي الجمهورية.
         </p>
 
+        <!-- Instant Demo Fast Logins Grid -->
+        <div style="background: rgba(15,23,42,0.85); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 16px; padding: 14px; margin: 0 auto 24px auto; max-width: 680px; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.4);">
+          <div style="font-weight: 900; font-size: 0.92rem; color: #FCD34D; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <span>⚡ تسجيل الدخول الفوري ببيانات العرض التجريبي (بنقرة واحدة):</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px;">
+            <button type="button" class="btn" onclick="instantDemoLogin('TEACHER')" style="background: linear-gradient(135deg, #2563EB, #1D4ED8); color: #fff; font-weight: 900; font-size: 0.85rem; min-height: 42px; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.35);">
+              👨‍🏫 دخول فوري كمعلم (أ/ طارق)
+            </button>
+            <button type="button" class="btn" onclick="instantDemoLogin('STUDENT')" style="background: linear-gradient(135deg, #059669, #047857); color: #fff; font-weight: 900; font-size: 0.85rem; min-height: 42px; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(5,150,105,0.35);">
+              🎓 دخول فوري كطالب (أحمد)
+            </button>
+            <button type="button" class="btn" onclick="instantDemoLogin('PARENT')" style="background: linear-gradient(135deg, #7C3AED, #6D28D9); color: #fff; font-weight: 900; font-size: 0.85rem; min-height: 42px; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(124,58,237,0.35);">
+              👨‍👩‍👧 دخول فوري كولي أمر
+            </button>
+          </div>
+        </div>
+
         <div class="hero-actions-row" style="justify-content: center; gap: 14px; margin-bottom: 30px; display: flex; flex-wrap: wrap;">
           <button type="button" class="btn-hero-primary" onclick="openStudentParentAuth('STUDENT')" style="min-height: 50px; font-size: 1.05rem; padding: 0 28px;">
             <span>تسجيل دخول الطالب وولي الأمر</span>
@@ -1673,6 +1691,23 @@
 
       <!-- 1. LOGIN FORM (STRICT CREDENTIALS CHECK) -->
       <div id="sp-auth-login-view">
+        <!-- Demo Instant Login 1-Click Box -->
+        <div style="background: rgba(245, 158, 11, 0.12); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 14px;">
+          <div style="font-weight: 900; font-size: 0.84rem; color: #FCD34D; margin-bottom: 8px; text-align: center;">
+            ⚡ تسجيل دخول فوري بالبيانات الافتراضية (بنقرة واحدة):
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button type="button" class="btn" onclick="instantDemoLogin('STUDENT')" style="background: #2563EB; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; min-height: 40px; border-radius: 10px; border: none;">
+              🎓 دخول فوري كطالب (أحمد)
+            </button>
+            <button type="button" class="btn" onclick="instantDemoLogin('PARENT')" style="background: #7C3AED; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; min-height: 40px; border-radius: 10px; border: none;">
+              👨‍👩‍👧 دخول فوري كولي أمر
+            </button>
+          </div>
+          <div style="font-size: 0.72rem; color: #94A3B8; text-align: center; margin-top: 6px;">
+            بيانات تجريبية جاهزة مسبقاً — لا حاجة لكتابة أي شيء!
+          </div>
+        </div>
         <div style="background: rgba(37,99,235,0.1); border: 1px solid rgba(37,99,235,0.3); border-radius: 10px; padding: 10px; margin-bottom: 14px; font-size: 0.8rem; color: #BFDBFE;">
           🔒 يرجى إدخال رقم هاتفك المسجل مسبقاً وكلمة المرور الخاصة بك للدخول لمنصتك.
         </div>
@@ -1812,6 +1847,18 @@
 
       <!-- 1. TEACHER LOGIN FORM (STRICT CREDENTIALS CHECK) -->
       <div id="teacher-auth-login-view">
+        <!-- Demo Instant Login 1-Click Box for Teacher -->
+        <div style="background: rgba(245, 158, 11, 0.12); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 14px;">
+          <div style="font-weight: 900; font-size: 0.84rem; color: #FCD34D; margin-bottom: 8px; text-align: center;">
+            ⚡ تسجيل دخول فوري بحساب المعلم الافتراضي:
+          </div>
+          <button type="button" class="btn btn-hero-primary btn-block" onclick="instantDemoLogin('TEACHER')" style="min-height: 44px; font-weight: 900; font-size: 0.9rem;">
+            👨‍🏫 دخول فوري كمعلم ومدير (أ/ طارق الشناوي) ➔
+          </button>
+          <div style="font-size: 0.72rem; color: #94A3B8; text-align: center; margin-top: 6px;">
+            الهاتف: 01011112222 • الرمز السري: 1234 (معبأ تلقائياً)
+          </div>
+        </div>
         <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.8rem; color: #C7D2FE;">
           🔒 هذه البوابة مخصصة حصرياً للمعلم لإدارة المجموعات، بنوك الأسئلة، والتحكم في نشر المذكرات.
         </div>
