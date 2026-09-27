@@ -986,7 +986,7 @@ body {
 }
 
 .brand-logo-code {
-  font-family: monospace;
+  font-family: inherit;
   font-size: 1.25rem;
   font-weight: 800;
   color: #FFFFFF;
