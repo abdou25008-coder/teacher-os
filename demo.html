@@ -1629,7 +1629,7 @@
       </main>
 
       <!-- ==================== MOBILE BOTTOM NAVIGATION BAR (SHOWN TO TEACHER ONLY) ==================== -->
-      <nav id="mobile-bottom-bar" class="m-bottom-nav">
+      <nav id="mobile-bottom-bar" class="m-bottom-nav mobile-bottom-nav">
         <button class="m-nav-tab active" id="b-tab-copilot" onclick="switchTeacherTab('tab-copilot', this)">
           <span class="icon">🤖</span>
           <span>المساعد</span>
@@ -2125,7 +2125,7 @@
   </div>
 
   <!-- Core Scripts -->
-  <script src="app.js?v=20260927_strict_v7"></script>
+  
   <!-- MODAL: CREATE PACKAGE -->
   <div id="modal-create-package" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-create-package')">
     <div class="m-sheet-content">
@@ -2393,6 +2393,10 @@
   </div>
 
   <!-- Demo Scripts -->
-  <script src="demo.js?v=20260927_strict_v7"></script>
+  
+
+  <!-- Scripts: Core Engine then Demo Layer -->
+  <script src="app.js?v=20260927_strict_v8"></script>
+  <script src="demo.js?v=20260927_strict_v8"></script>
 </body>
 </html>

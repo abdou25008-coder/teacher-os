@@ -1,5 +1,5 @@
 /* ==========================================================================
-   TEACHER OS — DEMO & PRESENTATION BAR STYLING
+   TEACHER OS — DEMO CONTROLLER & RESPONSIVE FLOATING DOCK
    ========================================================================== */
 
 /* Top Demo Banner */
@@ -17,25 +17,48 @@
   z-index: 99990;
 }
 
-/* Floating Demo Dock */
+/* Floating Demo Dock (Desktop: Bottom Center, Mobile: Top Pill Bar) */
 .demo-floating-dock {
   position: fixed;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 99999;
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(15, 23, 42, 0.96);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1.5px solid rgba(139, 92, 246, 0.5);
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(139, 92, 246, 0.35);
-  border-radius: 40px;
-  padding: 6px 14px;
   display: flex;
   align-items: center;
   gap: 8px;
-  max-width: 95vw;
+  max-width: 96vw;
   overflow-x: auto;
+  pointer-events: auto !important;
+}
+
+/* Desktop: Bottom Center */
+@media (min-width: 769px) {
+  .demo-floating-dock {
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 40px;
+    padding: 6px 14px;
+    z-index: 99999;
+  }
+}
+
+/* Mobile: Top Bar right under header so it NEVER interferes with bottom nav bar! */
+@media (max-width: 768px) {
+  .demo-floating-dock {
+    top: 50px;
+    bottom: auto;
+    left: 6px;
+    right: 6px;
+    transform: none;
+    border-radius: 14px;
+    padding: 6px 8px;
+    gap: 6px;
+    z-index: 99980;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  }
 }
 
 .demo-dock-label {
@@ -69,16 +92,17 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
+  padding: 7px 12px;
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.06);
   color: #CBD5E1;
   font-weight: 800;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
+  touch-action: manipulation;
 }
 
 .demo-role-btn:hover {
@@ -98,10 +122,10 @@
   background: linear-gradient(135deg, #F59E0B, #D97706);
   color: #FFFFFF;
   border: none;
-  padding: 8px 14px;
+  padding: 7px 12px;
   border-radius: 24px;
   font-weight: 800;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
   display: inline-flex;
@@ -110,61 +134,14 @@
   white-space: nowrap;
 }
 
-.demo-pitch-btn:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
 .demo-reset-btn {
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.4);
   color: #FCA5A5;
-  padding: 8px 10px;
+  padding: 7px 10px;
   border-radius: 20px;
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
-}
-
-.demo-reset-btn:hover {
-  background: rgba(239, 68, 68, 0.3);
-}
-
-/* Sales Pitch Guide Modal */
-.pitch-point-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 12px;
-}
-
-.pitch-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: rgba(99, 102, 241, 0.2);
-  color: #A5B4FC;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  flex-shrink: 0;
-}
-
-.pitch-title {
-  font-weight: 900;
-  font-size: 0.95rem;
-  color: #FFFFFF;
-}
-
-.pitch-desc {
-  font-size: 0.8rem;
-  color: #94A3B8;
-  line-height: 1.5;
-  margin-top: 2px;
 }

@@ -7160,3 +7160,111 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch(e) {}
   }, 500);
 });
+
+
+/* ==========================================================================
+   MASTER VIEW & NAVIGATION CONTROLLER (SINGLE SOURCE OF TRUTH)
+   ========================================================================== */
+
+function showMainView(viewName) {
+  const portfolio = document.getElementById('view-dark-showcase');
+  const appWorkspace = document.getElementById('view-app-workspace');
+
+  if (viewName === 'portfolio') {
+    document.body.classList.remove('in-app-mode');
+    document.body.classList.add('in-portfolio-mode');
+    if (portfolio) {
+      portfolio.style.display = 'block';
+      portfolio.style.width = '100%';
+    }
+    if (appWorkspace) {
+      appWorkspace.style.display = 'none';
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    document.body.classList.remove('in-portfolio-mode');
+    document.body.classList.add('in-app-mode');
+    if (portfolio) {
+      portfolio.style.display = 'none';
+    }
+    if (appWorkspace) {
+      appWorkspace.style.display = 'block';
+      appWorkspace.style.width = '100%';
+    }
+  }
+}
+
+function showPortalView(portalId) {
+  showMainView('app');
+  const role = (portalId || 'teacher').replace('portal-', '').toLowerCase();
+  switchPortal(role);
+}
+
+// Master switchTeacherTab Implementation
+function masterSwitchTeacherTab(tabId, el) {
+  if (!tabId) return;
+
+  // 1. Hide all teacher panes
+  document.querySelectorAll('#portal-teacher .m-tab-pane, #portal-teacher .tab-pane').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+
+  // 2. Show target pane
+  const target = document.getElementById(tabId);
+  if (target) {
+    target.classList.add('active');
+    target.style.display = 'block';
+  }
+
+  // 3. Sync Mobile Bottom Bar active states
+  document.querySelectorAll('#mobile-bottom-bar .m-nav-tab, .m-bottom-nav .m-nav-tab').forEach(b => {
+    b.classList.remove('active');
+  });
+  const mobBtn = document.querySelector('#mobile-bottom-bar button[onclick*="' + tabId + '"], .m-bottom-nav button[onclick*="' + tabId + '"]');
+  if (mobBtn) {
+    mobBtn.classList.add('active');
+  } else if (el && el.classList && el.classList.contains('m-nav-tab')) {
+    el.classList.add('active');
+  }
+
+  // 4. Sync Desktop Tabs active states
+  document.querySelectorAll('.desktop-tab-btn').forEach(b => b.classList.remove('active'));
+  const deskBtn = document.querySelector('.desktop-tab-btn[onclick*="' + tabId + '"]');
+  if (deskBtn) deskBtn.classList.add('active');
+
+  // 5. Trigger specific data renderers automatically!
+  try {
+    if (tabId === 'tab-students') {
+      if (typeof ensureStudentsHavePhotosAndDetails === 'function') ensureStudentsHavePhotosAndDetails();
+      if (typeof renderMobileStudentsList === 'function') renderMobileStudentsList();
+    } else if (tabId === 'tab-attendance') {
+      if (typeof renderAttendanceRoster === 'function') renderAttendanceRoster();
+    } else if (tabId === 'tab-evaluation') {
+      if (typeof renderEvaluationRoster === 'function') renderEvaluationRoster();
+    } else if (tabId === 'tab-packages') {
+      if (typeof renderTeacherPackages === 'function') renderTeacherPackages();
+    } else if (tabId === 'tab-curriculum-brain') {
+      if (typeof renderIndexedTopics === 'function') renderIndexedTopics();
+      if (typeof renderAnnouncementsHistory === 'function') renderAnnouncementsHistory();
+    } else if (tabId === 'tab-portfolio-cms') {
+      if (typeof renderCMSDigitalProducts === 'function') renderCMSDigitalProducts();
+    } else if (tabId === 'tab-classes') {
+      if (typeof renderMobileZoomList === 'function') renderMobileZoomList();
+      if (typeof renderMobileGroupsList === 'function') renderMobileGroupsList();
+    } else if (tabId === 'tab-copilot') {
+      if (typeof renderMobileTodaySchedule === 'function') renderMobileTodaySchedule();
+    }
+  } catch(e) {
+    console.warn('Tab render error:', e);
+  }
+
+  // Scroll to top of content
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Override switchTeacherTab globally
+switchTeacherTab = masterSwitchTeacherTab;
+window.switchTeacherTab = masterSwitchTeacherTab;
+window.showMainView = showMainView;
+window.showPortalView = showPortalView;
