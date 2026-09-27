@@ -20,10 +20,69 @@
        ========================================================================== -->
   <div id="view-dark-showcase" class="dark-portfolio-wrapper">
 
+    <!-- ==========================================================================
+         LIVE IN-PAGE PORTFOLIO CUSTOMIZER (DIRECT VISUAL EDITOR)
+         ========================================================================== -->
+    <div id="portfolio-live-editor-bar" class="portfolio-live-editor-bar">
+      <div class="editor-bar-inner">
+        <div class="editor-status-col">
+          <span class="pulse-editor-dot"></span>
+          <div>
+            <div style="font-weight: 900; font-size: 0.88rem; color: #FFFFFF; display: flex; align-items: center; gap: 6px;">
+              <span>🎨 استوديو التعديل الحي والمباشر للبورتفوليو</span>
+              <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D; font-size: 0.7rem; border: 1px solid rgba(245, 158, 11, 0.4);">مباشر على الصفحة</span>
+            </div>
+            <div style="font-size: 0.74rem; color: #94A3B8;">انقر على أي نص، عنوان، رقم، أو بطاقة في هذه الصفحة وعدّلها فوراً وكأنك تكتب في وورد!</div>
+          </div>
+        </div>
+
+        <div class="editor-tools-cluster">
+          <!-- Toggle Edit Mode -->
+          <button type="button" id="btn-toggle-live-edit" class="btn-editor-tool active" onclick="togglePortfolioLiveEdit()" title="تبديل وضع التحرير">
+            <span>✏️</span>
+            <span id="label-live-edit-mode">التحرير المباشر: مفعّل ✅</span>
+          </button>
+
+          <!-- Palette Selector -->
+          <div class="editor-palette-picker">
+            <span style="font-size: 0.76rem; color: #CBD5E1; font-weight: 700;">هالة الهوية:</span>
+            <button type="button" class="color-dot purple active" onclick="setPortfolioThemeColor('PURPLE')" title="بنفسجي ملكي"></button>
+            <button type="button" class="color-dot gold" onclick="setPortfolioThemeColor('GOLD')" title="ذهبي فخم"></button>
+            <button type="button" class="color-dot emerald" onclick="setPortfolioThemeColor('EMERALD')" title="أخضر زمردي"></button>
+            <button type="button" class="color-dot blue" onclick="setPortfolioThemeColor('BLUE')" title="أزرق تقني"></button>
+          </div>
+
+          <!-- Avatar Change Button -->
+          <button type="button" class="btn-editor-tool" onclick="openLivePhotoSelector()" title="تغيير الصورة الشخصية للمعلم">
+            <span>🖼️</span>
+            <span>تغيير صورتك</span>
+          </button>
+
+          <!-- Add Course Button -->
+          <button type="button" class="btn-editor-tool" onclick="openLiveAddProductModal()" title="إضافة كورس أو مذكرة فوراً للمتجر">
+            <span>➕</span>
+            <span>إضافة كورس/مذكرة</span>
+          </button>
+
+          <!-- Save Button -->
+          <button type="button" class="btn-editor-save" onclick="saveLivePortfolioChanges()" title="حفظ جميع التعديلات سحابياً">
+            <span>💾</span>
+            <span>حفظ التعديلات الحية</span>
+          </button>
+
+          <!-- Reset Button -->
+          <button type="button" class="btn-editor-reset" onclick="resetLivePortfolioChanges()" title="استعادة المحتوى الافتراضي">
+            <span>🔄 استعادة</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+
     <!-- 1. Navbar -->
     <header class="portfolio-nav">
       <div class="brand-logo-code" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-        <span>أ/ طارق الشناوي</span>
+        <span id="live-brand-name" class="live-editable" data-edit-key="brand_name" title="انقر لتعديل الاسم">أ/ طارق الشناوي</span>
       </div>
 
       <nav class="nav-links-wrap">
@@ -57,10 +116,11 @@
       <div style="position: relative; margin-bottom: 24px; display: inline-flex; flex-direction: column; align-items: center;">
         <div class="hero-glow-aura" style="position: absolute; width: 220px; height: 220px; background: radial-gradient(circle, rgba(139, 92, 246, 0.45) 0%, rgba(99, 102, 241, 0.1) 70%, transparent 100%); filter: blur(35px); z-index: 1;"></div>
         
-        <div class="hero-teacher-portrait-box" style="position: relative; z-index: 2; padding: 18px 26px; border-radius: 24px; background: rgba(15, 23, 42, 0.85); border: 2px solid rgba(139, 92, 246, 0.5); backdrop-filter: blur(12px); box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
-          <img src="assets/teacher_tarek_portrait.jpg" alt="الأستاذ طارق الشناوي" class="hero-teacher-photo">
-          <div style="font-weight: 900; font-size: 1.35rem; color: #FFFFFF; margin-top: 4px;">الأستاذ طارق الشناوي</div>
-          <div style="font-size: 0.86rem; color: #C4B5FD; font-weight: 700; margin-top: 4px;">خبير تدريس الفيزياء وإعداد أوائل الجمهورية</div>
+        <div class="hero-teacher-portrait-box" id="live-portrait-box" onclick="openLivePhotoSelector()" title="انقر هنا لتغيير الصورة الشخصية 🖼️">
+          <img src="assets/teacher_tarek_portrait.jpg" alt="الأستاذ طارق الشناوي" class="hero-teacher-photo" id="live-teacher-photo">
+          <div class="photo-edit-overlay"><span>📷 انقر لتغيير صورتك</span></div>
+          <div id="live-teacher-name-box" class="live-editable" data-edit-key="teacher_name" style="font-weight: 900; font-size: 1.35rem; color: #FFFFFF; margin-top: 4px;" title="انقر للتعديل">الأستاذ طارق الشناوي</div>
+          <div id="live-teacher-sub-box" class="live-editable" data-edit-key="teacher_sub" style="font-size: 0.86rem; color: #C4B5FD; font-weight: 700; margin-top: 4px;" title="انقر للتعديل">خبير تدريس الفيزياء وإعداد أوائل الجمهورية</div>
           <div style="display: flex; gap: 8px; justify-content: center; margin-top: 10px;">
             <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 0.76rem;">متاح للمتابعة 🟢</span>
             <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #A5B4FC; border: 1px solid rgba(99, 102, 241, 0.4); font-size: 0.76rem;">دفعة 2026</span>
@@ -70,21 +130,15 @@
 
       <!-- Centered Text Column -->
       <div class="hero-text-column" style="max-width: 860px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <div class="pill-teacher-role" style="margin-bottom: 16px;">
+        <div class="pill-teacher-role live-editable" id="live-hero-pill" data-edit-key="hero_pill" style="margin-bottom: 16px;" title="انقر لتعديل اللقب المهني">
           <span>⚡</span>
           <span>خبير تدريس الفيزياء للثانوية العامة بمصر</span>
         </div>
 
-        <h1 class="hero-main-title" style="font-size: 2.85rem; font-weight: 900; line-height: 1.25; margin-bottom: 12px; color: #FFFFFF;">
-          منصة <span class="highlight-purple">الأستاذ طارق الشناوي</span>
-        </h1>
-        <h2 class="hero-sub-title" style="font-size: 1.45rem; font-weight: 700; color: #E2E8F0; margin-bottom: 18px;">
-          صناعة الفهم العميق والتميز لأوائل الجمهورية في الفيزياء
-        </h2>
+        <h1 class="hero-main-title live-editable" id="live-hero-title" data-edit-key="hero_title" style="font-size: 2.85rem; font-weight: 900; line-height: 1.25; margin-bottom: 12px; color: #FFFFFF;" title="انقر لتعديل عنوان المنصة الرئيسي">منصة <span class="highlight-purple" id="live-hero-teacher-name" data-edit-key="hero_teacher_name">الأستاذ طارق الشناوي</span></h1>
+        <h2 class="hero-sub-title live-editable" id="live-hero-subtitle" data-edit-key="hero_subtitle" style="font-size: 1.45rem; font-weight: 700; color: #E2E8F0; margin-bottom: 18px;" title="انقر لتعديل العنوان الفرعي">صناعة الفهم العميق والتميز لأوائل الجمهورية في الفيزياء</h2>
 
-        <p class="hero-lead-text" style="font-size: 1.05rem; color: #94A3B8; line-height: 1.75; max-width: 720px; margin: 0 auto 26px auto;">
-          البيئة التعليمية الذكية الأقوى لطلاب الثانوية العامة — شروحات تفاعلية، حل مسائل مستويات التفكير الابتكاري، وتدريب مستمر بأحدث نماذج المحاكاة ثلاثية الأبعاد ومساعد الذكاء الاصطناعي الخاص لإعداد متفوقي الجمهورية.
-        </p>
+        <p class="hero-lead-text live-editable" id="live-hero-lead" data-edit-key="hero_lead" style="font-size: 1.05rem; color: #94A3B8; line-height: 1.75; max-width: 720px; margin: 0 auto 26px auto;" title="انقر لتعديل الفقرة الشاملة">البيئة التعليمية الذكية الأقوى لطلاب الثانوية العامة — شروحات تفاعلية، حل مسائل مستويات التفكير الابتكاري، وتدريب مستمر بأحدث نماذج المحاكاة ثلاثية الأبعاد ومساعد الذكاء الاصطناعي الخاص لإعداد متفوقي الجمهورية.</p>
 
         <div class="hero-actions-row" style="justify-content: center; gap: 14px; margin-bottom: 30px; display: flex; flex-wrap: wrap;">
           <button type="button" class="btn-hero-primary" onclick="openStudentParentAuth('STUDENT')" style="min-height: 50px; font-size: 1.05rem; padding: 0 28px;">
@@ -2230,5 +2284,61 @@
 
   <!-- Scripts: Core Engine then Demo Layer -->
   <script src="app.js?v=20260927_strict_v8"></script>
-  </body>
+  
+  <!-- MODAL: LIVE TEACHER PHOTO SELECTOR -->
+  <div id="modal-live-photo-picker" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-live-photo-picker')">
+    <div class="m-sheet-content" style="max-width: 540px; background: #0F172A; color: #FFFFFF; border: 2px solid #8B5CF6;">
+      <div class="m-sheet-handle"></div>
+      <div class="m-sheet-header">
+        <h3 class="m-sheet-title" style="color: #FFFFFF;">🖼️ تغيير الصورة الشخصية للأستاذ</h3>
+        <button class="m-sheet-close" onclick="closeSheet('modal-live-photo-picker')">✕</button>
+      </div>
+
+      <div style="padding: 10px 0;">
+        <p style="font-size: 0.84rem; color: #94A3B8; margin-bottom: 14px;">
+          اختر صورة رمزية جاهزة فائقة الدقة أو الصق رابط صورتك الشخصية مباشرة:
+        </p>
+
+        <!-- Presets Grid -->
+        <div style="font-weight: 800; font-size: 0.8rem; color: #CBD5E1; margin-bottom: 8px;">1. صور رمزية احترافية جاهزة:</div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px;">
+          <div class="avatar-preset-card active" onclick="selectLivePhotoPreset('assets/teacher_tarek_portrait.jpg', this)">
+            <img src="assets/teacher_tarek_portrait.jpg" alt="Preset 1">
+            <span>أ/ طارق الشناوي</span>
+          </div>
+          <div class="avatar-preset-card" onclick="selectLivePhotoPreset('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80', this)">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" alt="Preset 2">
+            <span>أستاذة متميزة</span>
+          </div>
+          <div class="avatar-preset-card" onclick="selectLivePhotoPreset('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80', this)">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80" alt="Preset 3">
+            <span>خبير شاب</span>
+          </div>
+          <div class="avatar-preset-card" onclick="selectLivePhotoPreset('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80', this)">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80" alt="Preset 4">
+            <span>دكتور أكاديمي</span>
+          </div>
+        </div>
+
+        <!-- Custom Image URL Input -->
+        <div style="font-weight: 800; font-size: 0.8rem; color: #CBD5E1; margin-bottom: 8px;">2. أو الصق رابط صورتك الشخصية الخاصة (URL):</div>
+        <input type="url" id="live-custom-photo-url" class="m-input" placeholder="https://example.com/my-photo.jpg" oninput="previewLiveCustomPhoto(this.value)">
+
+        <!-- Live Preview -->
+        <div style="display: flex; align-items: center; gap: 12px; margin: 14px 0; background: rgba(30, 41, 59, 0.6); padding: 10px; border-radius: 12px;">
+          <img id="live-photo-preview-img" src="assets/teacher_tarek_portrait.jpg" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid #8B5CF6;">
+          <div>
+            <div style="font-weight: 800; font-size: 0.85rem; color: #FFFFFF;">المعاينة الحالية للصورة</div>
+            <div style="font-size: 0.74rem; color: #94A3B8;">ستظهر في الهيرو والهيدر فور تطبيقها</div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-hero-primary btn-block" onclick="applyLiveTeacherPhoto()" style="min-height: 44px; font-weight: 800;">
+          <span>تطبيق الصورة فوراً على البورتفوليو ✅</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</body>
 </html>

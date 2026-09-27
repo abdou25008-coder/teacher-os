@@ -7278,3 +7278,253 @@ switchTeacherTab = masterSwitchTeacherTab;
 window.switchTeacherTab = masterSwitchTeacherTab;
 window.showMainView = showMainView;
 window.showPortalView = showPortalView;
+
+
+
+/* ==========================================================================
+   LIVE IN-PAGE PORTFOLIO VISUAL EDITOR CONTROLLER
+   ========================================================================== */
+
+let isPortfolioLiveEditActive = true;
+let currentSelectedPhotoUrl = 'assets/teacher_tarek_portrait.jpg';
+let currentAuraColor = 'PURPLE';
+
+// Default Custom Data
+const DEFAULT_PORTFOLIO_LIVE_DATA = {
+  brand_name: 'أ/ طارق الشناوي',
+  teacher_name: 'الأستاذ طارق الشناوي',
+  teacher_sub: 'خبير تدريس الفيزياء وإعداد أوائل الجمهورية',
+  hero_pill: '⚡ خبير تدريس الفيزياء للثانوية العامة بمصر',
+  hero_title: 'منصة <span class="highlight-purple" id="live-hero-teacher-name" data-edit-key="hero_teacher_name">الأستاذ طارق الشناوي</span>',
+  hero_teacher_name: 'الأستاذ طارق الشناوي',
+  hero_subtitle: 'صناعة الفهم العميق والتميز لأوائل الجمهورية في الفيزياء',
+  hero_lead: 'البيئة التعليمية الذكية الأقوى لطلاب الثانوية العامة — شروحات تفاعلية، حل مسائل مستويات التفكير الابتكاري، وتدريب مستمر بأحدث نماذج المحاكاة ثلاثية الأبعاد ومساعد الذكاء الاصطناعي الخاص لإعداد متفوقي الجمهورية.',
+  badge_status: 'متاح للمتابعة 🟢',
+  badge_year: 'دفعة 2026',
+  stat_1_num: '+15',
+  stat_1_lbl: 'سنة خبرة في تدريس الثانوية',
+  stat_2_num: '+5000',
+  stat_2_lbl: 'طالب متفوق بالجمهورية',
+  stat_3_num: '+100',
+  stat_3_lbl: 'أوائل جمهورية ودرجات نهائية',
+  stat_4_num: '100%',
+  stat_4_lbl: 'رضا ومتابعة دورية لأولياء الأمور',
+  about_title: 'شغوف بتقديم تجربة تعليمية استثنائية تصنع فارقاً حقيقياً في مستقبل طلابنا',
+  about_bio: 'على مدار أكثر من 15 عاماً، رسخت مبدأ أن "الفيزياء أمتع مادة لما تتفهم صح". في منظومتنا، الطالب مش بس بيسمع شرح، الطالب بيشوف التجارب بمحاكاة تفاعلية، بيحل كل أفكار بنك المعرفة ومسائل الأوائل، وبيتابع مع مساعد ذكي يوجهه خطوة بخطوة في أي وقت.',
+  photo_url: 'assets/teacher_tarek_portrait.jpg',
+  aura_color: 'PURPLE'
+};
+
+function getStoredLivePortfolioData() {
+  try {
+    const raw = localStorage.getItem('teacher_os_portfolio_custom_data');
+    if (raw) return { ...DEFAULT_PORTFOLIO_LIVE_DATA, ...JSON.parse(raw) };
+  } catch(e) {}
+  return { ...DEFAULT_PORTFOLIO_LIVE_DATA };
+}
+
+function loadLivePortfolioData() {
+  const data = getStoredLivePortfolioData();
+
+  // Apply to all elements with data-edit-key
+  document.querySelectorAll('[data-edit-key]').forEach(el => {
+    const key = el.getAttribute('data-edit-key');
+    if (data[key] !== undefined) {
+      if (key === 'hero_title') {
+        el.innerHTML = data[key];
+      } else {
+        el.innerText = data[key];
+      }
+    }
+  });
+
+  // Apply photo
+  if (data.photo_url) {
+    currentSelectedPhotoUrl = data.photo_url;
+    const heroPhoto = document.getElementById('live-teacher-photo');
+    if (heroPhoto) heroPhoto.src = data.photo_url;
+    const topbarAvatar = document.querySelector('.topbar-avatar-img');
+    if (topbarAvatar) topbarAvatar.src = data.photo_url;
+  }
+
+  // Apply Aura Color
+  if (data.aura_color) {
+    setPortfolioThemeColor(data.aura_color, false);
+  }
+
+  enableLiveEditingMode(isPortfolioLiveEditActive);
+}
+
+function enableLiveEditingMode(enable) {
+  isPortfolioLiveEditActive = enable;
+  const body = document.body;
+  const toggleBtn = document.getElementById('btn-toggle-live-edit');
+  const labelEl = document.getElementById('label-live-edit-mode');
+
+  if (enable) {
+    body.classList.add('live-editing-enabled');
+    if (toggleBtn) toggleBtn.classList.add('active');
+    if (labelEl) labelEl.textContent = 'التحرير المباشر: مفعّل ✅';
+
+    document.querySelectorAll('.live-editable').forEach(el => {
+      el.setAttribute('contenteditable', 'true');
+      el.setAttribute('title', 'انقر للتعديل المباشر ✏️');
+      
+      // Auto save draft on blur
+      el.onblur = function() {
+        showLiveDraftIndicator();
+      };
+    });
+  } else {
+    body.classList.remove('live-editing-enabled');
+    if (toggleBtn) toggleBtn.classList.remove('active');
+    if (labelEl) labelEl.textContent = 'وضع المعاينة كزائر 👁️';
+
+    document.querySelectorAll('.live-editable').forEach(el => {
+      el.removeAttribute('contenteditable');
+      el.removeAttribute('title');
+    });
+  }
+}
+
+function togglePortfolioLiveEdit() {
+  enableLiveEditingMode(!isPortfolioLiveEditActive);
+  if (isPortfolioLiveEditActive) {
+    showDemoToast('✏️ تم تفعيل التحرير المباشر: انقر على أي نص لتعديله فوراً!');
+  } else {
+    showDemoToast('👁️ تم التبديل إلى وضع المعاينة (كما يراه الطالب والزائر).');
+  }
+}
+
+function showLiveDraftIndicator() {
+  const saveBtn = document.querySelector('.btn-editor-save');
+  if (saveBtn) {
+    saveBtn.style.animation = 'pulse-dot 1s 2';
+  }
+}
+
+function saveLivePortfolioChanges() {
+  const data = getStoredLivePortfolioData();
+
+  document.querySelectorAll('[data-edit-key]').forEach(el => {
+    const key = el.getAttribute('data-edit-key');
+    if (key === 'hero_title') {
+      data[key] = el.innerHTML;
+    } else {
+      data[key] = el.innerText.trim();
+    }
+  });
+
+  data.photo_url = currentSelectedPhotoUrl;
+  data.aura_color = currentAuraColor;
+
+  try {
+    localStorage.setItem('teacher_os_portfolio_custom_data', JSON.stringify(data));
+  } catch(e) {}
+
+  // Sync to teacher profile name across app
+  const nameEl = document.getElementById('live-teacher-name-box');
+  if (nameEl) {
+    const newName = nameEl.innerText.trim();
+    const brandTitle = document.getElementById('header-brand-title');
+    if (brandTitle) brandTitle.textContent = newName;
+  }
+
+  showDemoToast('💾 تم حفظ كافة التعديلات الحية على البورتفوليو سحابياً بنجاح! ✅');
+}
+
+function resetLivePortfolioChanges() {
+  if (!confirm('هل تريد استعادة النصوص والصور الأصلية للبورتفوليو؟')) return;
+
+  try {
+    localStorage.removeItem('teacher_os_portfolio_custom_data');
+  } catch(e) {}
+
+  loadLivePortfolioData();
+  showDemoToast('🔄 تمت استعادة النصوص والصور الافتراضية.');
+}
+
+// 2. Color Aura Palette Selector
+function setPortfolioThemeColor(color, notify = true) {
+  currentAuraColor = color;
+  const aura = document.querySelector('.hero-glow-aura');
+  const dots = document.querySelectorAll('.color-dot');
+  dots.forEach(d => d.classList.remove('active'));
+
+  const activeDot = document.querySelector('.color-dot.' + color.toLowerCase());
+  if (activeDot) activeDot.classList.add('active');
+
+  let gradient = 'radial-gradient(circle, rgba(139, 92, 246, 0.45) 0%, rgba(99, 102, 241, 0.1) 70%, transparent 100%)';
+  if (color === 'GOLD') {
+    gradient = 'radial-gradient(circle, rgba(245, 158, 11, 0.5) 0%, rgba(217, 119, 6, 0.15) 70%, transparent 100%)';
+  } else if (color === 'EMERALD') {
+    gradient = 'radial-gradient(circle, rgba(16, 185, 129, 0.5) 0%, rgba(5, 150, 105, 0.15) 70%, transparent 100%)';
+  } else if (color === 'BLUE') {
+    gradient = 'radial-gradient(circle, rgba(37, 99, 235, 0.5) 0%, rgba(29, 78, 216, 0.15) 70%, transparent 100%)';
+  }
+
+  if (aura) aura.style.background = gradient;
+
+  if (notify) {
+    showDemoToast('🎨 تم تطبيق لون الهوية البصرية: ' + color);
+    saveLivePortfolioChanges();
+  }
+}
+
+// 3. Photo Picker Modal Controllers
+function openLivePhotoSelector() {
+  const modal = document.getElementById('modal-live-photo-picker');
+  if (modal) modal.classList.add('active');
+}
+
+function selectLivePhotoPreset(url, cardEl) {
+  currentSelectedPhotoUrl = url;
+  document.querySelectorAll('.avatar-preset-card').forEach(c => c.classList.remove('active'));
+  if (cardEl) cardEl.classList.add('active');
+
+  const preview = document.getElementById('live-photo-preview-img');
+  if (preview) preview.src = url;
+
+  const urlInput = document.getElementById('live-custom-photo-url');
+  if (urlInput) urlInput.value = url;
+}
+
+function previewLiveCustomPhoto(url) {
+  if (!url || !url.startsWith('http')) return;
+  currentSelectedPhotoUrl = url;
+  const preview = document.getElementById('live-photo-preview-img');
+  if (preview) preview.src = url;
+}
+
+function applyLiveTeacherPhoto() {
+  const heroPhoto = document.getElementById('live-teacher-photo');
+  if (heroPhoto) heroPhoto.src = currentSelectedPhotoUrl;
+
+  const topbarAvatar = document.querySelector('.topbar-avatar-img');
+  if (topbarAvatar) topbarAvatar.src = currentSelectedPhotoUrl;
+
+  closeSheet('modal-live-photo-picker');
+  saveLivePortfolioChanges();
+  showDemoToast('🖼️ تم تحديث الصورة الشخصية للأستاذ بنجاح!');
+}
+
+function openLiveAddProductModal() {
+  if (typeof openCreateDigitalProductModal === 'function') {
+    openCreateDigitalProductModal();
+  } else {
+    const modal = document.getElementById('modal-create-digital-product');
+    if (modal) modal.classList.add('active');
+  }
+}
+
+// Bind globally
+window.togglePortfolioLiveEdit = togglePortfolioLiveEdit;
+window.saveLivePortfolioChanges = saveLivePortfolioChanges;
+window.resetLivePortfolioChanges = resetLivePortfolioChanges;
+window.setPortfolioThemeColor = setPortfolioThemeColor;
+window.openLivePhotoSelector = openLivePhotoSelector;
+window.selectLivePhotoPreset = selectLivePhotoPreset;
+window.previewLiveCustomPhoto = previewLiveCustomPhoto;
+window.applyLiveTeacherPhoto = applyLiveTeacherPhoto;
+window.openLiveAddProductModal = openLiveAddProductModal;
+window.loadLivePortfolioData = loadLivePortfolioData;

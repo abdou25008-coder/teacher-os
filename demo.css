@@ -808,3 +808,255 @@ body.in-pitch-mode #view-app-workspace {
     padding: 18px 14px !important;
   }
 }
+
+
+
+/* ==========================================================================
+   LIVE IN-PAGE PORTFOLIO VISUAL EDITOR STYLES
+   ========================================================================== */
+
+.portfolio-live-editor-bar {
+  background: rgba(15, 23, 42, 0.98);
+  border-bottom: 2px solid #F59E0B;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(245, 158, 11, 0.2);
+  padding: 10px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 99999;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.editor-bar-inner {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.editor-status-col {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pulse-editor-dot {
+  width: 10px;
+  height: 10px;
+  background: #F59E0B;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #F59E0B;
+  animation: pulse-dot 1.5s infinite;
+}
+
+.editor-tools-cluster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-editor-tool {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-editor-tool:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-editor-tool.active {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  border-color: #FCD34D;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4);
+}
+
+.editor-palette-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.color-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.color-dot:hover {
+  transform: scale(1.25);
+}
+
+.color-dot.active {
+  border-color: #FFFFFF;
+  box-shadow: 0 0 8px #FFFFFF;
+}
+
+.color-dot.purple { background: #8B5CF6; }
+.color-dot.gold { background: #F59E0B; }
+.color-dot.emerald { background: #10B981; }
+.color-dot.blue { background: #2563EB; }
+
+.btn-editor-save {
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: #FFFFFF;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn-editor-save:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
+}
+
+.btn-editor-reset {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #FCA5A5;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Editable Highlight Styles when Live Edit is Enabled */
+body.live-editing-enabled .live-editable {
+  outline: 1.5px dashed rgba(245, 158, 11, 0.5) !important;
+  outline-offset: 3px !important;
+  border-radius: 4px !important;
+  cursor: text !important;
+  transition: all 0.2s ease !important;
+}
+
+body.live-editing-enabled .live-editable:hover {
+  outline: 2px dashed #F59E0B !important;
+  background: rgba(245, 158, 11, 0.08) !important;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3) !important;
+}
+
+body.live-editing-enabled .live-editable:focus {
+  outline: 2px solid #F59E0B !important;
+  background: rgba(245, 158, 11, 0.14) !important;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.5) !important;
+}
+
+/* Portrait photo hover overlay */
+body.live-editing-enabled .hero-teacher-portrait-box {
+  cursor: pointer;
+  position: relative;
+}
+
+body.live-editing-enabled .hero-teacher-portrait-box:hover .photo-edit-overlay {
+  opacity: 1;
+}
+
+.photo-edit-overlay {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FCD34D;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+/* Presets Card inside Modal */
+.avatar-preset-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.avatar-preset-card:hover {
+  border-color: #8B5CF6;
+  transform: translateY(-2px);
+}
+
+.avatar-preset-card.active {
+  border-color: #F59E0B;
+  background: rgba(245, 158, 11, 0.15);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+.avatar-preset-card img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 4px;
+}
+
+.avatar-preset-card span {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #CBD5E1;
+}
+
+/* Mobile Adjustments for Live Editor Bar */
+@media (max-width: 768px) {
+  .portfolio-live-editor-bar {
+    padding: 8px 10px !important;
+  }
+
+  .editor-status-col {
+    width: 100% !important;
+    margin-bottom: 6px !important;
+  }
+
+  .editor-tools-cluster {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    padding-bottom: 4px !important;
+  }
+}

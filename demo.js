@@ -67,6 +67,7 @@ function ensureDefaultDemoUsersExist() {
 // 2. Instant 1-Click Login Function
 function instantDemoLogin(role) {
   ensureDefaultDemoUsersExist();
+  try { if (typeof loadLivePortfolioData === 'function') loadLivePortfolioData(); } catch(e) {}
 
   // Hide modals if open
   if (typeof closeSheet === 'function') {
