@@ -4125,32 +4125,46 @@ window.addEventListener('DOMContentLoaded', () => {
    ========================================================================== */
 
 function switchToAppWorkspace(role = 'TEACHER') {
-  const showcase = document.getElementById('view-dark-showcase');
-  const workspace = document.getElementById('view-app-workspace');
-
-  if (showcase) showcase.style.display = 'none';
-  if (workspace) workspace.style.display = 'flex';
+  if (typeof showMainView === 'function') {
+    showMainView('app');
+  } else {
+    document.body.classList.remove('in-portfolio-mode', 'in-pitch-mode');
+    document.body.classList.add('in-app-mode');
+    const showcase = document.getElementById('view-dark-showcase');
+    const workspace = document.getElementById('view-app-workspace');
+    if (showcase) showcase.style.setProperty('display', 'none', 'important');
+    if (workspace) {
+      workspace.style.setProperty('display', 'block', 'important');
+      workspace.style.width = '100%';
+    }
+  }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Switch to the requested role
   if (typeof switchPortal === 'function') {
     switchPortal(role.toLowerCase());
   }
 
-  // Ensure bottom bar is visible for teacher
   const bottomBar = document.getElementById('mobile-bottom-bar');
-  if (bottomBar && role === 'TEACHER') {
+  if (bottomBar && role.toUpperCase() === 'TEACHER') {
     bottomBar.style.display = 'flex';
   }
 }
 
 function switchToPublicShowcase() {
-  const showcase = document.getElementById('view-dark-showcase');
-  const workspace = document.getElementById('view-app-workspace');
-
-  if (workspace) workspace.style.display = 'none';
-  if (showcase) showcase.style.display = 'block';
+  if (typeof showMainView === 'function') {
+    showMainView('portfolio');
+  } else {
+    document.body.classList.remove('in-app-mode', 'in-pitch-mode');
+    document.body.classList.add('in-portfolio-mode');
+    const showcase = document.getElementById('view-dark-showcase');
+    const workspace = document.getElementById('view-app-workspace');
+    if (workspace) workspace.style.setProperty('display', 'none', 'important');
+    if (showcase) {
+      showcase.style.setProperty('display', 'block', 'important');
+      showcase.style.width = '100%';
+    }
+  }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -4385,28 +4399,52 @@ function handleTeacherMasterAuth(event) {
 
 function handleLogout() {
   localStorage.removeItem('active_user_session');
+  sessionStorage.removeItem('teacher_os_active_session');
   switchToPublicShowcase();
 }
 
 // 5. Views Switching (Showcase <-> App Workspace)
 function switchToAppWorkspace(role = 'TEACHER') {
-  const showcase = document.getElementById('view-dark-showcase');
-  const workspace = document.getElementById('view-app-workspace');
-
-  if (showcase) showcase.style.display = 'none';
-  if (workspace) workspace.style.display = 'flex';
+  if (typeof showMainView === 'function') {
+    showMainView('app');
+  } else {
+    document.body.classList.remove('in-portfolio-mode', 'in-pitch-mode');
+    document.body.classList.add('in-app-mode');
+    const showcase = document.getElementById('view-dark-showcase');
+    const workspace = document.getElementById('view-app-workspace');
+    if (showcase) showcase.style.setProperty('display', 'none', 'important');
+    if (workspace) {
+      workspace.style.setProperty('display', 'block', 'important');
+      workspace.style.width = '100%';
+    }
+  }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  switchPortal(role.toLowerCase());
+  if (typeof switchPortal === 'function') {
+    switchPortal(role.toLowerCase());
+  }
+
+  const bottomBar = document.getElementById('mobile-bottom-bar');
+  if (bottomBar && role.toUpperCase() === 'TEACHER') {
+    bottomBar.style.display = 'flex';
+  }
 }
 
 function switchToPublicShowcase() {
-  const showcase = document.getElementById('view-dark-showcase');
-  const workspace = document.getElementById('view-app-workspace');
-
-  if (workspace) workspace.style.display = 'none';
-  if (showcase) showcase.style.display = 'block';
+  if (typeof showMainView === 'function') {
+    showMainView('portfolio');
+  } else {
+    document.body.classList.remove('in-app-mode', 'in-pitch-mode');
+    document.body.classList.add('in-portfolio-mode');
+    const showcase = document.getElementById('view-dark-showcase');
+    const workspace = document.getElementById('view-app-workspace');
+    if (workspace) workspace.style.setProperty('display', 'none', 'important');
+    if (showcase) {
+      showcase.style.setProperty('display', 'block', 'important');
+      showcase.style.width = '100%';
+    }
+  }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -7175,29 +7213,30 @@ function showMainView(viewName) {
     document.body.classList.remove('in-app-mode', 'in-portfolio-mode');
     document.body.classList.add('in-pitch-mode');
     if (pitchView) {
-      pitchView.style.display = 'block';
+      pitchView.style.setProperty('display', 'block', 'important');
       pitchView.style.width = '100%';
     }
-    if (portfolio) portfolio.style.display = 'none';
-    if (appWorkspace) appWorkspace.style.display = 'none';
+    if (portfolio) portfolio.style.setProperty('display', 'none', 'important');
+    if (appWorkspace) appWorkspace.style.setProperty('display', 'none', 'important');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } else if (viewName === 'portfolio') {
     document.body.classList.remove('in-app-mode', 'in-pitch-mode');
     document.body.classList.add('in-portfolio-mode');
-    if (pitchView) pitchView.style.display = 'none';
+    if (pitchView) pitchView.style.setProperty('display', 'none', 'important');
     if (portfolio) {
-      portfolio.style.display = 'block';
+      portfolio.style.setProperty('display', 'block', 'important');
       portfolio.style.width = '100%';
     }
-    if (appWorkspace) appWorkspace.style.display = 'none';
+    if (appWorkspace) appWorkspace.style.setProperty('display', 'none', 'important');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } else {
+    // 'app' mode
     document.body.classList.remove('in-portfolio-mode', 'in-pitch-mode');
     document.body.classList.add('in-app-mode');
-    if (pitchView) pitchView.style.display = 'none';
-    if (portfolio) portfolio.style.display = 'none';
+    if (pitchView) pitchView.style.setProperty('display', 'none', 'important');
+    if (portfolio) portfolio.style.setProperty('display', 'none', 'important');
     if (appWorkspace) {
-      appWorkspace.style.display = 'block';
+      appWorkspace.style.setProperty('display', 'block', 'important');
       appWorkspace.style.width = '100%';
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -7227,55 +7266,15 @@ function masterSwitchTeacherTab(tabId, el) {
     target.style.display = 'block';
   }
 
-  // 3. Sync Mobile Bottom Bar active states
-  document.querySelectorAll('#mobile-bottom-bar .m-nav-tab, .m-bottom-nav .m-nav-tab').forEach(b => {
-    b.classList.remove('active');
-  });
-  const mobBtn = document.querySelector('#mobile-bottom-bar button[onclick*="' + tabId + '"], .m-bottom-nav button[onclick*="' + tabId + '"]');
-  if (mobBtn) {
-    mobBtn.classList.add('active');
-  } else if (el && el.classList && el.classList.contains('m-nav-tab')) {
-    el.classList.add('active');
-  }
-
-  // 4. Sync Desktop Tabs active states
-  document.querySelectorAll('.desktop-tab-btn').forEach(b => b.classList.remove('active'));
-  const deskBtn = document.querySelector('.desktop-tab-btn[onclick*="' + tabId + '"]');
+  // 3. Highlight button
+  document.querySelectorAll('.m-nav-item').forEach(btn => btn.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const deskBtn = document.querySelector(`[data-tab="${tabId}"]`);
   if (deskBtn) deskBtn.classList.add('active');
 
-  // 5. Trigger specific data renderers automatically!
-  try {
-    if (tabId === 'tab-students') {
-      if (typeof ensureStudentsHavePhotosAndDetails === 'function') ensureStudentsHavePhotosAndDetails();
-      if (typeof renderMobileStudentsList === 'function') renderMobileStudentsList();
-    } else if (tabId === 'tab-attendance') {
-      if (typeof renderAttendanceRoster === 'function') renderAttendanceRoster();
-    } else if (tabId === 'tab-evaluation') {
-      if (typeof renderEvaluationRoster === 'function') renderEvaluationRoster();
-    } else if (tabId === 'tab-packages') {
-      if (typeof renderTeacherPackages === 'function') renderTeacherPackages();
-    } else if (tabId === 'tab-curriculum-brain') {
-      if (typeof renderIndexedTopics === 'function') renderIndexedTopics();
-      if (typeof renderAnnouncementsHistory === 'function') renderAnnouncementsHistory();
-    } else if (tabId === 'tab-portfolio-cms') {
-      if (typeof renderCMSDigitalProducts === 'function') renderCMSDigitalProducts();
-    } else if (tabId === 'tab-classes') {
-      if (typeof renderMobileZoomList === 'function') renderMobileZoomList();
-      if (typeof renderMobileGroupsList === 'function') renderMobileGroupsList();
-    } else if (tabId === 'tab-copilot') {
-      if (typeof renderMobileTodaySchedule === 'function') renderMobileTodaySchedule();
-    }
-  } catch(e) {
-    console.warn('Tab render error:', e);
-  }
-
-  // Scroll to top of content
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Override switchTeacherTab globally
-switchTeacherTab = masterSwitchTeacherTab;
-window.switchTeacherTab = masterSwitchTeacherTab;
 window.showMainView = showMainView;
 window.showPortalView = showPortalView;
 
@@ -7528,3 +7527,23 @@ window.previewLiveCustomPhoto = previewLiveCustomPhoto;
 window.applyLiveTeacherPhoto = applyLiveTeacherPhoto;
 window.openLiveAddProductModal = openLiveAddProductModal;
 window.loadLivePortfolioData = loadLivePortfolioData;
+
+
+// STRICT_WORKSPACE_ISOLATION_BOOT
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const hasActiveSession = sessionStorage.getItem('teacher_os_active_session');
+    if (hasActiveSession) {
+      const sess = JSON.parse(hasActiveSession);
+      if (sess && sess.role) {
+        if (typeof showMainView === 'function') showMainView('app');
+        if (typeof switchPortal === 'function') switchPortal(sess.role.toLowerCase());
+        return;
+      }
+    }
+    // If not authenticated or no active session, ensure portfolio is strictly visible and workspace strictly hidden
+    if (!document.body.classList.contains('in-pitch-mode')) {
+      if (typeof showMainView === 'function') showMainView('portfolio');
+    }
+  } catch(e) {}
+});

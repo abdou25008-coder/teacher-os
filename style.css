@@ -59,11 +59,18 @@ body {
   line-height: 1.5;
 }
 
-/* Mobile-First Shell */
+/* Mobile-First Shell - Strictly Hidden by Default */
+#view-app-workspace,
 .app-viewport-wrapper {
+  display: none !important;
+  width: 100%;
+}
+
+body.in-app-mode #view-app-workspace,
+body.in-app-mode .app-viewport-wrapper {
   width: 100%;
   min-height: 100vh;
-  display: flex;
+  display: flex !important;
   justify-content: center;
   background: #0B1120;
 }
@@ -81,7 +88,7 @@ body {
 }
 
 @media (max-width: 520px) {
-  body, .app-viewport-wrapper {
+  body.in-app-mode, body.in-app-mode .app-viewport-wrapper {
     background: var(--bg-app);
   }
   .mobile-app-shell {
@@ -955,7 +962,7 @@ body {
 }
 
 #view-app-workspace {
-  display: none;
+  display: none !important;
   animation: fadeIn 0.3s ease;
   width: 100%;
 }
@@ -1571,7 +1578,7 @@ body {
    ========================================================================== */
 
 /* 1. Base App Viewport & Shell */
-.app-viewport-wrapper {
+body.in-app-mode .app-viewport-wrapper {
   background: #0B0F19 !important;
   color: #F8FAFC !important;
 }
@@ -1883,7 +1890,7 @@ body {
     overflow-x: hidden !important;
   }
 
-  .app-viewport-wrapper {
+  body.in-app-mode .app-viewport-wrapper {
     width: 100% !important;
     min-height: 100vh !important;
     padding: 0 !important;
@@ -1965,7 +1972,7 @@ body {
     background: #060911 !important;
   }
 
-  .app-viewport-wrapper {
+  body.in-app-mode .app-viewport-wrapper {
     width: 100% !important;
     min-height: 100vh !important;
     padding: 24px 20px 40px 20px !important;
@@ -2503,16 +2510,27 @@ body {
   width: 100%;
 }
 
-#view-app-workspace {
-  display: none;
+#view-app-workspace,
+.app-viewport-wrapper {
+  display: none !important;
   width: 100%;
+}
+
+body:not(.in-app-mode) #view-app-workspace,
+body:not(.in-app-mode) .app-viewport-wrapper {
+  display: none !important;
 }
 
 body.in-app-mode #view-dark-showcase {
   display: none !important;
 }
 
-body.in-app-mode #view-app-workspace {
+body.in-app-mode #view-sales-pitch {
+  display: none !important;
+}
+
+body.in-app-mode #view-app-workspace,
+body.in-app-mode .app-viewport-wrapper {
   display: block !important;
   width: 100% !important;
 }
@@ -2522,7 +2540,23 @@ body.in-portfolio-mode #view-dark-showcase {
   width: 100% !important;
 }
 
-body.in-portfolio-mode #view-app-workspace {
+body.in-portfolio-mode #view-sales-pitch {
+  display: none !important;
+}
+
+body.in-portfolio-mode #view-app-workspace,
+body.in-portfolio-mode .app-viewport-wrapper {
+  display: none !important;
+}
+
+body.in-pitch-mode #view-sales-pitch {
+  display: block !important;
+  width: 100% !important;
+}
+
+body.in-pitch-mode #view-dark-showcase,
+body.in-pitch-mode #view-app-workspace,
+body.in-pitch-mode .app-viewport-wrapper {
   display: none !important;
 }
 
@@ -2544,7 +2578,7 @@ body.portal-not-teacher .mobile-bottom-nav {
     background: #0B1120 !important;
   }
 
-  .app-viewport-wrapper {
+  body.in-app-mode .app-viewport-wrapper {
     width: 100% !important;
     max-width: 100% !important;
     display: block !important;
@@ -2639,7 +2673,7 @@ body.portal-not-teacher .mobile-bottom-nav {
     width: 100% !important;
   }
 
-  .app-viewport-wrapper {
+  body.in-app-mode .app-viewport-wrapper {
     width: 100% !important;
     max-width: 1420px !important;
     margin: 0 auto !important;
