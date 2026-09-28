@@ -479,7 +479,7 @@
     <!-- ==========================================================================
          LIVE IN-PAGE PORTFOLIO CUSTOMIZER (DIRECT VISUAL EDITOR)
          ========================================================================== -->
-    <div id="portfolio-live-editor-bar" class="portfolio-live-editor-bar">
+    <div id="portfolio-live-editor-bar" class="portfolio-live-editor-bar" style="display: none !important;">
       <div class="editor-bar-inner">
         <div class="editor-status-col">
           <span class="pulse-editor-dot"></span>
@@ -493,6 +493,11 @@
         </div>
 
         <div class="editor-tools-cluster">
+          <!-- Return to Teacher Dashboard -->
+          <button type="button" class="btn-editor-tool btn-back-to-teacher-dash" onclick="switchToAppWorkspace('TEACHER')" style="background: rgba(99, 102, 241, 0.25); border: 1px solid #6366F1; color: #FFFFFF;" title="العودة للوحة تحكم المعلم">
+            <span>👨‍🏫</span>
+            <span>لوحة المعلم</span>
+          </button>
           <!-- Toggle Edit Mode -->
           <button type="button" id="btn-toggle-live-edit" class="btn-editor-tool active" onclick="togglePortfolioLiveEdit()" title="تبديل وضع التحرير">
             <span>✏️</span>
@@ -951,6 +956,9 @@
             <button class="icon-btn" onclick="switchToPublicShowcase()" title="العودة للبورتفوليو والمعرض">
               <span>🌐</span>
             </button>
+            <button class="icon-btn btn-topbar-edit-portfolio" onclick="openLivePortfolioEditorForTeacher()" title="تعديل البورتفوليو الحي كمعلم" style="color: #F59E0B; border: 1px solid rgba(245,158,11,0.3); background: rgba(245,158,11,0.1);">
+              <span>✏️</span>
+            </button>
             <button class="icon-btn" onclick="shareTeacherProfile()" title="مشاركة رابط التطبيق">
               <span>🔗</span>
             </button>
@@ -990,6 +998,9 @@
           <div class="desktop-nav-tabs-bar">
             <button class="desktop-tab-btn active" onclick="switchTeacherTab('tab-copilot', this)">
               <span>⚡</span><span>المساعد الذكي (Copilot)</span>
+            </button>
+            <button class="desktop-tab-btn desktop-tab-btn-edit-portfolio" onclick="openLivePortfolioEditorForTeacher()" style="border: 1px solid rgba(245, 158, 11, 0.35); color: #FCD34D;">
+              <span>🎨</span><span>تعديل البورتفوليو كمعلم</span>
             </button>
             <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-curriculum-brain', this)">
               <span>🧠</span><span>مركز تغذية المنهج والمعرفة</span>

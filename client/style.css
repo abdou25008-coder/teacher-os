@@ -2746,7 +2746,10 @@ body.portal-not-teacher .mobile-bottom-nav {
    LIVE IN-PAGE PORTFOLIO VISUAL EDITOR STYLES
    ========================================================================== */
 
+/* Strictly hidden by default for public/visitors. Only visible for authenticated teacher in edit mode */
+#portfolio-live-editor-bar,
 .portfolio-live-editor-bar {
+  display: none !important;
   background: rgba(15, 23, 42, 0.98);
   border-bottom: 2px solid #F59E0B;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(245, 158, 11, 0.2);
@@ -2756,6 +2759,53 @@ body.portal-not-teacher .mobile-bottom-nav {
   z-index: 99999;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+}
+
+body.teacher-live-edit-active #portfolio-live-editor-bar,
+body.teacher-live-edit-active .portfolio-live-editor-bar {
+  display: block !important;
+}
+
+body:not(.teacher-live-edit-active) #portfolio-live-editor-bar,
+body:not(.teacher-live-edit-active) .portfolio-live-editor-bar {
+  display: none !important;
+}
+
+/* Floating Teacher Edit Trigger FAB (Only visible on portfolio when teacher is logged in) */
+.teacher-floating-edit-btn {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 9999;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 30px;
+  padding: 10px 18px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  align-items: center;
+  gap: 6px;
+}
+
+.teacher-floating-edit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(245, 158, 11, 0.6);
+  background: linear-gradient(135deg, #D97706, #B45309);
+}
+
+body.teacher-logged-in.in-portfolio-mode:not(.teacher-live-edit-active) .teacher-floating-edit-btn,
+body.teacher-logged-in.in-portfolio-mode:not(.teacher-live-edit-active) #teacher-floating-edit-btn {
+  display: flex !important;
+}
+
+body.teacher-live-edit-active .teacher-floating-edit-btn,
+body:not(.teacher-logged-in) .teacher-floating-edit-btn {
+  display: none !important;
 }
 
 .editor-bar-inner {

@@ -76,6 +76,10 @@ function instantDemoLogin(role) {
   }
 
   if (role === 'TEACHER') {
+    localStorage.setItem('active_user_session', JSON.stringify({ role: 'TEACHER', name: 'أستاذ / طارق الشناوي', phone: '01011112222', isMasterAdmin: true }));
+    sessionStorage.setItem('teacher_os_active_session', JSON.stringify({ role: 'TEACHER', name: 'أستاذ / طارق الشناوي' }));
+    document.body.classList.add('teacher-logged-in');
+    if (typeof updateTeacherFloatingEditBtn === 'function') updateTeacherFloatingEditBtn();
     if (typeof showMainView === 'function') showMainView('app');
     if (typeof state !== 'undefined') state.currentRole = 'teacher';
     if (typeof switchPortal === 'function') switchPortal('teacher');
@@ -84,6 +88,11 @@ function instantDemoLogin(role) {
     showDemoToast('👨‍🏫 تم فتح لوحة تحكم المعلم والمدير بنجاح!');
 
   } else if (role === 'STUDENT') {
+    localStorage.setItem('active_user_session', JSON.stringify({ role: 'STUDENT', name: 'أحمد محمود رضوان', phone: '01012345678' }));
+    sessionStorage.removeItem('teacher_os_active_session');
+    document.body.classList.remove('teacher-logged-in', 'teacher-live-edit-active', 'live-editing-enabled');
+    if (typeof enableLiveEditingMode === 'function') enableLiveEditingMode(false);
+    if (typeof updateTeacherFloatingEditBtn === 'function') updateTeacherFloatingEditBtn();
     if (typeof showMainView === 'function') showMainView('app');
     if (typeof state !== 'undefined') state.currentRole = 'student';
     if (typeof switchPortal === 'function') switchPortal('student');
@@ -99,6 +108,11 @@ function instantDemoLogin(role) {
     showDemoToast('🎓 تم فتح بوابة الطالب الذكية (أحمد محمود — 3ث)!');
 
   } else if (role === 'PARENT') {
+    localStorage.setItem('active_user_session', JSON.stringify({ role: 'PARENT', name: 'إبراهيم علي', phone: '01033334444' }));
+    sessionStorage.removeItem('teacher_os_active_session');
+    document.body.classList.remove('teacher-logged-in', 'teacher-live-edit-active', 'live-editing-enabled');
+    if (typeof enableLiveEditingMode === 'function') enableLiveEditingMode(false);
+    if (typeof updateTeacherFloatingEditBtn === 'function') updateTeacherFloatingEditBtn();
     if (typeof showMainView === 'function') showMainView('app');
     if (typeof state !== 'undefined') state.currentRole = 'parent';
     if (typeof switchPortal === 'function') switchPortal('parent');
@@ -122,6 +136,7 @@ function updateDockActiveButton(role) {
 
 function switchToDemoRole(role) {
   if (role === 'pitch') {
+    if (typeof enableLiveEditingMode === 'function') enableLiveEditingMode(false);
     if (typeof showMainView === 'function') showMainView('pitch');
     updateDockActiveButton('pitch');
     showDemoToast('💡 تم فتح صفحة نقاط القوة البيعية وأبواب الربح للمنصة!');
