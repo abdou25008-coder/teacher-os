@@ -1350,3 +1350,376 @@ body.live-editing-enabled .hero-teacher-portrait-box:hover .photo-edit-overlay {
   padding: 16px;
   margin-top: 14px;
 }
+
+
+/* ==========================================================================
+   AI PRESENTER VIDEO STUDIO & VIDEO CAPSULE STYLES
+   Inspired by Lanshu (lanshu-create-ai-presenter-video) Architecture
+   ========================================================================== */
+
+/* 1. Main Studio Layout */
+.presenter-studio-wrap {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+@media (max-width: 992px) {
+  .presenter-studio-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+.presenter-stage-card {
+  background: #0B0F19;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.presenter-canvas-container {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(124, 58, 237, 0.25);
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.presenter-canvas-container.aspect-9-16 {
+  width: 320px;
+  height: 568px;
+}
+
+.presenter-canvas-container.aspect-16-9 {
+  width: 100%;
+  max-width: 640px;
+  height: 360px;
+}
+
+.presenter-canvas-container canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* 2. Studio Player Control Bar */
+.presenter-player-bar {
+  width: 100%;
+  max-width: 640px;
+  margin-top: 16px;
+  background: #1E293B;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.presenter-seek-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.presenter-seek-slider {
+  flex: 1;
+  accent-color: #8B5CF6;
+  height: 6px;
+  cursor: pointer;
+}
+
+.presenter-time-label {
+  font-family: monospace;
+  font-size: 13px;
+  color: #94A3B8;
+  min-width: 85px;
+  text-align: center;
+}
+
+.presenter-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn-presenter-play {
+  background: linear-gradient(135deg, #7C3AED, #4F46E5);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-presenter-play:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+}
+
+.btn-presenter-export {
+  background: #10B981;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-presenter-export:hover {
+  background: #059669;
+}
+
+/* 3. Controls & Editor Form */
+.presenter-editor-panel {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.presenter-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.presenter-input-group label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #CBD5E1;
+}
+
+.presenter-input,
+.presenter-select,
+.presenter-textarea {
+  background: #1F2937;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #F9FAFB;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.presenter-input:focus,
+.presenter-select:focus,
+.presenter-textarea:focus {
+  border-color: #8B5CF6;
+}
+
+.aspect-toggle-group {
+  display: flex;
+  gap: 8px;
+}
+
+.aspect-btn {
+  flex: 1;
+  background: #1F2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 8px;
+  color: #9CA3AF;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+}
+
+.aspect-btn.active {
+  background: rgba(139, 92, 246, 0.25);
+  border-color: #8B5CF6;
+  color: #C4B5FD;
+}
+
+/* 4. Capsule Gallery Cards */
+.video-capsule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.video-capsule-card {
+  background: #1E293B;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+
+.video-capsule-card:hover {
+  transform: translateY(-4px);
+  border-color: #8B5CF6;
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.25);
+}
+
+.capsule-thumb-wrap {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  background: #0B0F19;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.capsule-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+}
+
+.capsule-aspect-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #38BDF8;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.capsule-duration-tag {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #F8FAFC;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.capsule-play-overlay {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(124, 58, 237, 0.9);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.capsule-card-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.capsule-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #F8FAFC;
+  line-height: 1.4;
+}
+
+.capsule-card-topic {
+  font-size: 12px;
+  color: #94A3B8;
+}
+
+.capsule-card-formula {
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: #C4B5FD;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.capsule-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 10px;
+  margin-top: auto;
+}
+
+.capsule-author {
+  font-size: 12px;
+  color: #CBD5E1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 5. Capsule Modal Player */
+.capsule-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(6, 9, 17, 0.95);
+  backdrop-filter: blur(20px);
+  z-index: 100001;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.capsule-modal-overlay.active {
+  display: flex !important;
+}
+
+.capsule-modal-box {
+  background: #0B0F19;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 20px;
+  max-width: 720px;
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+}

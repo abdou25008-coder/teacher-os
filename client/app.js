@@ -8277,3 +8277,472 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   } catch(e) {}
 });
+
+
+/* ==========================================================================
+   AI PRESENTER VIDEO STUDIO & VIDEO CAPSULE CONTROLLER
+   Inspired by Lanshu (lanshu-create-ai-presenter-video) Architecture
+   ========================================================================== */
+
+let studioCompositorInstance = null;
+let modalCapsuleCompositor = null;
+let isStudioCompositorInitialized = false;
+
+function initPresenterStudio() {
+  if (!window.PresenterVideoEngine) return;
+  const canvas = document.getElementById('canvas-presenter-studio');
+  if (!canvas) return;
+
+  if (!studioCompositorInstance) {
+    studioCompositorInstance = new window.PresenterVideoEngine.PresenterVideoCompositor(canvas, {
+      aspect: '9:16',
+      theme: 'dark_lab',
+      presenterSrc: 'assets/teacher_tarek_portrait.jpg',
+      title: 'كبسولة قاعدة لينز وتحديد اتجاه التيار',
+      badge: 'الثانوية العامة — سؤال مضمون في الامتحان',
+      formula: 'e.m.f = -N (ΔΦ / Δt)',
+      script: document.getElementById('studio-capsule-script') ? document.getElementById('studio-capsule-script').value : '',
+      durationSec: 45
+    });
+
+    studioCompositorInstance.onTimeUpdate = (current, total) => {
+      const slider = document.getElementById('studio-seek-slider');
+      const timeDisplay = document.getElementById('studio-time-display');
+      if (slider) {
+        slider.max = total;
+        slider.value = current;
+      }
+      if (timeDisplay) {
+        const cM = String(Math.floor(current / 60)).padStart(2, '0');
+        const cS = String(Math.floor(current % 60)).padStart(2, '0');
+        const tM = String(Math.floor(total / 60)).padStart(2, '0');
+        const tS = String(Math.floor(total % 60)).padStart(2, '0');
+        timeDisplay.textContent = `${cM}:${cS} / ${tM}:${tS}`;
+      }
+    };
+
+    studioCompositorInstance.onEnded = () => {
+      const playIcon = document.getElementById('studio-play-icon');
+      const playText = document.getElementById('studio-play-text');
+      if (playIcon) playIcon.textContent = '▶️';
+      if (playText) playText.textContent = 'تشغيل المعاينة الحية';
+    };
+  }
+
+  renderTeacherCapsulesList();
+  renderStudentVideoCapsules();
+  renderParentVideoCapsules();
+  isStudioCompositorInitialized = true;
+}
+
+function setStudioAspect(aspect) {
+  if (!studioCompositorInstance) initPresenterStudio();
+  if (!studioCompositorInstance) return;
+
+  const btn916 = document.getElementById('btn-aspect-9-16');
+  const btn169 = document.getElementById('btn-aspect-16-9');
+  const wrap = document.getElementById('studio-canvas-wrap');
+
+  if (aspect === '9:16') {
+    if (btn916) btn916.classList.add('active');
+    if (btn169) btn169.classList.remove('active');
+    if (wrap) {
+      wrap.classList.remove('aspect-16-9');
+      wrap.classList.add('aspect-9-16');
+    }
+  } else {
+    if (btn169) btn169.classList.add('active');
+    if (btn916) btn916.classList.remove('active');
+    if (wrap) {
+      wrap.classList.remove('aspect-9-16');
+      wrap.classList.add('aspect-16-9');
+    }
+  }
+
+  studioCompositorInstance.setAspect(aspect);
+}
+
+function changeStudioTheme(theme) {
+  if (!studioCompositorInstance) initPresenterStudio();
+  if (studioCompositorInstance) {
+    studioCompositorInstance.setTheme(theme);
+  }
+}
+
+function updateStudioPreviewFromInputs() {
+  if (!studioCompositorInstance) initPresenterStudio();
+  if (!studioCompositorInstance) return;
+
+  const title = document.getElementById('studio-capsule-title')?.value || 'كبسولة تعليمية';
+  const badge = document.getElementById('studio-capsule-badge')?.value || 'تحدي فيزيائي';
+  const formula = document.getElementById('studio-capsule-formula')?.value || '';
+  const script = document.getElementById('studio-capsule-script')?.value || '';
+  const theme = document.getElementById('studio-capsule-theme')?.value || 'dark_lab';
+
+  studioCompositorInstance.setTheme(theme);
+  studioCompositorInstance.setScript(script, title, formula, badge);
+  if (typeof showDemoToast === 'function') {
+    showDemoToast('تم تحديث مسرح المعاينة المباشرة بنجاح ✨');
+  }
+}
+
+function toggleStudioPlayback() {
+  if (!studioCompositorInstance) initPresenterStudio();
+  if (!studioCompositorInstance) return;
+
+  const playIcon = document.getElementById('studio-play-icon');
+  const playText = document.getElementById('studio-play-text');
+
+  if (studioCompositorInstance.isPlaying) {
+    studioCompositorInstance.pause();
+    if (playIcon) playIcon.textContent = '▶️';
+    if (playText) playText.textContent = 'تشغيل المعاينة الحية';
+  } else {
+    studioCompositorInstance.play();
+    if (playIcon) playIcon.textContent = '⏸️';
+    if (playText) playText.textContent = 'إيقاف مؤقت';
+  }
+}
+
+function stopStudioPlayback() {
+  if (!studioCompositorInstance) return;
+  studioCompositorInstance.pause();
+  studioCompositorInstance.seek(0);
+  const playIcon = document.getElementById('studio-play-icon');
+  const playText = document.getElementById('studio-play-text');
+  if (playIcon) playIcon.textContent = '▶️';
+  if (playText) playText.textContent = 'تشغيل المعاينة الحية';
+}
+
+function seekStudioVideo(seconds) {
+  if (studioCompositorInstance) {
+    studioCompositorInstance.seek(Number(seconds));
+  }
+}
+
+function generateStudioScriptAI() {
+  if (!window.PresenterVideoEngine) return;
+  const promptInput = document.getElementById('studio-ai-prompt-input');
+  const topic = promptInput ? promptInput.value.trim() : '';
+
+  const res = window.PresenterVideoEngine.generatePresenterScript(topic || 'الحث الكهرومغناطيسي');
+
+  const titleInput = document.getElementById('studio-capsule-title');
+  const formulaInput = document.getElementById('studio-capsule-formula');
+  const scriptInput = document.getElementById('studio-capsule-script');
+
+  if (titleInput) titleInput.value = res.title;
+  if (formulaInput) formulaInput.value = res.formula;
+  if (scriptInput) scriptInput.value = res.fullScript;
+
+  updateStudioPreviewFromInputs();
+
+  if (typeof showDemoToast === 'function') {
+    showDemoToast('تمت صياغة نص الكبسولة وتنسيق المعادلات بالذكاء الاصطناعي ⚡');
+  }
+}
+
+function publishStudioCapsule() {
+  if (!window.PresenterVideoEngine) return;
+  const title = document.getElementById('studio-capsule-title')?.value || 'كبسولة تعليمية';
+  const badge = document.getElementById('studio-capsule-badge')?.value || 'مهمة جديدة';
+  const formula = document.getElementById('studio-capsule-formula')?.value || '';
+  const script = document.getElementById('studio-capsule-script')?.value || '';
+  const theme = document.getElementById('studio-capsule-theme')?.value || 'dark_lab';
+  const aspect = studioCompositorInstance ? studioCompositorInstance.aspect : '9:16';
+
+  const newCapsule = {
+    id: 'capsule-' + Date.now(),
+    title: title,
+    topic: 'الفيزياء — الأستاذ طارق الشناوي',
+    aspect: aspect,
+    durationSec: 45,
+    presenter_image: 'assets/teacher_tarek_portrait.jpg',
+    presenter_name: 'أ/ طارق الشناوي',
+    theme: theme,
+    formula: formula,
+    badge: badge,
+    script: script,
+    target_audiences: ['students', 'parents', 'public'],
+    publishedAt: new Date().toISOString()
+  };
+
+  const capsules = window.PresenterVideoEngine.getVideoCapsules();
+  capsules.unshift(newCapsule);
+  window.PresenterVideoEngine.saveVideoCapsules(capsules);
+
+  renderTeacherCapsulesList();
+  renderStudentVideoCapsules();
+  renderParentVideoCapsules();
+
+  if (typeof showDemoToast === 'function') {
+    showDemoToast('تم نشر كبسولة الفيديو في لوحة الطالب وولي الأمر بنجاح! 🚀');
+  }
+}
+
+function exportCurrentStudioVideo() {
+  if (!studioCompositorInstance) initPresenterStudio();
+  if (!studioCompositorInstance) return;
+
+  if (typeof showDemoToast === 'function') {
+    showDemoToast('جارٍ معالجة وتصدير كبسولة الفيديو... ⏳');
+  }
+
+  studioCompositorInstance.exportVideo(
+    (progress) => {
+      console.log('Rendering progress:', progress + '%');
+    },
+    (res) => {
+      // Download video blob
+      const a = document.createElement('a');
+      a.href = res.url;
+      a.download = `teacher-os-capsule-${Date.now()}.webm`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      if (typeof showDemoToast === 'function') {
+        showDemoToast('تم تصدير وتحميل الفيديو بنجاح! 🎬🎉');
+      }
+    },
+    (err) => {
+      console.warn('Video export failed:', err);
+      if (typeof showDemoToast === 'function') {
+        showDemoToast('ملاحظة: جهازك أو المتصفح يدعم المعاينة الحية المباشرة');
+      }
+    }
+  );
+}
+
+function deleteStudioCapsule(capsuleId) {
+  if (!window.PresenterVideoEngine) return;
+  if (!confirm('هل تريد حذف هذه الكبسولة من المنصة؟')) return;
+
+  let capsules = window.PresenterVideoEngine.getVideoCapsules();
+  capsules = capsules.filter(c => c.id !== capsuleId);
+  window.PresenterVideoEngine.saveVideoCapsules(capsules);
+
+  renderTeacherCapsulesList();
+  renderStudentVideoCapsules();
+  renderParentVideoCapsules();
+}
+
+function renderTeacherCapsulesList() {
+  if (!window.PresenterVideoEngine) return;
+  const grid = document.getElementById('teacher-capsules-grid');
+  const badge = document.getElementById('teacher-capsules-count-badge');
+  if (!grid) return;
+
+  const capsules = window.PresenterVideoEngine.getVideoCapsules();
+  if (badge) badge.textContent = `${capsules.length} كبسولات نشطة`;
+
+  grid.innerHTML = capsules.map(c => `
+    <div class="video-capsule-card" onclick="openCapsulePlayerModal('${c.id}')">
+      <div class="capsule-thumb-wrap">
+        <img src="${c.presenter_image || 'assets/teacher_tarek_portrait.jpg'}" class="capsule-thumb-img" alt="Presenter">
+        <span class="capsule-aspect-tag">${c.aspect === '9:16' ? '📱 9:16 Shorts' : '🖥️ 16:9 Landscape'}</span>
+        <span class="capsule-duration-tag">⏱️ ${c.durationSec}s</span>
+        <div class="capsule-play-overlay">▶</div>
+      </div>
+      <div class="capsule-card-body">
+        <span style="font-size: 0.72rem; color: #F59E0B; font-weight: 800;">${c.badge || 'كبسولة تعليمية'}</span>
+        <div class="capsule-card-title">${c.title}</div>
+        <div class="capsule-card-topic">${c.topic}</div>
+        ${c.formula ? `<div class="capsule-card-formula" dir="ltr">${c.formula}</div>` : ''}
+        <div class="capsule-card-footer">
+          <span class="capsule-author">👨‍🏫 ${c.presenter_name}</span>
+          <button type="button" onclick="event.stopPropagation(); deleteStudioCapsule('${c.id}')" style="background:none; border:none; color:#EF4444; cursor:pointer; font-size: 13px;" title="حذف الكبسولة">🗑️</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderStudentVideoCapsules() {
+  if (!window.PresenterVideoEngine) return;
+  const grid = document.getElementById('student-capsules-grid');
+  if (!grid) return;
+
+  const capsules = window.PresenterVideoEngine.getVideoCapsules()
+    .filter(c => !c.target_audiences || c.target_audiences.includes('students') || c.target_audiences.includes('public'));
+
+  grid.innerHTML = capsules.map(c => `
+    <div class="video-capsule-card" onclick="openCapsulePlayerModal('${c.id}')">
+      <div class="capsule-thumb-wrap">
+        <img src="${c.presenter_image || 'assets/teacher_tarek_portrait.jpg'}" class="capsule-thumb-img" alt="Presenter">
+        <span class="capsule-aspect-tag">${c.aspect === '9:16' ? '📱 Shorts' : '🖥️ 16:9'}</span>
+        <span class="capsule-duration-tag">⏱️ ${c.durationSec}s</span>
+        <div class="capsule-play-overlay">▶</div>
+      </div>
+      <div class="capsule-card-body">
+        <span style="font-size: 0.72rem; color: #F59E0B; font-weight: 800;">${c.badge || 'كبسولة هامة'}</span>
+        <div class="capsule-card-title">${c.title}</div>
+        <div class="capsule-card-topic">${c.topic}</div>
+        ${c.formula ? `<div class="capsule-card-formula" dir="ltr">${c.formula}</div>` : ''}
+        <div class="capsule-card-footer">
+          <span class="capsule-author">🎙️ تقديم: ${c.presenter_name}</span>
+          <span style="color: #38BDF8; font-size: 12px; font-weight: 700;">مشاهدة الكبسولة ↗</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderParentVideoCapsules() {
+  if (!window.PresenterVideoEngine) return;
+  const grid = document.getElementById('parent-capsules-grid');
+  if (!grid) return;
+
+  const capsules = window.PresenterVideoEngine.getVideoCapsules()
+    .filter(c => !c.target_audiences || c.target_audiences.includes('parents') || c.target_audiences.includes('public'));
+
+  grid.innerHTML = capsules.map(c => `
+    <div class="video-capsule-card" onclick="openCapsulePlayerModal('${c.id}')">
+      <div class="capsule-thumb-wrap">
+        <img src="${c.presenter_image || 'assets/teacher_tarek_portrait.jpg'}" class="capsule-thumb-img" alt="Presenter">
+        <span class="capsule-aspect-tag" style="color: #34D399;">🎬 رسالة مرئية</span>
+        <span class="capsule-duration-tag">⏱️ ${c.durationSec}s</span>
+        <div class="capsule-play-overlay" style="background: rgba(16, 185, 129, 0.9);">▶</div>
+      </div>
+      <div class="capsule-card-body">
+        <span style="font-size: 0.72rem; color: #34D399; font-weight: 800;">${c.badge || 'إحاطة أولياء الأمور'}</span>
+        <div class="capsule-card-title">${c.title}</div>
+        <div class="capsule-card-topic">${c.topic}</div>
+        <div class="capsule-card-footer">
+          <span class="capsule-author">👨‍🏫 ${c.presenter_name}</span>
+          <span style="color: #34D399; font-size: 12px; font-weight: 700;">تشغيل الرسالة ↗</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* Modal Capsule Player Handlers */
+function openCapsulePlayerModal(capsuleId) {
+  if (!window.PresenterVideoEngine) return;
+  const modal = document.getElementById('modal-video-capsule-player');
+  const canvas = document.getElementById('canvas-modal-capsule-player');
+  const wrap = document.getElementById('modal-canvas-wrap');
+  if (!modal || !canvas) return;
+
+  const capsules = window.PresenterVideoEngine.getVideoCapsules();
+  const c = capsules.find(item => item.id === capsuleId) || capsules[0];
+  if (!c) return;
+
+  document.getElementById('modal-capsule-title').textContent = c.title;
+  document.getElementById('modal-capsule-subtitle').textContent = `${c.topic} — تقديم ${c.presenter_name}`;
+
+  if (wrap) {
+    if (c.aspect === '9:16') {
+      wrap.className = 'presenter-canvas-container aspect-9-16';
+    } else {
+      wrap.className = 'presenter-canvas-container aspect-16-9';
+    }
+  }
+
+  modalCapsuleCompositor = new window.PresenterVideoEngine.PresenterVideoCompositor(canvas, {
+    aspect: c.aspect || '9:16',
+    theme: c.theme || 'dark_lab',
+    presenterSrc: c.presenter_image || 'assets/teacher_tarek_portrait.jpg',
+    title: c.title,
+    badge: c.badge || 'كبسولة تعليمية',
+    formula: c.formula || '',
+    script: c.script || '',
+    durationSec: c.durationSec || 45
+  });
+
+  modalCapsuleCompositor.onTimeUpdate = (curr, total) => {
+    const slider = document.getElementById('modal-seek-slider');
+    const disp = document.getElementById('modal-time-display');
+    if (slider) {
+      slider.max = total;
+      slider.value = curr;
+    }
+    if (disp) {
+      const cM = String(Math.floor(curr / 60)).padStart(2, '0');
+      const cS = String(Math.floor(curr % 60)).padStart(2, '0');
+      const tM = String(Math.floor(total / 60)).padStart(2, '0');
+      const tS = String(Math.floor(total % 60)).padStart(2, '0');
+      disp.textContent = `${cM}:${cS} / ${tM}:${tS}`;
+    }
+  };
+
+  modalCapsuleCompositor.onEnded = () => {
+    const playIcon = document.getElementById('modal-play-icon');
+    const playText = document.getElementById('modal-play-text');
+    if (playIcon) playIcon.textContent = '▶️';
+    if (playText) playText.textContent = 'إعادة التشغيل';
+  };
+
+  modal.classList.add('active');
+  modalCapsuleCompositor.play();
+
+  const playIcon = document.getElementById('modal-play-icon');
+  const playText = document.getElementById('modal-play-text');
+  if (playIcon) playIcon.textContent = '⏸️';
+  if (playText) playText.textContent = 'إيقاف مؤقت';
+}
+
+function closeCapsulePlayerModal() {
+  const modal = document.getElementById('modal-video-capsule-player');
+  if (modal) modal.classList.remove('active');
+  if (modalCapsuleCompositor) {
+    modalCapsuleCompositor.pause();
+    modalCapsuleCompositor = null;
+  }
+}
+
+function toggleModalPlayback() {
+  if (!modalCapsuleCompositor) return;
+  const playIcon = document.getElementById('modal-play-icon');
+  const playText = document.getElementById('modal-play-text');
+
+  if (modalCapsuleCompositor.isPlaying) {
+    modalCapsuleCompositor.pause();
+    if (playIcon) playIcon.textContent = '▶️';
+    if (playText) playText.textContent = 'تشغيل الكبسولة';
+  } else {
+    modalCapsuleCompositor.play();
+    if (playIcon) playIcon.textContent = '⏸️';
+    if (playText) playText.textContent = 'إيقاف مؤقت';
+  }
+}
+
+function seekModalVideo(seconds) {
+  if (modalCapsuleCompositor) {
+    modalCapsuleCompositor.seek(Number(seconds));
+  }
+}
+
+// Bind Presenter Studio globally
+window.initPresenterStudio = initPresenterStudio;
+window.setStudioAspect = setStudioAspect;
+window.changeStudioTheme = changeStudioTheme;
+window.updateStudioPreviewFromInputs = updateStudioPreviewFromInputs;
+window.toggleStudioPlayback = toggleStudioPlayback;
+window.stopStudioPlayback = stopStudioPlayback;
+window.seekStudioVideo = seekStudioVideo;
+window.generateStudioScriptAI = generateStudioScriptAI;
+window.publishStudioCapsule = publishStudioCapsule;
+window.exportCurrentStudioVideo = exportCurrentStudioVideo;
+window.deleteStudioCapsule = deleteStudioCapsule;
+window.openCapsulePlayerModal = openCapsulePlayerModal;
+window.closeCapsulePlayerModal = closeCapsulePlayerModal;
+window.toggleModalPlayback = toggleModalPlayback;
+window.seekModalVideo = seekModalVideo;
+window.renderTeacherCapsulesList = renderTeacherCapsulesList;
+window.renderStudentVideoCapsules = renderStudentVideoCapsules;
+window.renderParentVideoCapsules = renderParentVideoCapsules;
+
+// Auto-render student and parent capsules on page load
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      renderStudentVideoCapsules();
+      renderParentVideoCapsules();
+      if (document.getElementById('canvas-presenter-studio')) {
+        initPresenterStudio();
+      }
+    }, 500);
+  });
+}

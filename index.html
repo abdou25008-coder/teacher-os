@@ -531,6 +531,9 @@
             <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-ai-voice-lab', this)" style="border: 1px solid rgba(139, 92, 246, 0.4); color: #C4B5FD;">
               <span>🎙️</span><span>المختبر الصوتي وتخصيص المنهج</span>
             </button>
+            <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-ai-presenter-studio', this)" style="border: 1px solid rgba(245, 158, 11, 0.4); color: #FCD34D;">
+              <span>🎬</span><span>استوديو المعلم الرقمي (AI Presenter)</span>
+            </button>
             <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-curriculum-brain', this)">
               <span>🧠</span><span>مركز تغذية المنهج والمعرفة</span>
             </button>
@@ -1510,6 +1513,153 @@
           </div>
 
 
+        
+          <!-- ==================== AI PRESENTER VIDEO STUDIO (LANSHU INTEGRATION) ==================== -->
+          <div id="tab-ai-presenter-studio" class="m-tab-pane tab-pane" style="display: none;">
+            <div class="m-card" style="border: 1.5px solid rgba(245, 158, 11, 0.4); background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 27, 75, 0.95)); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);">
+              
+              <!-- Studio Header -->
+              <div class="m-card-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 16px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-size: 2rem;">🎬</span>
+                  <div>
+                    <h2 class="m-card-title" style="color: #FFFFFF; font-size: 1.35rem; display: flex; align-items: center; gap: 8px;">
+                      استوديو المعلم الرقمي لتوليد كبسولات الفيديو بالذكاء الاصطناعي
+                      <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D; border: 1px solid rgba(245, 158, 11, 0.5); font-size: 0.75rem;">Lanshu Presenter Engine</span>
+                    </h2>
+                    <span style="font-size: 0.85rem; color: #CBD5E1;">
+                      حوّل أي مفهوم أو مسألة فيزيائية إلى كبسولة فيديو احترافية متحدثة بصوتك وصورتك الرقمية (Shorts 9:16 أو شاشة عرض 16:9) مع ترجمة حركية ومعادلات متوهجة بضغطة زر واحدة!
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Studio Main 2-Column Workstation -->
+              <div class="presenter-studio-wrap">
+                
+                <!-- Left Column: Video Stage & Player -->
+                <div class="presenter-stage-card">
+                  <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 12px;">
+                    <span style="font-weight: 800; font-size: 0.9rem; color: #F8FAFC;">🎥 مسرح المعاينة المباشرة (Live Preview)</span>
+                    <div class="aspect-toggle-group">
+                      <button type="button" class="aspect-btn active" id="btn-aspect-9-16" onclick="setStudioAspect('9:16')">📱 Shorts 9:16</button>
+                      <button type="button" class="aspect-btn" id="btn-aspect-16-9" onclick="setStudioAspect('16:9')">🖥️ Landscape 16:9</button>
+                    </div>
+                  </div>
+
+                  <!-- Canvas Stage -->
+                  <div class="presenter-canvas-container aspect-9-16" id="studio-canvas-wrap">
+                    <canvas id="canvas-presenter-studio"></canvas>
+                  </div>
+
+                  <!-- Player Control Bar -->
+                  <div class="presenter-player-bar">
+                    <div class="presenter-seek-row">
+                      <input type="range" class="presenter-seek-slider" id="studio-seek-slider" min="0" max="45" step="0.5" value="0" oninput="seekStudioVideo(this.value)">
+                      <span class="presenter-time-label" id="studio-time-display">00:00 / 00:45</span>
+                    </div>
+                    <div class="presenter-actions-row">
+                      <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn-presenter-play" id="btn-studio-play" onclick="toggleStudioPlayback()">
+                          <span id="studio-play-icon">▶️</span>
+                          <span id="studio-play-text">تشغيل المعاينة الحية</span>
+                        </button>
+                        <button type="button" class="btn" onclick="stopStudioPlayback()" style="background: rgba(255,255,255,0.1); color: #fff; padding: 8px 12px; border-radius: 8px; border:none; cursor:pointer;">
+                          ⏹️ إعادة
+                        </button>
+                      </div>
+                      <button type="button" class="btn-presenter-export" onclick="exportCurrentStudioVideo()">
+                        <span>📥 تصدير وتحميل الفيديو (Export MP4)</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right Column: Director Controls & Script Editor -->
+                <div class="presenter-editor-panel">
+                  <h3 style="color: #FCD34D; font-size: 1.05rem; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                    <span>⚙️</span> توجيهات المخرج وصياغة المحتوى
+                  </h3>
+                  <p style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 12px;">
+                    اختر المفهوم أو اكتب الفكرة، ودع الذكاء الاصطناعي يصيغ النص الكامل وضبط التوقيت الحركي.
+                  </p>
+
+                  <!-- 1-Click AI Script Generator -->
+                  <div class="presenter-input-group">
+                    <label>💡 توليد فوري لنص الكبسولة بالذكاء الاصطناعي:</label>
+                    <div style="display: flex; gap: 8px;">
+                      <input type="text" class="presenter-input" id="studio-ai-prompt-input" placeholder="مثال: قاعدة لينز، شبكات كيرشوف، تقرير أسبوعي..." style="flex: 1;">
+                      <button type="button" class="btn btn-primary" onclick="generateStudioScriptAI()" style="background: #8B5CF6; border:none; padding: 8px 14px; border-radius: 8px; font-weight:700; cursor:pointer; color:#fff;">
+                        ⚡ صياغة
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Title & Topic -->
+                  <div class="presenter-input-group">
+                    <label>عنوان الكبسولة:</label>
+                    <input type="text" class="presenter-input" id="studio-capsule-title" value="كبسولة قاعدة لينز وتحديد اتجاه التيار">
+                  </div>
+
+                  <!-- Badge / Hook -->
+                  <div class="presenter-input-group">
+                    <label>الشارة العلوية المميزة (Badge):</label>
+                    <input type="text" class="presenter-input" id="studio-capsule-badge" value="الثانوية العامة — سؤال مضمون في الامتحان">
+                  </div>
+
+                  <!-- Formula / Key takeaway -->
+                  <div class="presenter-input-group">
+                    <label>المعادلة الفيزيائية أو الفكرة المحورية المتوهجة:</label>
+                    <input type="text" class="presenter-input" id="studio-capsule-formula" value="e.m.f = -N (ΔΦ / Δt)" dir="ltr" style="text-align: left;">
+                  </div>
+
+                  <!-- Background Theme -->
+                  <div class="presenter-input-group">
+                    <label>ثيم وخلفية الاستوديو:</label>
+                    <select class="presenter-select" id="studio-capsule-theme" onchange="changeStudioTheme(this.value)">
+                      <option value="dark_lab">المعمل الكهرومغناطيسي المتوهج (Dark Lab)</option>
+                      <option value="chalkboard">السبورة الكلاسيكية الخضراء (Green Chalkboard)</option>
+                      <option value="cyber_studio">الاستوديو السيبراني الحديث (Cyber Studio)</option>
+                      <option value="blueprint">المخطط الهندسي الأزرق (Blueprint)</option>
+                    </select>
+                  </div>
+
+                  <!-- Script Textarea -->
+                  <div class="presenter-input-group">
+                    <label>النص المنطوق للكبسولة (Spoken Narration Script):</label>
+                    <textarea class="presenter-textarea" id="studio-capsule-script" rows="4" style="line-height: 1.5;">أهلاً بكم يا أبطال الثانوية العامة! قاعدة لينز ببساطة: التيار المستحث دائماً يعاكس التغير في الفيض المسبب له. لو المغناطيس بيقرب بقطب شمالي، الملف هيعمل قطب شمالي يقاومه بالتنافر! ولو بيبعد هيعمل جنوبي يمسكه بالتجاذب! تذكروا دائماً: إشارة السالب في قانون فاراداي هي قاعدة لينز.</textarea>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div style="display: flex; gap: 10px; margin-top: 8px;">
+                    <button type="button" class="btn btn-secondary" onclick="updateStudioPreviewFromInputs()" style="flex: 1; padding: 10px; background: #374151; color:#fff; border:none; border-radius: 8px; font-weight:700; cursor:pointer;">
+                      🔄 تحديث المعاينة
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="publishStudioCapsule()" style="flex: 1.5; padding: 10px; background: linear-gradient(135deg, #10B981, #059669); color:#fff; border:none; border-radius: 8px; font-weight:800; cursor:pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
+                      🚀 نشر للطلاب وأولياء الأمور
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Published Capsules Gallery for Teacher -->
+              <div style="margin-top: 32px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                  <h3 style="color: #F8FAFC; font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+                    <span>📚</span> كبسولات الفيديو المنشورة في لوحة الطالب وولي الأمر
+                  </h3>
+                  <span class="badge" id="teacher-capsules-count-badge" style="background: rgba(99, 102, 241, 0.2); color: #A5B4FC; border: 1px solid rgba(99, 102, 241, 0.4);">4 كبسولات نشطة</span>
+                </div>
+                <div class="video-capsule-grid" id="teacher-capsules-grid">
+                  <!-- Dynamically Rendered -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
         </section>
 
         <!-- ==================== 2. STUDENT PORTAL (STRICTLY ISOLATED) ==================== -->
@@ -1718,6 +1868,24 @@
               </div>
 
               
+              
+              <!-- ==================== AI VIDEO CAPSULES (STUDENT VIEW) ==================== -->
+              <div class="m-card" style="background: #111827; border: 1.5px solid rgba(245, 158, 11, 0.35); box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 16px;">
+                <div class="m-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.5rem;">📺</span>
+                    <div>
+                      <h3 class="m-card-title" style="color: #FFFFFF; font-size: 1.05rem;">كبسولات الفيديو التعليمية الذكية</h3>
+                      <span style="font-size: 0.72rem; color: #FCD34D;">شروحات سريعة مرئية (Shorts) يقدمها المعلم الرقمي قبل دخول المختبر الصوتي</span>
+                    </div>
+                  </div>
+                  <span class="badge" style="background: rgba(245, 158, 11, 0.18); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4);">كبسولات 45 ثانية ⚡</span>
+                </div>
+                <div class="video-capsule-grid" id="student-capsules-grid">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+
               <!-- ==================== IMMERSIVE LIVE AI VOICE LAB (STUDENT ENTRY) ==================== -->
               <div class="m-card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(139, 92, 246, 0.28)); border: 1.5px solid rgba(139, 92, 246, 0.5); box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2); position: relative; overflow: hidden; margin-bottom: 16px;">
                 <div style="position: absolute; top: -20px; left: -20px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%); pointer-events: none;"></div>
@@ -1855,6 +2023,24 @@
           </div>
 
           
+            
+              <!-- ==================== WEEKLY AI VIDEO BRIEFING (PARENT VIEW) ==================== -->
+              <div class="m-card" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.9)); border: 1.5px solid rgba(139, 92, 246, 0.4); box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 16px;">
+                <div class="m-card-header">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.5rem;">🎬</span>
+                    <div>
+                      <h3 class="m-card-title" style="color: #FFFFFF; font-size: 1.05rem;">الرسائل والتوجيهات الأسبوعية المرئية من المعلم</h3>
+                      <span style="font-size: 0.72rem; color: #C4B5FD;">إحاطة دورية بالصوت والصورة لولي الأمر حول مستوى الطلاب ومواعيد الامتحانات</span>
+                    </div>
+                  </div>
+                  <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4);">فيديو موثق 🎥</span>
+                </div>
+                <div class="video-capsule-grid" id="parent-capsules-grid">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+
             <!-- ==================== CHILD VOICE LAB REPORT (PARENT VIEW) ==================== -->
             <div class="m-card" style="border-color: rgba(139, 92, 246, 0.35); background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.3));">
               <div class="m-card-header">
@@ -2585,6 +2771,8 @@
 
 
   <!-- Scripts: Core Engine then Demo Layer -->
+  <script src="voice-lab-engine.js"></script>
+  <script src="presenter-video-engine.js"></script>
   <script src="app.js?v=20260927_strict_v8"></script>
   
   <!-- MODAL: LIVE TEACHER PHOTO SELECTOR -->
@@ -2786,6 +2974,43 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+
+  <!-- ==================== MODAL VIDEO CAPSULE PLAYER ==================== -->
+  <div id="modal-video-capsule-player" class="capsule-modal-overlay">
+    <div class="capsule-modal-box">
+      <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.3rem;">📺</span>
+          <div>
+            <h3 id="modal-capsule-title" style="color: #fff; font-size: 1rem; margin: 0;">كبسولة فيزيائية</h3>
+            <span id="modal-capsule-subtitle" style="font-size: 0.75rem; color: #94A3B8;">أكاديمية أ/ طارق الشناوي</span>
+          </div>
+        </div>
+        <button type="button" onclick="closeCapsulePlayerModal()" style="background: rgba(255,255,255,0.1); border:none; color:#fff; font-size: 1.2rem; width: 34px; height: 34px; border-radius: 50%; cursor: pointer;">✕</button>
+      </div>
+
+      <div class="presenter-canvas-container aspect-9-16" id="modal-canvas-wrap" style="max-height: 70vh;">
+        <canvas id="canvas-modal-capsule-player"></canvas>
+      </div>
+
+      <div class="presenter-player-bar" style="margin-top: 14px; width: 100%;">
+        <div class="presenter-seek-row">
+          <input type="range" class="presenter-seek-slider" id="modal-seek-slider" min="0" max="45" step="0.5" value="0" oninput="seekModalVideo(this.value)">
+          <span class="presenter-time-label" id="modal-time-display">00:00 / 00:45</span>
+        </div>
+        <div class="presenter-actions-row">
+          <button type="button" class="btn-presenter-play" id="btn-modal-play" onclick="toggleModalPlayback()">
+            <span id="modal-play-icon">▶️</span>
+            <span id="modal-play-text">تشغيل الكبسولة</span>
+          </button>
+          <button type="button" class="btn" onclick="openImmersiveVoiceLabModal(); closeCapsulePlayerModal();" style="background: rgba(139, 92, 246, 0.25); border: 1px solid #8B5CF6; color:#C4B5FD; padding: 6px 14px; border-radius: 8px; font-weight:700; cursor:pointer;">
+            🎙️ الانتقال للمختبر الصوتي لمناقشة هذا الدرس
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
