@@ -528,6 +528,9 @@
             <button class="desktop-tab-btn desktop-tab-btn-edit-portfolio" onclick="openLivePortfolioEditorForTeacher()" style="border: 1px solid rgba(245, 158, 11, 0.35); color: #FCD34D;">
               <span>🎨</span><span>تعديل البورتفوليو كمعلم</span>
             </button>
+            <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-ai-voice-lab', this)" style="border: 1px solid rgba(139, 92, 246, 0.4); color: #C4B5FD;">
+              <span>🎙️</span><span>المختبر الصوتي وتخصيص المنهج</span>
+            </button>
             <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-curriculum-brain', this)">
               <span>🧠</span><span>مركز تغذية المنهج والمعرفة</span>
             </button>
@@ -1340,6 +1343,173 @@
             </div>
           </div>
 
+        
+          <!-- ==================== 11. IMMERSIVE VOICE LAB & CURRICULUM STUDIO (TEACHER TAB) ==================== -->
+          <div id="tab-ai-voice-lab" class="m-tab-pane tab-pane" style="display: none;">
+            
+            <div class="m-card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.2)); border-color: rgba(139, 92, 246, 0.4); margin-bottom: 16px;">
+              <div class="m-card-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-size: 1.6rem;">🎙️</span>
+                  <div>
+                    <h3 class="m-card-title">استوديو تخصيص المختبر الصوتي الذكي والمنهج</h3>
+                    <span style="font-size: 0.74rem; color: #C4B5FD;">تحكم كامل في مهمات الطالب، توجيهات أولياء الأمور، ومساعدك التنفيذي الصوتي</span>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="openCreateMissionModal()" style="font-size: 0.8rem; padding: 6px 14px;">
+                  <span>➕ إضافة مهمة جديدة للمنهج</span>
+                </button>
+              </div>
+              <p style="font-size: 0.82rem; color: #CBD5E1; line-height: 1.5;">
+                هنا تضع لمستك التعليمية الحقيقية: قم بإنشاء سيناريوهات المنهج، وتحديد شروط التقييم السقراطي للطلاب، وتحديد التوجيهات الرسمية التي يتعامل بها المستشار الذكي مع أولياء الأمور.
+              </p>
+            </div>
+
+            <!-- Two-Column Desktop Grid -->
+            <div class="desktop-grid-2col">
+
+              <!-- LEFT: Curriculum Missions Manager -->
+              <div>
+                <div class="m-card">
+                  <div class="m-card-header">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 1.2rem;">🎯</span>
+                      <h4 class="m-card-title">مهمات وسيناريوهات المنهج المفعلة للطلاب</h4>
+                    </div>
+                    <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399;" id="teacher-missions-count-badge">4 مهمات نشطة</span>
+                  </div>
+
+                  <div id="teacher-missions-list-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                    <!-- Rendered by JS -->
+                  </div>
+                </div>
+
+                <!-- Teacher AI Executive Copilot -->
+                <div class="m-card" style="border-color: rgba(99, 102, 241, 0.4); background: rgba(15, 23, 42, 0.9);">
+                  <div class="m-card-header">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 1.3rem;">⚡</span>
+                      <div>
+                        <h4 class="m-card-title" style="color: #FFFFFF;">المساعد التنفيذي الصوتي للمعلم (Copilot)</h4>
+                        <span style="font-size: 0.72rem; color: #94A3B8;">تحدث معه بالصوت أو النص لإنجاز مهامك التدريسية فوراً</span>
+                      </div>
+                    </div>
+                    <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D;">جاهز للخدمة 🟢</span>
+                  </div>
+
+                  <!-- Copilot Quick Action Chips -->
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                    <button type="button" class="tech-pill" onclick="runTeacherCopilotQuickCommand('أسئلة امتحان تفكير عليا')" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #C4B5FD; cursor: pointer; padding: 4px 10px; font-size: 0.74rem;">
+                      📝 توليد 3 أسئلة تفكير عليا
+                    </button>
+                    <button type="button" class="tech-pill" onclick="runTeacherCopilotQuickCommand('لخص تقرير أداء الطلاب')" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #34D399; cursor: pointer; padding: 4px 10px; font-size: 0.74rem;">
+                      📊 تلخيص فجوات الطلاب الصوتية
+                    </button>
+                    <button type="button" class="tech-pill" onclick="runTeacherCopilotQuickCommand('اكتب خطة الحصة القادمة')" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #FCD34D; cursor: pointer; padding: 4px 10px; font-size: 0.74rem;">
+                      📅 خطة الحصة القادمة (60 دقيقة)
+                    </button>
+                  </div>
+
+                  <!-- Copilot Output Box -->
+                  <div id="teacher-copilot-output-box" style="background: rgba(11, 15, 25, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px; font-size: 0.82rem; color: #E2E8F0; line-height: 1.6; min-height: 120px; max-height: 240px; overflow-y: auto; white-space: pre-wrap;">
+أهلاً بك يا أستاذنا العزيز! ⚡ أنا مساعدك التنفيذي الصوتي.
+اضغط على أحد الأوامر السريعة بالأعلى أو تحدث معي صوتياً عبر الميكروفون بالأسفل لإنجاز مهامك.
+                  </div>
+
+                  <!-- Copilot Input & Mic Bar -->
+                  <div style="display: flex; gap: 8px; margin-top: 10px;">
+                    <input type="text" id="teacher-copilot-input" class="m-input" placeholder="اطلب أي مهمة من المساعد..." style="margin-bottom: 0; font-size: 0.84rem;" onkeydown="if(event.key==='Enter') executeTeacherCopilotCommand()">
+                    <button type="button" id="btn-copilot-mic" class="btn btn-outline" onclick="toggleTeacherCopilotMic()" style="border-color: #8B5CF6; color: #C4B5FD; padding: 0 14px;" title="التحدث بالصوت مع المساعد">
+                      <span>🎙️</span>
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="executeTeacherCopilotCommand()" style="padding: 0 16px;">
+                      <span>إرسال</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- RIGHT: Teacher Persona Settings & Parent Advisor Rules -->
+              <div>
+                
+                <!-- Pedagogical Persona Settings -->
+                <div class="m-card">
+                  <div class="m-card-header">
+                    <h4 class="m-card-title">⚙️ إعدادات الذكاء الاصطناعي البيداغوجية للطلاب</h4>
+                  </div>
+
+                  <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div>
+                      <label style="display: block; font-size: 0.78rem; color: #CBD5E1; font-weight: 700; margin-bottom: 4px;">النمط التعليمي الافتراضي للمختبر:</label>
+                      <select id="cfg-pedagogical-mode" class="m-input" style="margin-bottom: 0; font-size: 0.82rem;">
+                        <option value="socratic">المدرب السقراطي (لا يعطي الحل جاهزاً بل يطرح أسئلة توجيهية)</option>
+                        <option value="teacher">المعلم الشارح (شرح تفصيلي مع أمثلة وقوانين)</option>
+                        <option value="exam">المحاكاة الشفوية الصارمة (أسئلة سريعة وحساب درجات دقيق)</option>
+                      </select>
+                    </div>
+
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(255, 255, 255, 0.03); border-radius: 10px;">
+                      <div>
+                        <div style="font-weight: 800; font-size: 0.82rem; color: #FFFFFF;">إلزام الطالب بذكر وحدات القياس الفيزيائية</div>
+                        <div style="font-size: 0.72rem; color: #94A3B8;">يخصم نقاط في حالة نسيان (فولت، أمبير، تسلا، ويبر)</div>
+                      </div>
+                      <input type="checkbox" id="cfg-enforce-units" checked style="width: 18px; height: 18px; cursor: pointer;">
+                    </div>
+
+                    <div>
+                      <label style="display: block; font-size: 0.78rem; color: #CBD5E1; font-weight: 700; margin-bottom: 4px;">تعليمات وتوجيهات خاصة إضافية من المعلم:</label>
+                      <textarea id="cfg-custom-teacher-prompt" class="m-input" rows="3" placeholder="مثال: ركز دائماً على ربط التيار المتردد بالفصل الرابع، واطلب من الطالب توضيح القانون الرياضي..." style="font-size: 0.8rem; line-height: 1.5;"></textarea>
+                    </div>
+
+                    <button type="button" class="btn btn-primary btn-block" onclick="saveTeacherPersonaConfig()" style="font-size: 0.84rem;">
+                      <span>💾 حفظ إعدادات المعلم للطلاب</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Parent Advisor Rules Configuration -->
+                <div class="m-card" style="border-color: rgba(245, 158, 11, 0.35);">
+                  <div class="m-card-header">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 1.2rem;">👨‍👩‍👧</span>
+                      <h4 class="m-card-title">توجيهات المستشار الذكي لأولياء الأمور</h4>
+                    </div>
+                    <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D;">صارمة وموجهة 🔒</span>
+                  </div>
+                  <p style="font-size: 0.76rem; color: #94A3B8; margin-bottom: 10px;">
+                    هذه التعليمات يلتزم بها المستشار الذكي عند التحدث مع أي ولي أمر داخل بوابته:
+                  </p>
+
+                  <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div>
+                      <label style="display: block; font-size: 0.76rem; color: #CBD5E1; font-weight: 700; margin-bottom: 4px;">التركيز التعليمي لهذا الأسبوع:</label>
+                      <input type="text" id="cfg-parent-weekly-focus" class="m-input" value="التدريب المستمر على مسائل الفصل الثاني وتثبيت قاعدة لينز والفيض المغناطيسي." style="font-size: 0.8rem; margin-bottom: 0;">
+                    </div>
+
+                    <div>
+                      <label style="display: block; font-size: 0.76rem; color: #CBD5E1; font-weight: 700; margin-bottom: 4px;">موعد الامتحان القادم وتنبيهاته:</label>
+                      <input type="text" id="cfg-parent-upcoming-exam" class="m-input" value="الجمعة القادمة الساعة 8:00 مساءً (اختبار إلكتروني شامل على الحث الكهرومغناطيسي)." style="font-size: 0.8rem; margin-bottom: 0;">
+                    </div>
+
+                    <div>
+                      <label style="display: block; font-size: 0.76rem; color: #CBD5E1; font-weight: 700; margin-bottom: 4px;">نصيحة الأستاذ طارق للمذاكرة المنزلية:</label>
+                      <input type="text" id="cfg-parent-study-tip" class="m-input" value="يوصي الأستاذ طارق بحل 15 مسألة يومياً في كتاب المراجعة مع عدم مراجعة الإجابة إلا بعد المحاولة مرتين." style="font-size: 0.8rem; margin-bottom: 0;">
+                    </div>
+
+                    <button type="button" class="btn btn-primary btn-block" onclick="saveParentAdvisorConfig()" style="background: linear-gradient(135deg, #F59E0B, #D97706); border: none; font-size: 0.84rem;">
+                      <span>💾 حفظ وتحديث توجيهات أولياء الأمور</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
         </section>
 
         <!-- ==================== 2. STUDENT PORTAL (STRICTLY ISOLATED) ==================== -->
@@ -1547,6 +1717,46 @@
                 </div>
               </div>
 
+              
+              <!-- ==================== IMMERSIVE LIVE AI VOICE LAB (STUDENT ENTRY) ==================== -->
+              <div class="m-card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(139, 92, 246, 0.28)); border: 1.5px solid rgba(139, 92, 246, 0.5); box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2); position: relative; overflow: hidden; margin-bottom: 16px;">
+                <div style="position: absolute; top: -20px; left: -20px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%); pointer-events: none;"></div>
+                
+                <div class="m-card-header" style="position: relative; z-index: 1;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.5rem; animation: pulse-dot 1.5s infinite;">🎙️</span>
+                    <div>
+                      <h3 class="m-card-title" style="color: #FFFFFF; font-size: 1.05rem;">المختبر الصوتي الغامر للتعلم التفاعلي المباشر</h3>
+                      <span style="font-size: 0.72rem; color: #C4B5FD;">Powered by Gemini Live Architecture — تدريب شفهي بالصوت وفق المنهج</span>
+                    </div>
+                  </div>
+                  <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4);">جلسات شفوية ذكية ⚡</span>
+                </div>
+
+                <p style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.6; margin-bottom: 14px; position: relative; z-index: 1;">
+                  تحدث مع معلم الذكاء الاصطناعي الصوتي مباشرة! خض مهمات وتحديات حقيقية من منهج الأستاذ طارق الشناوي، ناقش خطوات حل المسائل بصوتك، واحصل على تقييم ورتبة لحظية لمستواك.
+                </p>
+
+                <div class="voice-lab-metrics-strip" style="display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap;">
+                  <div class="tech-pill" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); color: #FCD34D; font-size: 0.75rem; padding: 6px 12px; border-radius: 20px;">
+                    <span>🏆 رتبتك الحالية:</span>
+                    <strong id="student-voice-rank-badge">خبير متفوق 🥇</strong>
+                  </div>
+                  <div class="tech-pill" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); color: #38BDF8; font-size: 0.75rem; padding: 6px 12px; border-radius: 20px;">
+                    <span>🎯 التحديات المنجزة:</span>
+                    <strong id="student-voice-completed-count">3 مهمات مكتملة</strong>
+                  </div>
+                  <div class="tech-pill" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); color: #34D399; font-size: 0.75rem; padding: 6px 12px; border-radius: 20px;">
+                    <span>⚡ متوسط الإتقان:</span>
+                    <strong id="student-voice-mastery-score">91%</strong>
+                  </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-block" onclick="openImmersiveVoiceLabModal()" style="background: linear-gradient(135deg, #6366F1, #8B5CF6); border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45); font-weight: 800; font-size: 0.95rem; min-height: 48px;">
+                  <span>🎙️ دخول المختبر الصوتي وبدء التحدي الآن</span>
+                </button>
+              </div>
+
               <!-- Socratic AI Coach -->
               <div class="m-card">
                 <div class="m-card-header">
@@ -1644,7 +1854,88 @@
             </button>
           </div>
 
-          <!-- Teacher Showcase for Parent -->
+          
+            <!-- ==================== CHILD VOICE LAB REPORT (PARENT VIEW) ==================== -->
+            <div class="m-card" style="border-color: rgba(139, 92, 246, 0.35); background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.3));">
+              <div class="m-card-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.3rem;">🎙️</span>
+                  <div>
+                    <h3 class="m-card-title">تقرير المختبر الصوتي والشفوي للذكاء الاصطناعي</h3>
+                    <span style="font-size: 0.72rem; color: #C4B5FD;">تدريب الطالب التفاعلي الشفهي مع معلم الذكاء الاصطناعي</span>
+                  </div>
+                </div>
+                <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399;">محدث وموثق ✅</span>
+              </div>
+
+              <div class="pulse-stat-grid" style="margin-bottom: 12px;">
+                <div class="m-stat-box" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08);">
+                  <div class="m-stat-icon" style="background: #F3E8FF; color: #7C3AED;">🏆</div>
+                  <div>
+                    <div class="m-stat-val" style="font-size: 0.92rem; color: #C4B5FD;" id="parent-view-student-rank">خبير متفوق 🥇</div>
+                    <div class="m-stat-lbl">الرتبة الشفوية الحالية</div>
+                  </div>
+                </div>
+
+                <div class="m-stat-box" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08);">
+                  <div class="m-stat-icon" style="background: #ECFDF5; color: #059669;">🎯</div>
+                  <div>
+                    <div class="m-stat-val" style="font-size: 0.92rem; color: #34D399;" id="parent-view-student-missions-count">3 مهمات مكتملة</div>
+                    <div class="m-stat-lbl">التحديات المنجزة</div>
+                  </div>
+                </div>
+              </div>
+
+              <p style="font-size: 0.78rem; color: #CBD5E1; line-height: 1.5; margin-bottom: 0;">
+                📌 أحدث إنجاز شفهي: اجتاز الطالب مهمة <strong>تحدي شبكات كيرشوف</strong> بنسبة إتقان <strong>95%</strong> مع إشادة خاصة بسرعة الاستنتاج.
+              </p>
+            </div>
+
+            <!-- ==================== PARENT LIVE AI ADVISOR CARD ==================== -->
+            <div class="m-card" style="border-color: rgba(245, 158, 11, 0.4); background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(45, 26, 7, 0.25));">
+              <div class="m-card-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.3rem;">👨‍👩‍👧</span>
+                  <div>
+                    <h3 class="m-card-title">المستشار الصوتي والتربوي الذكي لولي الأمر</h3>
+                    <span style="font-size: 0.72rem; color: #FCD34D;">يتحدث معك صوتياً ويعمل بتوجيهات أ/ طارق الشناوي الصارمة 24/7</span>
+                  </div>
+                </div>
+                <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D;">مستشار معتمد 🛡️</span>
+              </div>
+
+              <!-- Quick Parent Questions Chips -->
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
+                <button type="button" class="tech-pill" onclick="askParentAdvisorQuick('ما هو المستوى الأكاديمي الحقيقي لابني؟')" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35); color: #FCD34D; font-size: 0.74rem; cursor: pointer; padding: 4px 10px;">
+                  📊 تقييم مستوى الطالب
+                </button>
+                <button type="button" class="tech-pill" onclick="askParentAdvisorQuick('ما هو موعد الامتحان القادم؟')" style="background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.35); color: #C4B5FD; font-size: 0.74rem; cursor: pointer; padding: 4px 10px;">
+                  📅 موعد الامتحان القادم
+                </button>
+                <button type="button" class="tech-pill" onclick="askParentAdvisorQuick('كيف أساعد ابني في المذاكرة هذا الأسبوع؟')" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34D399; font-size: 0.74rem; cursor: pointer; padding: 4px 10px;">
+                  💡 نصائح المذاكرة المنزلية
+                </button>
+              </div>
+
+              <!-- Advisor Stream Box -->
+              <div id="parent-advisor-chat-stream" style="background: rgba(11, 15, 25, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; font-size: 0.82rem; color: #E2E8F0; line-height: 1.6; min-height: 100px; max-height: 220px; overflow-y: auto; margin-bottom: 10px; white-space: pre-wrap;">
+أهلاً بحضرتك يا فندم! 🌟 أنا المستشار التربوي الذكي لمنصة الأستاذ طارق الشناوي.
+أنا هنا لمساعدتك والإجابة على أي استفسار يخص درجات ابنك، مواعيد الامتحانات، أو نصائح المذاكرة وفقاً لتعليمات الأستاذ طارق المعتمدة.
+              </div>
+
+              <!-- Advisor Input & Voice Mic -->
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="parent-advisor-input" class="m-input" placeholder="اكتب أو اسأل المستشار أي استفسار..." style="margin-bottom: 0; font-size: 0.82rem;" onkeydown="if(event.key==='Enter') sendParentAdvisorInquiry()">
+                <button type="button" id="btn-parent-advisor-mic" class="btn btn-outline" onclick="toggleParentAdvisorMic()" style="border-color: #F59E0B; color: #FCD34D; padding: 0 14px;" title="التحدث صوتياً مع المستشار">
+                  <span>🎙️</span>
+                </button>
+                <button type="button" class="btn btn-primary" onclick="sendParentAdvisorInquiry()" style="padding: 0 16px; background: linear-gradient(135deg, #F59E0B, #D97706); border: none;">
+                  <span>إرسال</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Teacher Showcase for Parent -->
           <div class="m-card">
             <div class="m-card-header">
               <h3 class="m-card-title">👨‍🏫 نبذة عن الأستاذ طارق الشناوي</h3>
@@ -2348,6 +2639,153 @@
           <span>تطبيق الصورة فوراً على البورتفوليو ✅</span>
         </button>
       </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== IMMERSIVE LIVE AI VOICE LAB MODAL ==================== -->
+  <div id="modal-immersive-voice-lab" class="voice-lab-modal-overlay">
+    <div class="voice-lab-modal-content">
+      
+      <!-- Top Bar of Modal -->
+      <div style="padding: 14px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.95);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.4rem;">🎙️</span>
+          <div>
+            <div style="font-weight: 900; font-size: 0.95rem; color: #FFFFFF;" id="voice-lab-modal-title">المختبر الصوتي الغامر — فيزياء الثانوية العامة</div>
+            <div style="font-size: 0.72rem; color: #94A3B8;" id="voice-lab-modal-subtitle">الأستاذ طارق الشناوي — تدريب تفاعلي مباشر بالصوت والذكاء الاصطناعي</div>
+          </div>
+        </div>
+        <button type="button" class="icon-btn" onclick="closeImmersiveVoiceLabModal()" style="color: #94A3B8;" title="إغلاق المختبر">
+          <span>✕</span>
+        </button>
+      </div>
+
+      <!-- VIEW 1: Missions Selection -->
+      <div id="voice-lab-view-missions" style="padding: 20px; flex: 1; overflow-y: auto;">
+        
+        <!-- Mode Tabs -->
+        <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-outline active voice-mode-tab-btn" id="voice-mode-btn-socratic" onclick="setVoiceLabMode('socratic', this)" style="flex: 1; min-height: 38px; font-size: 0.78rem; border-color: #8B5CF6; color: #C4B5FD; background: rgba(139, 92, 246, 0.15);">
+            <span>🧠 المدرب السقراطي (توجيه خطوة بخطوة)</span>
+          </button>
+          <button type="button" class="btn btn-outline voice-mode-tab-btn" id="voice-mode-btn-teacher" onclick="setVoiceLabMode('teacher', this)" style="flex: 1; min-height: 38px; font-size: 0.78rem; border-color: rgba(255,255,255,0.15); color: #CBD5E1;">
+            <span>👨‍🏫 المعلم الشارح (تبسيط وأمثلة)</span>
+          </button>
+          <button type="button" class="btn btn-outline voice-mode-tab-btn" id="voice-mode-btn-exam" onclick="setVoiceLabMode('exam', this)" style="flex: 1; min-height: 38px; font-size: 0.78rem; border-color: rgba(255,255,255,0.15); color: #CBD5E1;">
+            <span>⚡ المحاكاة الشفوية للامتحان (تقييم صارم)</span>
+          </button>
+        </div>
+
+        <div style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+          <h4 style="font-size: 0.92rem; font-weight: 800; color: #F1F5F9; margin: 0;">اختر تحدي المنهج لبدء الجلسة الصوتية:</h4>
+          <span style="font-size: 0.74rem; color: #94A3B8;">محدثة وفق المنهج الوزاري 🟢</span>
+        </div>
+
+        <!-- Missions Dynamic Grid -->
+        <div id="voice-lab-missions-grid" class="voice-mission-grid">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </div>
+
+      <!-- VIEW 2: Active Voice Chat (Immergo Interactive Canvas & Speech) -->
+      <div id="voice-lab-view-chat" style="display: none; padding: 20px; flex: 1; flex-direction: column; overflow-y: auto;">
+        
+        <!-- Header Info -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+          <button type="button" class="btn btn-outline" onclick="switchVoiceLabView('missions')" style="font-size: 0.78rem; padding: 4px 12px; min-height: 32px; border-color: rgba(255,255,255,0.2); color: #E2E8F0;">
+            <span>⬅️ قائمة المهمات</span>
+          </button>
+          <div style="text-align: center; flex: 1;">
+            <div style="font-weight: 900; font-size: 0.95rem; color: #FFFFFF;" id="chat-active-mission-title">تحدي شبكات كيرشوف</div>
+            <span class="badge" id="chat-active-role-badge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D; font-size: 0.7rem;">مهندس تحليلي</span>
+          </div>
+          <button type="button" class="btn btn-danger" onclick="finishVoiceLabMission()" style="font-size: 0.78rem; padding: 4px 12px; min-height: 32px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #FCA5A5;">
+            <span>إنهاء وتقييم 🏁</span>
+          </button>
+        </div>
+
+        <!-- Upper Visualizer: AI Model -->
+        <div class="audio-visualizer-container">
+          <canvas id="canvas-ai-voice-wave" class="audio-visualizer-canvas"></canvas>
+          <div class="visualizer-label">
+            <span>⚡ صوت المعلم الذكي</span>
+            <span id="ai-speaking-dot" class="online-dot" style="display: none; background: #8B5CF6;"></span>
+          </div>
+        </div>
+
+        <!-- Center: Transcript Stream -->
+        <div id="voice-lab-transcript-box" class="voice-lab-transcript-box">
+          <div class="voice-bubble ai">
+            <strong>المعلم الذكي:</strong>
+            <span id="voice-lab-initial-prompt-text">أهلاً بك يا بطل! جاهز لخوض التحدي الفيزيائي؟ اضغط على زر الميكروفون بالأسفل وتحدث معي بصوتك.</span>
+          </div>
+        </div>
+
+        <!-- Lower Visualizer: User Mic -->
+        <div class="audio-visualizer-container">
+          <canvas id="canvas-user-voice-wave" class="audio-visualizer-canvas user"></canvas>
+          <div class="visualizer-label user">
+            <span>🎙️ صوتك المباشر</span>
+            <span id="user-speaking-dot" class="online-dot" style="display: none; background: #F59E0B;"></span>
+          </div>
+        </div>
+
+        <!-- Bottom Controls Cluster -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 10px;">
+          <!-- Big Glowing Mic Button -->
+          <button type="button" id="voice-lab-mic-btn" class="voice-lab-mic-cta" onclick="toggleVoiceLabRecording()">
+            <span style="font-size: 1.15rem; font-weight: 900; margin-bottom: 2px;" id="voice-lab-mic-label">اضغط للتحدث بالصوت 🎙️</span>
+            <span style="font-size: 0.74rem; opacity: 0.85;" id="voice-lab-mic-sub">تحدث بحرية واشرح فكرتك</span>
+          </button>
+
+          <!-- Text Fallback for Non-mic Users -->
+          <div style="display: flex; width: 100%; max-width: 480px; gap: 8px;">
+            <input type="text" id="voice-lab-text-input" class="m-input" placeholder="أو اكتب ردك هنا إذا تعذر الميكروفون..." style="margin-bottom: 0; font-size: 0.82rem;" onkeydown="if(event.key==='Enter') sendVoiceLabTextReply()">
+            <button type="button" class="btn btn-primary" onclick="sendVoiceLabTextReply()" style="white-space: nowrap; font-size: 0.82rem; padding: 0 16px;">
+              <span>إرسال ↵</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: Summary & Cognitive Evaluation -->
+      <div id="voice-lab-view-summary" style="display: none; padding: 24px; flex: 1; flex-direction: column; overflow-y: auto; text-align: center;">
+        <span style="font-size: 2.2rem; margin-bottom: 4px;">🎉</span>
+        <h3 style="font-size: 1.25rem; font-weight: 900; color: #FFFFFF; margin-bottom: 4px;">اكتملت المهمة الشفوية بنجاح!</h3>
+        <p style="font-size: 0.82rem; color: #94A3B8; margin-bottom: 16px;" id="summary-mission-name-display">تحدي شبكات كيرشوف</p>
+
+        <div style="margin-bottom: 16px;">
+          <div id="summary-rank-pill" class="summary-rank-badge peritus">
+            <span>🏆</span>
+            <span id="summary-rank-text">خبير متفوق 🥇 (Peritus)</span>
+          </div>
+          <div style="font-size: 1.8rem; font-weight: 900; color: #FCD34D;" id="summary-score-val">95%</div>
+          <div style="font-size: 0.74rem; color: #94A3B8;">معدل الإتقان المفاهيمي والاستدلال الفيزيائي</div>
+        </div>
+
+        <div class="m-card" style="text-align: right; background: rgba(15, 23, 42, 0.7); border-color: rgba(255, 255, 255, 0.1); margin-bottom: 16px;">
+          <h4 style="font-size: 0.86rem; color: #38BDF8; margin-bottom: 8px; font-weight: 800;">📋 الملاحظات البيداغوجية والتشخيصية:</h4>
+          <ul id="summary-feedback-list" style="margin: 0; padding-right: 20px; font-size: 0.8rem; color: #E2E8F0; line-height: 1.6;">
+            <!-- Rendered by JS -->
+          </ul>
+
+          <div id="summary-misconceptions-box" style="display: none; margin-top: 10px; padding: 10px; border-radius: 10px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);">
+            <div style="font-size: 0.78rem; font-weight: 800; color: #FCA5A5; margin-bottom: 4px;">⚠️ نقاط وفجوات تم تصحيحها شفوياً:</div>
+            <ul id="summary-misconceptions-list" style="margin: 0; padding-right: 20px; font-size: 0.76rem; color: #FECACA;"></ul>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+          <button type="button" class="btn btn-primary" onclick="saveAndShareVoiceLabResult()" style="background: linear-gradient(135deg, #10B981, #059669); border: none; font-weight: 800;">
+            <span>💾 حفظ في سجلي ومشاركة النتيجة مع ولي الأمر</span>
+          </button>
+          <button type="button" class="btn btn-outline" onclick="switchVoiceLabView('missions')" style="border-color: rgba(255,255,255,0.2); color: #FFFFFF;">
+            <span>🔄 خوض مهمة أخرى</span>
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 

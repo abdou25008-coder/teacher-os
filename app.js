@@ -7637,6 +7637,628 @@ window.openLiveAddProductModal = openLiveAddProductModal;
 window.loadLivePortfolioData = loadLivePortfolioData;
 
 
+
+/* ==========================================================================
+   IMMERSIVE CURRICULUM LIVE AI VOICE LAB CONTROLLERS (STUDENT, TEACHER & PARENT)
+   ========================================================================== */
+
+let aiWaveVisualizer = null;
+let userWaveVisualizer = null;
+let speechRecognizerInstance = null;
+
+function initVoiceLabUI() {
+  if (typeof renderStudentVoiceMetrics === 'function') renderStudentVoiceMetrics();
+  if (typeof renderTeacherMissionsList === 'function') renderTeacherMissionsList();
+  if (typeof loadTeacherPersonaConfigUI === 'function') loadTeacherPersonaConfigUI();
+  if (typeof loadParentAdvisorConfigUI === 'function') loadParentAdvisorConfigUI();
+}
+
+function openImmersiveVoiceLabModal() {
+  const modal = document.getElementById('modal-immersive-voice-lab');
+  if (modal) {
+    modal.classList.add('active');
+    renderVoiceLabMissionsGrid();
+    switchVoiceLabView('missions');
+  }
+}
+
+function closeImmersiveVoiceLabModal() {
+  const modal = document.getElementById('modal-immersive-voice-lab');
+  if (modal) modal.classList.remove('active');
+  if (aiWaveVisualizer) aiWaveVisualizer.stop();
+  if (userWaveVisualizer) userWaveVisualizer.stop();
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+function switchVoiceLabView(view) {
+  const vMissions = document.getElementById('voice-lab-view-missions');
+  const vChat = document.getElementById('voice-lab-view-chat');
+  const vSummary = document.getElementById('voice-lab-view-summary');
+
+  if (vMissions) vMissions.style.display = view === 'missions' ? 'block' : 'none';
+  if (vChat) vChat.style.display = view === 'chat' ? 'flex' : 'none';
+  if (vSummary) vSummary.style.display = view === 'summary' ? 'flex' : 'none';
+
+  if (view !== 'chat') {
+    if (aiWaveVisualizer) aiWaveVisualizer.stop();
+    if (userWaveVisualizer) userWaveVisualizer.stop();
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+}
+
+function setVoiceLabMode(mode, btn) {
+  if (window.ImmersiveVoiceLab) {
+    window.ImmersiveVoiceLab.state.currentMode = mode;
+  }
+  document.querySelectorAll('.voice-mode-tab-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.borderColor = 'rgba(255,255,255,0.15)';
+    b.style.color = '#CBD5E1';
+    b.style.background = 'transparent';
+  });
+  if (btn) {
+    btn.classList.add('active');
+    btn.style.borderColor = '#8B5CF6';
+    btn.style.color = '#C4B5FD';
+    btn.style.background = 'rgba(139, 92, 246, 0.15)';
+  }
+}
+
+function renderVoiceLabMissionsGrid() {
+  const container = document.getElementById('voice-lab-missions-grid');
+  if (!container || !window.ImmersiveVoiceLab) return;
+  const missions = window.ImmersiveVoiceLab.getMissions();
+
+  container.innerHTML = missions.map(m => {
+    let diffBadgeColor = 'background: rgba(16, 185, 129, 0.2); color: #34D399;';
+    if (m.difficulty === 'متوسط') diffBadgeColor = 'background: rgba(59, 130, 246, 0.2); color: #93C5FD;';
+    if (m.difficulty === 'متقدم') diffBadgeColor = 'background: rgba(245, 158, 11, 0.2); color: #FCD34D;';
+    if (m.difficulty === 'خبير' || m.difficulty === 'خبير متفوق') diffBadgeColor = 'background: rgba(239, 68, 68, 0.2); color: #FCA5A5;';
+
+    return `
+      <div class="voice-mission-card" onclick="startVoiceLabMission('${m.id}')">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span class="badge" style="${diffBadgeColor}">${m.difficulty}</span>
+            <span style="font-size: 0.72rem; color: #94A3B8;">${m.subject ? m.subject.split('—')[0] : 'الفيزياء'}</span>
+          </div>
+          <h4 style="font-size: 0.94rem; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">${m.title}</h4>
+          <div style="font-size: 0.74rem; color: #FCD34D; margin-bottom: 6px; font-weight: 700;">
+            🎭 الدور: ${m.target_role || 'مستكشف فيزيائي'}
+          </div>
+          <p style="font-size: 0.78rem; color: #CBD5E1; line-height: 1.45; margin-bottom: 10px;">
+            ${m.desc}
+          </p>
+        </div>
+        <button type="button" class="btn btn-primary btn-block" style="min-height: 36px; font-size: 0.8rem; background: linear-gradient(135deg, #6366F1, #8B5CF6); border: none;">
+          <span>بدء التحدي الصوتي 🚀</span>
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+function startVoiceLabMission(missionId) {
+  if (!window.ImmersiveVoiceLab) return;
+  const missions = window.ImmersiveVoiceLab.getMissions();
+  const mission = missions.find(m => m.id === missionId) || missions[0];
+
+  window.ImmersiveVoiceLab.state.activeMission = mission;
+  window.ImmersiveVoiceLab.state.transcriptHistory = [];
+
+  const titleEl = document.getElementById('chat-active-mission-title');
+  if (titleEl) titleEl.textContent = mission.title;
+  const roleEl = document.getElementById('chat-active-role-badge');
+  if (roleEl) roleEl.textContent = mission.target_role || 'مستكشف فيزيائي';
+
+  const transcriptBox = document.getElementById('voice-lab-transcript-box');
+  if (transcriptBox) {
+    transcriptBox.innerHTML = `
+      <div class="voice-bubble ai">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+          <strong>المعلم الذكي:</strong>
+          <button type="button" onclick="ImmersiveVoiceLab.speakArabic('${mission.starter_prompt.replace(/'/g, "\\'")}')" style="background:none; border:none; color:#C4B5FD; cursor:pointer;" title="إعادة الاستماع">🔊</button>
+        </div>
+        <span>${mission.starter_prompt}</span>
+      </div>
+    `;
+  }
+
+  switchVoiceLabView('chat');
+
+  // Initialize visualizers
+  setTimeout(() => {
+    aiWaveVisualizer = new window.ImmersiveVoiceLab.WaveVisualizer('canvas-ai-voice-wave', 'purple');
+    userWaveVisualizer = new window.ImmersiveVoiceLab.WaveVisualizer('canvas-user-voice-wave', 'gold');
+    aiWaveVisualizer.start(false);
+    userWaveVisualizer.start(false);
+
+    // Speak initial starter prompt
+    const aiDot = document.getElementById('ai-speaking-dot');
+    if (aiDot) aiDot.style.display = 'inline-block';
+    if (aiWaveVisualizer) aiWaveVisualizer.start(true);
+
+    window.ImmersiveVoiceLab.speakArabic(mission.starter_prompt, () => {
+      if (aiDot) aiDot.style.display = 'none';
+      if (aiWaveVisualizer) aiWaveVisualizer.start(false);
+    });
+  }, 100);
+}
+
+function toggleVoiceLabRecording() {
+  if (!window.ImmersiveVoiceLab) return;
+  const micBtn = document.getElementById('voice-lab-mic-btn');
+  const micLabel = document.getElementById('voice-lab-mic-label');
+  const micSub = document.getElementById('voice-lab-mic-sub');
+  const userDot = document.getElementById('user-speaking-dot');
+
+  if (window.ImmersiveVoiceLab.state.isRecording) {
+    // Stop recording
+    window.ImmersiveVoiceLab.state.isRecording = false;
+    if (speechRecognizerInstance) {
+      try { speechRecognizerInstance.stop(); } catch(e) {}
+    }
+    if (micBtn) micBtn.classList.remove('recording');
+    if (micLabel) micLabel.textContent = 'اضغط للتحدث بالصوت 🎙️';
+    if (micSub) micSub.textContent = 'تحدث بحرية واشرح فكرتك';
+    if (userDot) userDot.style.display = 'none';
+    if (userWaveVisualizer) userWaveVisualizer.start(false);
+  } else {
+    // Start recording
+    window.ImmersiveVoiceLab.state.isRecording = true;
+    if (micBtn) micBtn.classList.add('recording');
+    if (micLabel) micLabel.textContent = 'جاري الاستماع... تحدث الآن 🔴';
+    if (micSub) micSub.textContent = 'اشرح خطوة بخطوة بالصوت';
+    if (userDot) userDot.style.display = 'inline-block';
+    if (userWaveVisualizer) userWaveVisualizer.start(true);
+
+    speechRecognizerInstance = window.ImmersiveVoiceLab.initSpeechRecognition(
+      (transcript) => {
+        handleStudentVoiceSpeech(transcript);
+        toggleVoiceLabRecording(); // Auto stop once spoken
+      },
+      (status) => {
+        if (status === 'IDLE' || status === 'ERROR') {
+          if (window.ImmersiveVoiceLab.state.isRecording) {
+            toggleVoiceLabRecording();
+          }
+        }
+      }
+    );
+
+    if (speechRecognizerInstance) {
+      try {
+        speechRecognizerInstance.start();
+      } catch(e) {
+        console.warn('SpeechRecognition start error:', e);
+      }
+    } else {
+      const fallback = prompt('تعذر فتح الميكروفون المباشر. اكتب إجابتك هنا للاستمرار في التحدي:');
+      if (fallback) handleStudentVoiceSpeech(fallback);
+      toggleVoiceLabRecording();
+    }
+  }
+}
+
+function sendVoiceLabTextReply() {
+  const input = document.getElementById('voice-lab-text-input');
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) return;
+  input.value = '';
+  handleStudentVoiceSpeech(val);
+}
+
+function handleStudentVoiceSpeech(transcript) {
+  if (!window.ImmersiveVoiceLab) return;
+  const activeMission = window.ImmersiveVoiceLab.state.activeMission;
+  const mode = window.ImmersiveVoiceLab.state.currentMode;
+  const transcriptBox = document.getElementById('voice-lab-transcript-box');
+
+  // Record student message
+  window.ImmersiveVoiceLab.state.transcriptHistory.push({
+    sender: 'student',
+    text: transcript,
+    time: new Date().toLocaleTimeString('ar-EG', { minute: '2-digit', second: '2-digit' })
+  });
+
+  if (transcriptBox) {
+    const bubble = document.createElement('div');
+    bubble.className = 'voice-bubble student';
+    bubble.innerHTML = `<strong>أنت (الطالب):</strong><span>${transcript}</span>`;
+    transcriptBox.appendChild(bubble);
+    transcriptBox.scrollTop = transcriptBox.scrollHeight;
+  }
+
+  // Generate AI Response
+  const res = window.ImmersiveVoiceLab.generateSocraticResponse(transcript, activeMission, mode);
+
+  window.ImmersiveVoiceLab.state.transcriptHistory.push({
+    sender: 'ai',
+    text: res.reply,
+    time: new Date().toLocaleTimeString('ar-EG', { minute: '2-digit', second: '2-digit' })
+  });
+
+  setTimeout(() => {
+    if (transcriptBox) {
+      const aiBubble = document.createElement('div');
+      aiBubble.className = 'voice-bubble ai';
+      aiBubble.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+          <strong>المعلم الذكي:</strong>
+          <button type="button" onclick="ImmersiveVoiceLab.speakArabic('${res.reply.replace(/'/g, "\\'")}')" style="background:none; border:none; color:#C4B5FD; cursor:pointer;" title="إعادة الاستماع">🔊</button>
+        </div>
+        <span>${res.reply}</span>
+      `;
+      transcriptBox.appendChild(aiBubble);
+      transcriptBox.scrollTop = transcriptBox.scrollHeight;
+    }
+
+    const aiDot = document.getElementById('ai-speaking-dot');
+    if (aiDot) aiDot.style.display = 'inline-block';
+    if (aiWaveVisualizer) aiWaveVisualizer.start(true);
+
+    window.ImmersiveVoiceLab.speakArabic(res.reply, () => {
+      if (aiDot) aiDot.style.display = 'none';
+      if (aiWaveVisualizer) aiWaveVisualizer.start(false);
+    });
+  }, 400);
+}
+
+function finishVoiceLabMission() {
+  if (!window.ImmersiveVoiceLab) return;
+  const activeMission = window.ImmersiveVoiceLab.state.activeMission;
+  const history = window.ImmersiveVoiceLab.state.transcriptHistory;
+
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  if (aiWaveVisualizer) aiWaveVisualizer.stop();
+  if (userWaveVisualizer) userWaveVisualizer.stop();
+
+  const evalResult = window.ImmersiveVoiceLab.evaluateMissionPerformance(history, activeMission);
+  window.ImmersiveVoiceLab.state.currentEvaluation = evalResult;
+
+  // Render in Summary View
+  const titleDisplay = document.getElementById('summary-mission-name-display');
+  if (titleDisplay) titleDisplay.textContent = evalResult.missionTitle;
+
+  const scoreVal = document.getElementById('summary-score-val');
+  if (scoreVal) scoreVal.textContent = evalResult.score + '%';
+
+  const rankText = document.getElementById('summary-rank-text');
+  if (rankText) rankText.textContent = evalResult.rankArabic;
+
+  const rankPill = document.getElementById('summary-rank-pill');
+  if (rankPill) {
+    rankPill.className = 'summary-rank-badge ' + evalResult.rank.toLowerCase();
+  }
+
+  const feedbackList = document.getElementById('summary-feedback-list');
+  if (feedbackList) {
+    feedbackList.innerHTML = evalResult.feedbackPoints.map(f => `<li>${f}</li>`).join('');
+  }
+
+  const miscBox = document.getElementById('summary-misconceptions-box');
+  const miscList = document.getElementById('summary-misconceptions-list');
+  if (evalResult.misconceptions && evalResult.misconceptions.length > 0) {
+    if (miscBox) miscBox.style.display = 'block';
+    if (miscList) miscList.innerHTML = evalResult.misconceptions.map(m => `<li>${m}</li>`).join('');
+  } else {
+    if (miscBox) miscBox.style.display = 'none';
+  }
+
+  switchVoiceLabView('summary');
+}
+
+function saveAndShareVoiceLabResult() {
+  if (!window.ImmersiveVoiceLab) return;
+  const res = window.ImmersiveVoiceLab.state.currentEvaluation;
+  if (res) {
+    window.ImmersiveVoiceLab.saveStudentMissionResult(res);
+  }
+  renderStudentVoiceMetrics();
+  closeImmersiveVoiceLabModal();
+  if (typeof showDemoToast === 'function') {
+    showDemoToast('💾 تم حفظ تقرير الجلسة في سجلك الأكاديمي ومشاركته مع ولي الأمر!');
+  }
+}
+
+function renderStudentVoiceMetrics() {
+  if (!window.ImmersiveVoiceLab) return;
+  const history = window.ImmersiveVoiceLab.getStudentMissionHistory();
+  const rankBadge = document.getElementById('student-voice-rank-badge');
+  const countBadge = document.getElementById('student-voice-completed-count');
+  const scoreBadge = document.getElementById('student-voice-mastery-score');
+
+  const parentRank = document.getElementById('parent-view-student-rank');
+  const parentCount = document.getElementById('parent-view-student-missions-count');
+
+  if (history.length > 0) {
+    const latest = history[0];
+    const totalScore = history.reduce((sum, h) => sum + (h.score || 80), 0);
+    const avgScore = Math.round(totalScore / history.length);
+
+    if (rankBadge) rankBadge.textContent = latest.rankArabic || 'خبير متفوق 🥇';
+    if (countBadge) countBadge.textContent = `${history.length} مهمات مكتملة`;
+    if (scoreBadge) scoreBadge.textContent = `${avgScore}%`;
+
+    if (parentRank) parentRank.textContent = latest.rankArabic || 'خبير متفوق 🥇';
+    if (parentCount) parentCount.textContent = `${history.length} مهمات مكتملة`;
+  }
+}
+
+// Teacher Portal UI Handlers
+function renderTeacherMissionsList() {
+  const container = document.getElementById('teacher-missions-list-container');
+  const badge = document.getElementById('teacher-missions-count-badge');
+  if (!container || !window.ImmersiveVoiceLab) return;
+
+  const missions = window.ImmersiveVoiceLab.getMissions();
+  if (badge) badge.textContent = `${missions.length} مهمات نشطة`;
+
+  container.innerHTML = missions.map((m, idx) => `
+    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+          <span style="font-weight: 800; font-size: 0.86rem; color: #FFFFFF;">${m.title}</span>
+          <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #C4B5FD; font-size: 0.68rem;">${m.difficulty}</span>
+        </div>
+        <div style="font-size: 0.74rem; color: #94A3B8;">
+          🎯 ${m.concept || 'مفهوم المنهج'} | 🎭 ${m.target_role || 'الدور'}
+        </div>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <button type="button" class="btn btn-outline" onclick="deleteTeacherMission('${m.id}')" style="min-height: 30px; padding: 0 10px; font-size: 0.74rem; border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5;" title="حذف المهمة">
+          <span>حذف</span>
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openCreateMissionModal() {
+  const title = prompt('أدخل عنوان مهمة المنهج الجديدة: (مثال: تجربة أوميتر وقياس المقاومة المجهولة)');
+  if (!title) return;
+  const concept = prompt('المفهوم الفيزيائي المستهدف: (مثال: العلاقة العكسية بين شدة التيار والمقاومة الكلية)');
+  if (!concept) return;
+
+  const newMission = {
+    id: 'msn-custom-' + Date.now(),
+    title: title,
+    subject: 'الفيزياء للثانوية العامة',
+    grade_level: 'الصف الثالث الثانوي',
+    difficulty: 'متوسط',
+    difficulty_level: 'Medium',
+    target_role: 'مستكشف فيزيائي يناقش الأستاذ',
+    concept: concept,
+    desc: `تحدي تفاعلي بالصوت لمناقشة وشرح ${concept} واستنتاج القوانين.`,
+    system_instructions: `ناقش الطالب في ${concept}. اطرح عليه أسئلة توجيهية لقياس الفهم العميق.`,
+    starter_prompt: `أهلاً بك يا بطل! لنبدأ تحدي ${title}. ما هو القانون الفيزيائي الأساسي الذي نعتمد عليه هنا؟`,
+    required_concepts: [concept.split(' ')[0]]
+  };
+
+  const missions = window.ImmersiveVoiceLab.getMissions();
+  missions.unshift(newMission);
+  window.ImmersiveVoiceLab.saveMissions(missions);
+  renderTeacherMissionsList();
+  renderVoiceLabMissionsGrid();
+  if (typeof showDemoToast === 'function') {
+    showDemoToast('✅ تم إضافة مهمة المنهج الجديدة بنجاح وتم تعميمها للطلاب!');
+  }
+}
+
+function deleteTeacherMission(missionId) {
+  if (!confirm('هل تريد حذف هذه المهمة من قائمة مهام الطلاب؟')) return;
+  let missions = window.ImmersiveVoiceLab.getMissions();
+  missions = missions.filter(m => m.id !== missionId);
+  window.ImmersiveVoiceLab.saveMissions(missions);
+  renderTeacherMissionsList();
+  renderVoiceLabMissionsGrid();
+  if (typeof showDemoToast === 'function') {
+    showDemoToast('🗑️ تم حذف المهمة بنجاح.');
+  }
+}
+
+function loadTeacherPersonaConfigUI() {
+  if (!window.ImmersiveVoiceLab) return;
+  const cfg = window.ImmersiveVoiceLab.getTeacherLabConfig();
+  const modeSelect = document.getElementById('cfg-pedagogical-mode');
+  const unitsCheck = document.getElementById('cfg-enforce-units');
+  const promptText = document.getElementById('cfg-custom-teacher-prompt');
+
+  if (modeSelect) modeSelect.value = cfg.pedagogical_mode || 'socratic';
+  if (unitsCheck) unitsCheck.checked = cfg.enforce_units !== false;
+  if (promptText) promptText.value = cfg.custom_teacher_prompt || '';
+}
+
+function saveTeacherPersonaConfig() {
+  if (!window.ImmersiveVoiceLab) return;
+  const cfg = window.ImmersiveVoiceLab.getTeacherLabConfig();
+  const modeSelect = document.getElementById('cfg-pedagogical-mode');
+  const unitsCheck = document.getElementById('cfg-enforce-units');
+  const promptText = document.getElementById('cfg-custom-teacher-prompt');
+
+  if (modeSelect) cfg.pedagogical_mode = modeSelect.value;
+  if (unitsCheck) cfg.enforce_units = unitsCheck.checked;
+  if (promptText) cfg.custom_teacher_prompt = promptText.value.trim();
+
+  window.ImmersiveVoiceLab.saveTeacherLabConfig(cfg);
+  if (typeof showDemoToast === 'function') {
+    showDemoToast('💾 تم حفظ إعدادات المعلم البيداغوجية بنجاح!');
+  }
+}
+
+function loadParentAdvisorConfigUI() {
+  if (!window.ImmersiveVoiceLab) return;
+  const cfg = window.ImmersiveVoiceLab.getTeacherLabConfig();
+  const rules = cfg.parent_advisor_rules || {};
+
+  const focusInput = document.getElementById('cfg-parent-weekly-focus');
+  const examInput = document.getElementById('cfg-parent-upcoming-exam');
+  const tipInput = document.getElementById('cfg-parent-study-tip');
+
+  if (focusInput && rules.weekly_focus) focusInput.value = rules.weekly_focus;
+  if (examInput && rules.upcoming_exam) examInput.value = rules.upcoming_exam;
+  if (tipInput && rules.study_tip) tipInput.value = rules.study_tip;
+}
+
+function saveParentAdvisorConfig() {
+  if (!window.ImmersiveVoiceLab) return;
+  const cfg = window.ImmersiveVoiceLab.getTeacherLabConfig();
+  if (!cfg.parent_advisor_rules) cfg.parent_advisor_rules = {};
+
+  const focusInput = document.getElementById('cfg-parent-weekly-focus');
+  const examInput = document.getElementById('cfg-parent-upcoming-exam');
+  const tipInput = document.getElementById('cfg-parent-study-tip');
+
+  if (focusInput) cfg.parent_advisor_rules.weekly_focus = focusInput.value.trim();
+  if (examInput) cfg.parent_advisor_rules.upcoming_exam = examInput.value.trim();
+  if (tipInput) cfg.parent_advisor_rules.study_tip = tipInput.value.trim();
+
+  window.ImmersiveVoiceLab.saveTeacherLabConfig(cfg);
+  if (typeof showDemoToast === 'function') {
+    showDemoToast('💾 تم تحديث توجيهات أولياء الأمور وحفظها في سيرفر المستشار الذكي!');
+  }
+}
+
+// Teacher Executive Copilot Handlers
+function executeTeacherCopilotCommand() {
+  const input = document.getElementById('teacher-copilot-input');
+  const box = document.getElementById('teacher-copilot-output-box');
+  if (!input || !box || !window.ImmersiveVoiceLab) return;
+  const cmd = input.value.trim();
+  if (!cmd) return;
+  input.value = '';
+
+  box.textContent = '⏳ جاري المعالجة والتنفيذ الذكي...';
+  setTimeout(() => {
+    const res = window.ImmersiveVoiceLab.generateTeacherCopilotResponse(cmd);
+    box.textContent = res;
+    window.ImmersiveVoiceLab.speakArabic('تفضل يا أستاذنا، قمت بتنفيذ طلبك.');
+  }, 400);
+}
+
+function runTeacherCopilotQuickCommand(cmd) {
+  const input = document.getElementById('teacher-copilot-input');
+  if (input) input.value = cmd;
+  executeTeacherCopilotCommand();
+}
+
+function toggleTeacherCopilotMic() {
+  const btn = document.getElementById('btn-copilot-mic');
+  if (!window.ImmersiveVoiceLab) return;
+
+  const recognition = window.ImmersiveVoiceLab.initSpeechRecognition(
+    (transcript) => {
+      const input = document.getElementById('teacher-copilot-input');
+      if (input) input.value = transcript;
+      executeTeacherCopilotCommand();
+      if (btn) btn.style.background = 'transparent';
+    },
+    (status) => {
+      if (status === 'LISTENING') {
+        if (btn) btn.style.background = 'rgba(239, 68, 68, 0.3)';
+      } else {
+        if (btn) btn.style.background = 'transparent';
+      }
+    }
+  );
+
+  if (recognition) {
+    try { recognition.start(); } catch(e) {}
+  } else {
+    alert('خاصية التعرف على الصوت غير مدعومة في هذا المتصفح.');
+  }
+}
+
+// Parent Advisor Handlers
+function sendParentAdvisorInquiry() {
+  const input = document.getElementById('parent-advisor-input');
+  const stream = document.getElementById('parent-advisor-chat-stream');
+  if (!input || !stream || !window.ImmersiveVoiceLab) return;
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  const parentBubble = `\n\n👤 ولي الأمر:\n${text}`;
+  stream.textContent += parentBubble;
+  stream.scrollTop = stream.scrollHeight;
+
+  setTimeout(() => {
+    const reply = window.ImmersiveVoiceLab.generateParentAdvisorResponse(text);
+    const advisorBubble = `\n\n🛡️ المستشار الذكي:\n${reply}`;
+    stream.textContent += advisorBubble;
+    stream.scrollTop = stream.scrollHeight;
+    window.ImmersiveVoiceLab.speakArabic(reply);
+  }, 350);
+}
+
+function askParentAdvisorQuick(q) {
+  const input = document.getElementById('parent-advisor-input');
+  if (input) input.value = q;
+  sendParentAdvisorInquiry();
+}
+
+function toggleParentAdvisorMic() {
+  const btn = document.getElementById('btn-parent-advisor-mic');
+  if (!window.ImmersiveVoiceLab) return;
+
+  const recognition = window.ImmersiveVoiceLab.initSpeechRecognition(
+    (transcript) => {
+      const input = document.getElementById('parent-advisor-input');
+      if (input) input.value = transcript;
+      sendParentAdvisorInquiry();
+      if (btn) btn.style.background = 'transparent';
+    },
+    (status) => {
+      if (status === 'LISTENING') {
+        if (btn) btn.style.background = 'rgba(239, 68, 68, 0.3)';
+      } else {
+        if (btn) btn.style.background = 'transparent';
+      }
+    }
+  );
+
+  if (recognition) {
+    try { recognition.start(); } catch(e) {}
+  } else {
+    alert('خاصية التعرف على الصوت غير مدعومة في هذا المتصفح.');
+  }
+}
+
+// Bind Voice Lab controllers globally
+window.openImmersiveVoiceLabModal = openImmersiveVoiceLabModal;
+window.closeImmersiveVoiceLabModal = closeImmersiveVoiceLabModal;
+window.switchVoiceLabView = switchVoiceLabView;
+window.setVoiceLabMode = setVoiceLabMode;
+window.renderVoiceLabMissionsGrid = renderVoiceLabMissionsGrid;
+window.startVoiceLabMission = startVoiceLabMission;
+window.toggleVoiceLabRecording = toggleVoiceLabRecording;
+window.sendVoiceLabTextReply = sendVoiceLabTextReply;
+window.finishVoiceLabMission = finishVoiceLabMission;
+window.saveAndShareVoiceLabResult = saveAndShareVoiceLabResult;
+window.renderStudentVoiceMetrics = renderStudentVoiceMetrics;
+
+window.renderTeacherMissionsList = renderTeacherMissionsList;
+window.openCreateMissionModal = openCreateMissionModal;
+window.deleteTeacherMission = deleteTeacherMission;
+window.saveTeacherPersonaConfig = saveTeacherPersonaConfig;
+window.saveParentAdvisorConfig = saveParentAdvisorConfig;
+window.executeTeacherCopilotCommand = executeTeacherCopilotCommand;
+window.runTeacherCopilotQuickCommand = runTeacherCopilotQuickCommand;
+window.toggleTeacherCopilotMic = toggleTeacherCopilotMic;
+
+window.sendParentAdvisorInquiry = sendParentAdvisorInquiry;
+window.askParentAdvisorQuick = askParentAdvisorQuick;
+window.toggleParentAdvisorMic = toggleParentAdvisorMic;
+
+// Boot Voice Lab on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    initVoiceLabUI();
+  }, 400);
+});
+
+
 // STRICT_WORKSPACE_ISOLATION_BOOT
 document.addEventListener('DOMContentLoaded', () => {
   try {
