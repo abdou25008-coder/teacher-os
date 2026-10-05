@@ -8952,3 +8952,63 @@ function transferActiveShotcraftToStudio() {
     switchTeacherTab('tab-video-studio');
   }
 }
+
+
+// ==================== SQUARE-UI DASHBOARD-5 CONTROLLERS ====================
+function toggleSquareWorkspaceMenu() {
+  const d = document.getElementById('square-workspace-dropdown');
+  if (d) d.style.display = (d.style.display === 'block' ? 'none' : 'block');
+}
+
+function selectSquareWorkspace(name) {
+  const label = document.getElementById('active-workspace-name');
+  if (label) label.textContent = name;
+  const d = document.getElementById('square-workspace-dropdown');
+  if (d) d.style.display = 'none';
+}
+
+function exportSquareDashboardReport() {
+  alert('📊 جاري تصدير تقرير الأداء الموحد بصيغة CSV و PDF:\n\n• 2,840 طالب مسجل\n• 1,420 جلسة مختبر صوتي\n• 145,000 ج.م تحصيلات InstaPay\n• نسبة الحضور الإجمالية 94%');
+}
+
+let isSquareLineChart = false;
+function toggleSquareChartType() {
+  isSquareLineChart = !isSquareLineChart;
+  const container = document.getElementById('square-chart-container');
+  if (!container) return;
+  if (isSquareLineChart) {
+    container.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #60A5FA; font-weight: 700; font-size: 0.88rem;">📈 مخطط خطي متصل (Smooth Curve): 94% تحصيل تصاعدي خلال الـ 7 أيام الماضية</div>';
+  } else {
+    container.innerHTML = `
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;"><div style="width: 100%; height: 75px; background: rgba(255, 255, 255, 0.2); border-radius: 4px;"></div><span style="font-size: 0.7rem; color: #94A3B8;">السبت</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;"><div style="width: 100%; height: 90px; background: rgba(255, 255, 255, 0.2); border-radius: 4px;"></div><span style="font-size: 0.7rem; color: #94A3B8;">الأحد</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;"><div style="width: 100%; height: 110px; background: #2563EB; border-radius: 4px; box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);"></div><span style="font-size: 0.7rem; color: #60A5FA; font-weight: 800;">الإثنين</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;"><div style="width: 100%; height: 85px; background: rgba(255, 255, 255, 0.2); border-radius: 4px;"></div><span style="font-size: 0.7rem; color: #94A3B8;">الثلاثاء</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;"><div style="width: 100%; height: 95px; background: rgba(255, 255, 255, 0.2); border-radius: 4px;"></div><span style="font-size: 0.7rem; color: #94A3B8;">الأربعاء</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;"><div style="width: 100%; height: 125px; background: #10B981; border-radius: 4px; box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);"></div><span style="font-size: 0.7rem; color: #34D399; font-weight: 800;">الخميس</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;"><div style="width: 100%; height: 60px; background: rgba(255, 255, 255, 0.2); border-radius: 4px;"></div><span style="font-size: 0.7rem; color: #94A3B8;">الجمعة</span></div>
+    `;
+  }
+}
+
+function filterSquareTable(status) {
+  const rows = document.querySelectorAll('.square-row');
+  const btns = document.querySelectorAll('.square-table-filter-btn');
+  btns.forEach(b => {
+    b.style.background = 'rgba(255, 255, 255, 0.08)';
+    b.style.color = '#94A3B8';
+  });
+  if (event && event.target) {
+    event.target.style.background = '#2563EB';
+    event.target.style.color = '#FFFFFF';
+  }
+  rows.forEach(r => {
+    if (status === 'all') {
+      r.style.display = '';
+    } else if (r.classList.contains(status)) {
+      r.style.display = '';
+    } else {
+      r.style.display = 'none';
+    }
+  });
+}

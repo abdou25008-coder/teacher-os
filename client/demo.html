@@ -1300,6 +1300,9 @@
 
           <!-- Desktop Navigation Tabs Bar (Visible on Desktop >= 769px) -->
           <div class="desktop-nav-tabs-bar">
+            <button class="desktop-tab-btn active" id="btn-tab-square-dashboard" onclick="switchTeacherTab('tab-square-dashboard-5', this)" style="border: 1px solid rgba(59, 130, 246, 0.5); color: #60A5FA; font-weight: 800; background: rgba(59, 130, 246, 0.15);">
+              <span>🔲</span><span>لوحة القيادة التنفيذية (Square-UI Dashboard-5)</span>
+            </button>
             <button class="desktop-tab-btn active" onclick="switchTeacherTab('tab-copilot', this)">
               <span>⚡</span><span>المساعد الذكي (Copilot)</span>
             </button>
@@ -1346,6 +1349,442 @@
   
 
           <!-- TAB 1: COPILOT (المساعد الشخصي الذكي) -->
+          
+          <!-- ==================== SQUARE-UI DASHBOARD-5 EXECUTIVE SUITE ==================== -->
+          <div id="tab-square-dashboard-5" class="m-tab-pane tab-pane" style="display: block;">
+            
+            <!-- Inlaid Container Styled exactly like Square-UI dashboard-5 -->
+            <div style="background: #090D16; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5); margin-bottom: 24px;">
+              
+              <!-- 1. Square-UI Top Navigation & Workspace Header -->
+              <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 23, 42, 0.65); gap: 12px;">
+                
+                <!-- Workspace Switcher Dropdown (Square-UI Style) -->
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="position: relative;">
+                    <button type="button" id="square-workspace-btn" onclick="toggleSquareWorkspaceMenu()" style="display: flex; align-items: center; gap: 8px; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.12); padding: 6px 14px; border-radius: 10px; color: #FFFFFF; font-weight: 700; font-size: 0.88rem; cursor: pointer;">
+                      <div style="width: 24px; height: 24px; border-radius: 6px; background: #2563EB; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900;">T+</div>
+                      <span id="active-workspace-name">أكاديمية أ/ طارق الشناوي (الفيزياء)</span>
+                      <span style="font-size: 0.75rem; color: #94A3B8;">▼</span>
+                    </button>
+                    <!-- Dropdown Content -->
+                    <div id="square-workspace-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0; width: 260px; background: #0F172A; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; box-shadow: 0 15px 30px rgba(0,0,0,0.6); z-index: 1000; padding: 8px;">
+                      <div style="font-size: 0.72rem; color: #94A3B8; padding: 6px 10px; font-weight: 700;">بيئات العمل والفروع (Workspaces)</div>
+                      <div onclick="selectSquareWorkspace('أكاديمية أ/ طارق الشناوي (الفيزياء)')" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: #FFFFFF; font-size: 0.84rem; background: rgba(37, 99, 235, 0.15);">
+                        <span>⚡ أكاديمية طارق الشناوي</span>
+                        <span style="color: #60A5FA;">✓</span>
+                      </div>
+                      <div onclick="selectSquareWorkspace('سنتر النخبة - مدينة نصر')" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: #CBD5E1; font-size: 0.84rem;">
+                        <span>🏢 سنتر النخبة (مدينة نصر)</span>
+                      </div>
+                      <div onclick="selectSquareWorkspace('مجموعات الأونلاين (زووم)')" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: #CBD5E1; font-size: 0.84rem;">
+                        <span>🌐 مجموعات الأونلاين (زووم)</span>
+                      </div>
+                      <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 6px 0;"></div>
+                      <div onclick="alert('سيتم فتح نافذة إضافة فرع سنتر جديد')" style="padding: 6px 10px; border-radius: 8px; cursor: pointer; color: #60A5FA; font-size: 0.8rem; font-weight: 700;">
+                        + إنشاء فرع سنتر جديد
+                      </div>
+                    </div>
+                  </div>
+
+                  <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.72rem;">سحابي مباشر 🟢</span>
+                </div>
+
+                <!-- Search Bar with ⌘K & Action Tools -->
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                  <div style="position: relative; min-width: 220px;">
+                    <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; color: #64748B;">🔍</span>
+                    <input type="text" placeholder="بحث سريع في الطلاب والكويزات..." style="width: 100%; background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 6px 32px 6px 45px; color: #FFFFFF; font-size: 0.82rem; outline: none;">
+                    <span style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.08); border-radius: 4px; padding: 1px 6px; font-size: 0.68rem; color: #94A3B8; font-family: monospace;">⌘K</span>
+                  </div>
+
+                  <!-- Quick Notifications Bell -->
+                  <button type="button" style="width: 34px; height: 34px; border-radius: 8px; background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: #CBD5E1; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;">
+                    <span>🔔</span>
+                    <span style="position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: #EF4444; border-radius: 50%;"></span>
+                  </button>
+
+                  <!-- Teacher Avatar -->
+                  <div style="width: 34px; height: 34px; border-radius: 8px; overflow: hidden; border: 1.5px solid #2563EB;">
+                    <img src="assets/teacher_tarek_portrait.jpg" alt="طارق الشناوي" style="width: 100%; height: 100%; object-fit: cover;">
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- 2. Main Executive Content Area -->
+              <div style="padding: 20px;">
+                
+                <!-- Welcome Banner (Square-UI Style) -->
+                <div style="display: flex; flex-direction: column; sm:flex-row; justify-content: space-between; align-items: flex-start; sm:items-center; gap: 14px; margin-bottom: 22px;">
+                  <div>
+                    <h2 style="font-size: 1.45rem; font-weight: 800; color: #FFFFFF; margin: 0 0 4px 0; display: flex; align-items: center; gap: 8px;">
+                      <span>مرحباً بعودتك، أ/ طارق الشناوي! 👋</span>
+                      <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #93C5FD; font-size: 0.7rem; border: 1px solid rgba(59, 130, 246, 0.4);">Square-UI v5</span>
+                    </h2>
+                    <p style="font-size: 0.86rem; color: #94A3B8; margin: 0;">
+                      <strong style="color: #60A5FA;">14 مهمة</strong> مستحقة اليوم • <strong style="color: #F59E0B;">3 امتحانات</strong> بانتظار الاعتماد الآلي • <strong style="color: #34D399;">4 حصص زووم</strong> مجدولة هذا الأسبوع
+                    </p>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <button type="button" onclick="exportSquareDashboardReport()" style="display: flex; align-items: center; gap: 6px; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.15); color: #CBD5E1; padding: 7px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
+                      <span>📥</span><span>تصدير التقارير (Export)</span>
+                    </button>
+                    <button type="button" onclick="openNewExamModal()" style="display: flex; align-items: center; gap: 6px; background: #2563EB; border: none; color: #FFFFFF; padding: 7px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);">
+                      <span>+</span><span>إضافة جديد (New)</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 3. Square-UI 4 Stats Cards Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 22px;">
+                  
+                  <!-- Stat 1: Total Students -->
+                  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                      <div>
+                        <span style="font-size: 0.82rem; color: #94A3B8;">إجمالي الطلاب المسجلين</span>
+                        <div style="font-size: 1.7rem; font-weight: 800; color: #FFFFFF; margin: 4px 0;">2,840</div>
+                        <span style="font-size: 0.74rem; color: #34D399;">+14% مقارنة بالشهر السابق ↗</span>
+                      </div>
+                      <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #60A5FA;">📁</div>
+                    </div>
+                  </div>
+
+                  <!-- Stat 2: Voice Lab Sessions -->
+                  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                      <div>
+                        <span style="font-size: 0.82rem; color: #94A3B8;">تفاعل المختبر الصوتي الذكي</span>
+                        <div style="font-size: 1.7rem; font-weight: 800; color: #FFFFFF; margin: 4px 0;">1,420</div>
+                        <span style="font-size: 0.74rem; color: #A78BFA;">+28% جلسات تدريب شفهي 🎙️</span>
+                      </div>
+                      <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #C4B5FD;">📝</div>
+                    </div>
+                  </div>
+
+                  <!-- Stat 3: Presenter Video Capsules -->
+                  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                      <div>
+                        <span style="font-size: 0.82rem; color: #94A3B8;">كبسولات المعلم الرقمي</span>
+                        <div style="font-size: 1.7rem; font-weight: 800; color: #FFFFFF; margin: 4px 0;">48 كبسولة</div>
+                        <span style="font-size: 0.74rem; color: #FCD34D;">94% معدل إتمام المشاهدة 🎬</span>
+                      </div>
+                      <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #FCD34D;">👁️</div>
+                    </div>
+                  </div>
+
+                  <!-- Stat 4: Revenue & InstaPay -->
+                  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                      <div>
+                        <span style="font-size: 0.82rem; color: #94A3B8;">تحصيلات InstaPay وفودافون</span>
+                        <div style="font-size: 1.7rem; font-weight: 800; color: #FFFFFF; margin: 4px 0;">145,000 ج.م</div>
+                        <span style="font-size: 0.74rem; color: #34D399;">+22% تدفقات مالية مباشرة 💳</span>
+                      </div>
+                      <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #34D399;">✅</div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- 4. The 2/3 + 1/3 Content Grid (Today's Tasks vs Performance Chart) -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 22px;" class="square-split-grid">
+                  
+                  <!-- Left (2/3): Today's Tasks & Lab Submissions -->
+                  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; overflow: hidden;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(30, 41, 59, 0.4);">
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-weight: 800; font-size: 0.95rem; color: #FFFFFF;">مهام اليوم والأنشطة الطلابية (Today's Tasks)</span>
+                        <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #93C5FD; font-size: 0.7rem;">5 أنشطة نشطة</span>
+                      </div>
+                      <span style="font-size: 0.78rem; color: #94A3B8; cursor: pointer;" onclick="alert('تحديث المهام...')">تحديث ↻</span>
+                    </div>
+
+                    <div style="divide-y: 1px solid rgba(255, 255, 255, 0.06);">
+                      
+                      <!-- Task Item 1 -->
+                      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                          <input type="checkbox" checked style="accent-color: #2563EB; cursor: pointer;">
+                          <div>
+                            <div style="font-size: 0.88rem; font-weight: 700; color: #FFFFFF;">مناقشة كيرشوف الشفهية بالمختبر الصوتي (32 طالب سلموا)</div>
+                            <span style="font-size: 0.74rem; color: #94A3B8;">الذكاء الاصطناعي رصد 3 أخطاء في قانون العقد وتم التصحيح</span>
+                          </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                          <span style="font-size: 0.72rem; background: rgba(139, 92, 246, 0.2); color: #C4B5FD; padding: 2px 8px; border-radius: 6px;">كيرشوف</span>
+                          <span style="font-size: 0.75rem; color: #64748B;">4:00 م</span>
+                        </div>
+                      </div>
+
+                      <!-- Task Item 2 -->
+                      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                          <input type="checkbox" style="accent-color: #2563EB; cursor: pointer;">
+                          <div>
+                            <div style="font-size: 0.88rem; font-weight: 700; color: #FFFFFF;">اعتماد نتائج 84 ورقة امتحان بابل شيت ممسوحة بـ OCR</div>
+                            <span style="font-size: 0.74rem; color: #94A3B8;">الدرجات جاهزة للتصدير وإرسال الرسائل لولي الأمر</span>
+                          </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                          <span style="font-size: 0.72rem; background: rgba(56, 189, 248, 0.2); color: #38BDF8; padding: 2px 8px; border-radius: 6px;">بابل شيت</span>
+                          <span style="font-size: 0.75rem; color: #64748B;">6:30 م</span>
+                        </div>
+                      </div>
+
+                      <!-- Task Item 3 -->
+                      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                          <input type="checkbox" style="accent-color: #2563EB; cursor: pointer;">
+                          <div>
+                            <div style="font-size: 0.88rem; font-weight: 700; color: #FFFFFF;">حصة زووم التفاعلية: مراجعة الحث الكهرومغناطيسي وفاراداي</div>
+                            <span style="font-size: 0.74rem; color: #94A3B8;">تم توليد رابط الدعوة السري المشفر بضغطة زر للطلاب</span>
+                          </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                          <span style="font-size: 0.72rem; background: rgba(245, 158, 11, 0.2); color: #FCD34D; padding: 2px 8px; border-radius: 6px;">Zoom Live</span>
+                          <span style="font-size: 0.75rem; color: #64748B;">8:00 م</span>
+                        </div>
+                      </div>
+
+                      <!-- Task Item 4 -->
+                      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                          <input type="checkbox" checked style="accent-color: #2563EB; cursor: pointer;">
+                          <div>
+                            <div style="font-size: 0.88rem; font-weight: 700; color: #FFFFFF;">إرسال رسائل التذكير التلقائية بالاشتراكات لأولياء الأمور عبر WhatsApp</div>
+                            <span style="font-size: 0.74rem; color: #94A3B8;">تم إرسال 18 إشعار باحترام تام دون أي إحراج</span>
+                          </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                          <span style="font-size: 0.72rem; background: rgba(16, 185, 129, 0.2); color: #34D399; padding: 2px 8px; border-radius: 6px;">InstaPay</span>
+                          <span style="font-size: 0.75rem; color: #64748B;">9:15 م</span>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <!-- Right (1/3): Performance Chart (Square-UI Style) -->
+                  <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(30, 41, 59, 0.4);">
+                      <span style="font-weight: 800; font-size: 0.95rem; color: #FFFFFF;">الأداء الأسبوعي (Performance)</span>
+                      <span style="font-size: 0.76rem; color: #60A5FA; cursor: pointer;" onclick="toggleSquareChartType()">تبديل النمط ⮂</span>
+                    </div>
+
+                    <div style="padding: 18px;">
+                      <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px;">
+                        <span style="font-size: 2.2rem; font-weight: 900; color: #FFFFFF;">94%</span>
+                        <span style="font-size: 0.8rem; color: #34D399; font-weight: 700;">+6.2% مقارنة بالأسبوع السابق</span>
+                      </div>
+
+                      <!-- SVG Bar / Line Chart Visualization -->
+                      <div id="square-chart-container" style="height: 140px; display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; padding-top: 10px;">
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;">
+                          <div style="width: 100%; height: 75px; background: rgba(255, 255, 255, 0.2); border-radius: 4px;"></div>
+                          <span style="font-size: 0.7rem; color: #94A3B8;">السبت</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;">
+                          <div style="width: 100%; height: 90px; background: rgba(255, 255, 255, 0.2); border-radius: 4px;"></div>
+                          <span style="font-size: 0.7rem; color: #94A3B8;">الأحد</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;">
+                          <div style="width: 100%; height: 110px; background: #2563EB; border-radius: 4px; box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);"></div>
+                          <span style="font-size: 0.7rem; color: #60A5FA; font-weight: 800;">الإثنين</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;">
+                          <div style="width: 100%; height: 85px; background: rgba(255, 255, 255, 0.2); border-radius: 4px;"></div>
+                          <span style="font-size: 0.7rem; color: #94A3B8;">الثلاثاء</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;">
+                          <div style="width: 100%; height: 95px; background: rgba(255, 255, 255, 0.2); border-radius: 4px;"></div>
+                          <span style="font-size: 0.7rem; color: #94A3B8;">الأربعاء</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;">
+                          <div style="width: 100%; height: 125px; background: #10B981; border-radius: 4px; box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);"></div>
+                          <span style="font-size: 0.7rem; color: #34D399; font-weight: 800;">الخميس</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;">
+                          <div style="width: 100%; height: 60px; background: rgba(255, 255, 255, 0.2); border-radius: 4px;"></div>
+                          <span style="font-size: 0.7rem; color: #94A3B8;">الجمعة</span>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div style="padding: 10px 18px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.76rem; color: #94A3B8; background: rgba(30, 41, 59, 0.25);">
+                      🎯 أعلى تحصيل سجله الطلاب في تدريبات الحث الكهرومغناطيسي يوم الخميس بنسبة 98%.
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- 5. Projects & Classes Data Table (Square-UI Style) -->
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; overflow: hidden;">
+                  
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(30, 41, 59, 0.4); flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <span style="font-weight: 800; font-size: 1rem; color: #FFFFFF;">جدول المجموعات والكورسات النشطة (Projects & Classes)</span>
+                      <span class="badge" style="background: rgba(255, 255, 255, 0.08); color: #CBD5E1; font-size: 0.72rem;">4 مجموعات رئيسية</span>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <button type="button" onclick="filterSquareTable('all')" class="square-table-filter-btn active" style="background: #2563EB; border: none; color: #FFFFFF; padding: 5px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">الكل</button>
+                      <button type="button" onclick="filterSquareTable('active')" class="square-table-filter-btn" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); color: #94A3B8; padding: 5px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">جارية</button>
+                      <button type="button" onclick="filterSquareTable('completed')" class="square-table-filter-btn" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); color: #94A3B8; padding: 5px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">مكتملة</button>
+                    </div>
+                  </div>
+
+                  <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 0.85rem;">
+                      <thead>
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); color: #94A3B8; background: rgba(15, 23, 42, 0.5);">
+                          <th style="padding: 12px 18px; width: 40px;"><input type="checkbox" style="accent-color: #2563EB;"></th>
+                          <th style="padding: 12px 18px;">المجموعة / الكورس (Class)</th>
+                          <th style="padding: 12px 18px;">المعلم المشرف</th>
+                          <th style="padding: 12px 18px;">الطلاب</th>
+                          <th style="padding: 12px 18px;">الحالة</th>
+                          <th style="padding: 12px 18px;">التقدم</th>
+                          <th style="padding: 12px 18px; text-align: left;">إجراءات</th>
+                        </tr>
+                      </thead>
+                      <tbody id="square-projects-tbody">
+                        
+                        <!-- Row 1 -->
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #FFFFFF;" class="square-row active">
+                          <td style="padding: 12px 18px;"><input type="checkbox" checked style="accent-color: #2563EB;"></td>
+                          <td style="padding: 12px 18px; font-weight: 700;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <span style="font-size: 1.1rem;">⚡</span>
+                              <div>
+                                <div>فيزياء الثانوية العامة (الفصل الثالث: الحث)</div>
+                                <span style="font-size: 0.72rem; color: #94A3B8;">دفعة 2026 - سنتر النخبة</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td style="padding: 12px 18px; color: #CBD5E1;">أ/ طارق الشناوي</td>
+                          <td style="padding: 12px 18px;"><span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #93C5FD;">450 طالب</span></td>
+                          <td style="padding: 12px 18px;"><span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399;">جارية بنشاط 🟢</span></td>
+                          <td style="padding: 12px 18px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <div style="width: 80px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden;">
+                                <div style="width: 85%; height: 100%; background: #34D399;"></div>
+                              </div>
+                              <span style="font-size: 0.75rem; color: #94A3B8;">85%</span>
+                            </div>
+                          </td>
+                          <td style="padding: 12px 18px; text-align: left;">
+                            <button type="button" onclick="switchTeacherTab('tab-ai-voice-lab')" style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4); color: #C4B5FD; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">المختبر الصوتي</button>
+                          </td>
+                        </tr>
+
+                        <!-- Row 2 -->
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #FFFFFF;" class="square-row completed">
+                          <td style="padding: 12px 18px;"><input type="checkbox" style="accent-color: #2563EB;"></td>
+                          <td style="padding: 12px 18px; font-weight: 700;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <span style="font-size: 1.1rem;">📝</span>
+                              <div>
+                                <div>بنك امتحانات بابل شيت الشامل مع تصحيح OCR</div>
+                                <span style="font-size: 0.72rem; color: #94A3B8;">تم تصحيح 320 كراسة إجابة تلقائياً</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td style="padding: 12px 18px; color: #CBD5E1;">أ/ طارق الشناوي</td>
+                          <td style="padding: 12px 18px;"><span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #93C5FD;">320 طالب</span></td>
+                          <td style="padding: 12px 18px;"><span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #60A5FA;">معتمد 100% ✅</span></td>
+                          <td style="padding: 12px 18px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <div style="width: 80px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden;">
+                                <div style="width: 100%; height: 100%; background: #2563EB;"></div>
+                              </div>
+                              <span style="font-size: 0.75rem; color: #94A3B8;">100%</span>
+                            </div>
+                          </td>
+                          <td style="padding: 12px 18px; text-align: left;">
+                            <button type="button" onclick="alert('تصدير كشف درجات OCR')" style="background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.15); color: #CBD5E1; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">تصدير الدرجات</button>
+                          </td>
+                        </tr>
+
+                        <!-- Row 3 -->
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #FFFFFF;" class="square-row active">
+                          <td style="padding: 12px 18px;"><input type="checkbox" checked style="accent-color: #2563EB;"></td>
+                          <td style="padding: 12px 18px; font-weight: 700;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <span style="font-size: 1.1rem;">🌐</span>
+                              <div>
+                                <div>مجموعات الأونلاين (Zoom Live Classroom)</div>
+                                <span style="font-size: 0.72rem; color: #94A3B8;">الطلاب من المحافظات عبر البث المشفر</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td style="padding: 12px 18px; color: #CBD5E1;">أ/ طارق الشناوي</td>
+                          <td style="padding: 12px 18px;"><span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #93C5FD;">580 طالب</span></td>
+                          <td style="padding: 12px 18px;"><span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D;">جلسة قادمة 8 م ⏳</span></td>
+                          <td style="padding: 12px 18px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <div style="width: 80px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden;">
+                                <div style="width: 50%; height: 100%; background: #F59E0B;"></div>
+                              </div>
+                              <span style="font-size: 0.75rem; color: #94A3B8;">50%</span>
+                            </div>
+                          </td>
+                          <td style="padding: 12px 18px; text-align: left;">
+                            <button type="button" onclick="switchTeacherTab('tab-attendance')" style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); color: #FCD34D; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">فتح زووم</button>
+                          </td>
+                        </tr>
+
+                        <!-- Row 4 -->
+                        <tr style="color: #FFFFFF;" class="square-row active">
+                          <td style="padding: 12px 18px;"><input type="checkbox" checked style="accent-color: #2563EB;"></td>
+                          <td style="padding: 12px 18px; font-weight: 700;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <span style="font-size: 1.1rem;">🎬</span>
+                              <div>
+                                <div>كبسولات فيديو Shorts المعلم الرقمي واستوديو Shotcraft</div>
+                                <span style="font-size: 0.72rem; color: #94A3B8;">تريكات المسائل الصعبة في 45 ثانية</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td style="padding: 12px 18px; color: #CBD5E1;">أ/ طارق الشناوي</td>
+                          <td style="padding: 12px 18px;"><span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #93C5FD;">1,490 طالب</span></td>
+                          <td style="padding: 12px 18px;"><span class="badge" style="background: rgba(236, 72, 153, 0.2); color: #F472B6;">4 كبسولات جديدة 🔥</span></td>
+                          <td style="padding: 12px 18px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <div style="width: 80px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden;">
+                                <div style="width: 92%; height: 100%; background: #EC4899;"></div>
+                              </div>
+                              <span style="font-size: 0.75rem; color: #94A3B8;">92%</span>
+                            </div>
+                          </td>
+                          <td style="padding: 12px 18px; text-align: left;">
+                            <button type="button" onclick="switchTeacherTab('tab-ai-presenter-studio')" style="background: rgba(236, 72, 153, 0.2); border: 1px solid rgba(236, 72, 153, 0.4); color: #F472B6; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">استوديو الفيديو</button>
+                          </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Pagination Footer (Square-UI Style) -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.8rem; color: #94A3B8; background: rgba(15, 23, 42, 0.4); flex-wrap: wrap; gap: 10px;">
+                    <div>عرض 1 إلى 4 من أصل 4 مجموعات مسجلة</div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <button type="button" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); color: #CBD5E1; padding: 4px 10px; border-radius: 6px; cursor: pointer;">السابق</button>
+                      <span style="padding: 0 6px; color: #FFFFFF; font-weight: 700;">1 / 1</span>
+                      <button type="button" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); color: #CBD5E1; padding: 4px 10px; border-radius: 6px; cursor: pointer;">التالي</button>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
           <div id="tab-copilot" class="m-tab-pane active">
             <!-- Hero Copilot Banner -->
             <div class="copilot-hero-card">
