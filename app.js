@@ -8746,3 +8746,162 @@ if (typeof document !== 'undefined') {
     }, 500);
   });
 }
+
+
+/* ==========================================================================
+   SHOTCRAFT MARKETING VIDEO SUITE CONTROLLER
+   ========================================================================== */
+
+let currentShotcraftTabCampaignIdx = 0;
+let isTabVoiceoverSpeaking = false;
+
+function initShotcraftMarketingTab() {
+  if (!window.ShotcraftMarketingEngine) return;
+  selectShotcraftTabCampaign(0);
+}
+
+function selectShotcraftTabCampaign(idx) {
+  if (!window.ShotcraftMarketingEngine) return;
+  currentShotcraftTabCampaignIdx = idx;
+  const campaigns = window.ShotcraftMarketingEngine.getMarketingCampaigns();
+  const c = campaigns[idx] || campaigns[0];
+
+  const codeEl = document.getElementById('tab-campaign-code');
+  const titleEl = document.getElementById('tab-campaign-title');
+  const durationEl = document.getElementById('tab-campaign-duration');
+  const hookEl = document.getElementById('tab-campaign-hook');
+  const scriptEl = document.getElementById('tab-campaign-script-text');
+  const storyboardContainer = document.getElementById('tab-storyboard-container');
+
+  if (codeEl) codeEl.textContent = c.code;
+  if (titleEl) titleEl.textContent = c.title;
+  if (durationEl) durationEl.textContent = `⏱️ ${c.durationSec} ثانية (${c.format})`;
+  if (hookEl) hookEl.textContent = `«${c.hookQuote}»`;
+  if (scriptEl) scriptEl.value = c.voiceoverText;
+
+  // Render Storyboard
+  if (storyboardContainer && c.scenes) {
+    storyboardContainer.innerHTML = c.scenes.map((s, i) => `
+      <div style="background: rgba(11, 15, 25, 0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px;">
+        <div style="display:flex; justify-content:space-between; font-size: 0.72rem; margin-bottom: 4px; font-family: monospace;">
+          <span style="color: #FCD34D; font-weight:800;">مشهد ${i + 1} (${s.time})</span>
+          <span style="color: #94A3B8;">#${s.shot}</span>
+        </div>
+        <div style="font-size: 0.76rem; color: #CBD5E1; margin-bottom: 4px; line-height: 1.4;">
+          ${s.visual}
+        </div>
+        <div style="font-size: 0.72rem; color: #FCD34D; background: rgba(0,0,0,0.4); padding: 4px; border-radius: 4px;">
+          🗣️ "${s.audio}"
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Highlight list item
+  for (let i = 0; i < 4; i++) {
+    const btn = document.getElementById(`shotcraft-tab-btn-${i}`);
+    if (!btn) continue;
+    if (i === idx) {
+      btn.style.borderColor = 'rgba(236, 72, 153, 0.6)';
+      btn.style.background = 'rgba(80, 7, 36, 0.4)';
+    } else {
+      btn.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+      btn.style.background = 'rgba(15, 23, 42, 0.5)';
+    }
+  }
+
+  // Stop voiceover if playing
+  if (isTabVoiceoverSpeaking && window.ShotcraftMarketingEngine) {
+    window.ShotcraftMarketingEngine.stopCampaignVoiceover();
+    isTabVoiceoverSpeaking = false;
+    const btnText = document.getElementById('tab-voiceover-btn-text');
+    if (btnText) btnText.textContent = 'الاستماع للأداء الصوتي بالذكاء الاصطناعي';
+  }
+}
+
+function copyTabCampaignScript() {
+  const scriptEl = document.getElementById('tab-campaign-script-text');
+  if (!scriptEl) return;
+  navigator.clipboard.writeText(scriptEl.value).then(() => {
+    if (typeof showDemoToast === 'function') {
+      showDemoToast('تم نسخ الاسكريبت التسويقي للحافظة بنجاح! 📋✨');
+    }
+  }).catch(() => {
+    prompt('انسخ الاسكريبت:', scriptEl.value);
+  });
+}
+
+function toggleTabVoiceoverSpeech() {
+  if (!window.ShotcraftMarketingEngine) return;
+  const scriptEl = document.getElementById('tab-campaign-script-text');
+  const btnText = document.getElementById('tab-voiceover-btn-text');
+  const text = scriptEl ? scriptEl.value : '';
+
+  if (isTabVoiceoverSpeaking) {
+    window.ShotcraftMarketingEngine.stopCampaignVoiceover();
+    isTabVoiceoverSpeaking = false;
+    if (btnText) btnText.textContent = 'الاستماع للأداء الصوتي بالذكاء الاصطناعي';
+  } else {
+    window.ShotcraftMarketingEngine.speakCampaignVoiceover(
+      text,
+      () => {
+        isTabVoiceoverSpeaking = true;
+        if (btnText) btnText.textContent = '⏸️ إيقاف القراءة الصوتية';
+      },
+      () => {
+        isTabVoiceoverSpeaking = false;
+        if (btnText) btnText.textContent = 'الاستماع للأداء الصوتي بالذكاء الاصطناعي';
+      },
+      (err) => {
+        console.warn('Speech error:', err);
+        isTabVoiceoverSpeaking = false;
+        if (btnText) btnText.textContent = 'الاستماع للأداء الصوتي بالذكاء الاصطناعي';
+      }
+    );
+  }
+}
+
+function transferToPresenterStudio() {
+  const scriptEl = document.getElementById('tab-campaign-script-text');
+  const titleEl = document.getElementById('tab-campaign-title');
+  const text = scriptEl ? scriptEl.value : '';
+  const title = titleEl ? titleEl.textContent : 'فيديو تسويقي';
+
+  // Switch to tab-ai-presenter-studio
+  if (typeof switchTeacherTab === 'function') {
+    switchTeacherTab('tab-ai-presenter-studio');
+  }
+
+  // Pre-fill studio inputs
+  setTimeout(() => {
+    const sTitle = document.getElementById('studio-capsule-title');
+    const sScript = document.getElementById('studio-capsule-script');
+    const sBadge = document.getElementById('studio-capsule-badge');
+    if (sTitle) sTitle.value = title;
+    if (sScript) sScript.value = text;
+    if (sBadge) sBadge.value = 'إعلان تسويقي رسمي لدفعة 2026';
+
+    if (typeof updateStudioPreviewFromInputs === 'function') {
+      updateStudioPreviewFromInputs();
+    }
+    if (typeof showDemoToast === 'function') {
+      showDemoToast('تم نقل الاسكريبت بنجاح إلى استوديو المعلم الرقمي لتوليد الفيديو! 🎬🚀');
+    }
+  }, 200);
+}
+
+// Bind globally
+window.initShotcraftMarketingTab = initShotcraftMarketingTab;
+window.selectShotcraftTabCampaign = selectShotcraftTabCampaign;
+window.copyTabCampaignScript = copyTabCampaignScript;
+window.toggleTabVoiceoverSpeech = toggleTabVoiceoverSpeech;
+window.transferToPresenterStudio = transferToPresenterStudio;
+
+// Auto-init on DOMContentLoaded
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      initShotcraftMarketingTab();
+    }, 600);
+  });
+}

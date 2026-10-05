@@ -684,6 +684,9 @@
             <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-ai-presenter-studio', this)" style="border: 1px solid rgba(245, 158, 11, 0.4); color: #FCD34D;">
               <span>🎬</span><span>استوديو المعلم الرقمي (AI Presenter)</span>
             </button>
+            <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-shotcraft-ads', this)" style="border: 1px solid rgba(236, 72, 153, 0.4); color: #F472B6;">
+              <span>🎥</span><span>استوديو إعلانات المعلم (Shotcraft)</span>
+            </button>
             <button class="desktop-tab-btn" onclick="switchTeacherTab('tab-curriculum-brain', this)">
               <span>🧠</span><span>مركز تغذية المنهج والمعرفة</span>
             </button>
@@ -1804,6 +1807,143 @@
                 <div class="video-capsule-grid" id="teacher-capsules-grid">
                   <!-- Dynamically Rendered -->
                 </div>
+              </div>
+
+            </div>
+          </div>
+
+
+        
+          <!-- ==================== SHOTCRAFT MARKETING VIDEO SUITE TAB ==================== -->
+          <div id="tab-shotcraft-ads" class="m-tab-pane tab-pane" style="display: none;">
+            <div class="m-card" style="border: 1.5px solid rgba(236, 72, 153, 0.4); background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(80, 7, 36, 0.92)); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);">
+              
+              <!-- Header -->
+              <div class="m-card-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 16px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-size: 2rem;">🎥</span>
+                  <div>
+                    <h2 class="m-card-title" style="color: #FFFFFF; font-size: 1.35rem; display: flex; align-items: center; gap: 8px;">
+                      استوديو إعلانات وحملات المعلم التسويقية
+                      <span class="badge" style="background: rgba(236, 72, 153, 0.2); color: #F472B6; border: 1px solid rgba(236, 72, 153, 0.5); font-size: 0.75rem;">Shotcraft Motion Recipes</span>
+                    </h2>
+                    <span style="font-size: 0.85rem; color: #CBD5E1;">
+                      أقوى حملات الفيديو الإعلانية المصممة خصيصاً لجذب آلاف الطلاب في مصر — بنظام الـ Avatar-Bracket-Carousel و 3D Storyboards مع اسكريبتات احترافية جاهزة للتسجيل والنشر!
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Workstation: Avatar Bracket Selector + Campaign Storyboard -->
+              <div style="display: grid; grid-template-columns: 320px 1fr; gap: 20px;" class="shotcraft-grid-wrap">
+                
+                <!-- Left: Avatar-Bracket-Carousel Selector -->
+                <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px;">
+                  <div style="font-size: 0.82rem; font-weight: 800; color: #F472B6; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                    <span>🎯</span> اختر نمط الحملة الإعلانية:
+                  </div>
+
+                  <div style="display: flex; flex-direction: column; gap: 10px;" id="shotcraft-avatar-selector-list">
+                    
+                    <div onclick="selectShotcraftTabCampaign(0)" id="shotcraft-tab-btn-0" class="group cursor-pointer p-3 rounded-xl border border-purple-500/50 bg-purple-950/30 transition-all flex items-center justify-between" style="cursor:pointer;">
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem;">⚡</span>
+                        <div>
+                          <div style="font-size: 0.82rem; font-weight: 800; color: #fff;">حملة الدراما والتحول</div>
+                          <div style="font-size: 0.72rem; color: #94A3B8;">يوم في حياة مدرس السناتر</div>
+                        </div>
+                      </div>
+                      <span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #C4B5FD; font-size: 0.68rem;">Shorts 9:16</span>
+                    </div>
+
+                    <div onclick="selectShotcraftTabCampaign(1)" id="shotcraft-tab-btn-1" class="group cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-900/50 transition-all flex items-center justify-between" style="cursor:pointer;">
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem;">🧪</span>
+                        <div>
+                          <div style="font-size: 0.82rem; font-weight: 800; color: #fff;">حملة الإبهار التكنولوجي</div>
+                          <div style="font-size: 0.72rem; color: #94A3B8;">تسميع لـ 1000 طالب شفوياً</div>
+                        </div>
+                      </div>
+                      <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D; font-size: 0.68rem;">Reels 60s</span>
+                    </div>
+
+                    <div onclick="selectShotcraftTabCampaign(2)" id="shotcraft-tab-btn-2" class="group cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-900/50 transition-all flex items-center justify-between" style="cursor:pointer;">
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem;">📐</span>
+                        <div>
+                          <div style="font-size: 0.82rem; font-weight: 800; color: #fff;">حملة مضاعفة الأرباح</div>
+                          <div style="font-size: 0.72rem; color: #94A3B8;">أكاديميتك لـ 3000 طالب</div>
+                        </div>
+                      </div>
+                      <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; font-size: 0.68rem;">Landscape 16:9</span>
+                    </div>
+
+                    <div onclick="selectShotcraftTabCampaign(3)" id="shotcraft-tab-btn-3" class="group cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-900/50 transition-all flex items-center justify-between" style="cursor:pointer;">
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem;">📚</span>
+                        <div>
+                          <div style="font-size: 0.82rem; font-weight: 800; color: #fff;">حملة راحة البال والواتساب</div>
+                          <div style="font-size: 0.72rem; color: #94A3B8;">سلاحك ضد إزعاج منتصف الليل</div>
+                        </div>
+                      </div>
+                      <span class="badge" style="background: rgba(236, 72, 153, 0.2); color: #F472B6; font-size: 0.68rem;">Shorts 45s</span>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Right: Active Campaign Details & Storyboard -->
+                <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                  
+                  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+                    <div>
+                      <span id="tab-campaign-code" style="font-size: 0.75rem; color: #F472B6; font-weight: 800; font-family: monospace;">CAMPAIGN-01 // DRAMATIC-CINEMATIC</span>
+                      <h3 id="tab-campaign-title" style="color: #fff; font-size: 1.15rem; font-weight: 900; margin: 2px 0 0 0;">يوم في حياة مدرس الثانوية العامة: قبل وبعد المعلم الرقمي</h3>
+                    </div>
+                    <span id="tab-campaign-duration" class="badge" style="background: rgba(255,255,255,0.1); color: #E2E8F0;">⏱️ 60 ثانية</span>
+                  </div>
+
+                  <!-- Hook Callout -->
+                  <div style="background: rgba(30, 27, 75, 0.6); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 12px;">
+                    <div style="font-size: 0.75rem; color: #FCD34D; font-weight: 800; margin-bottom: 4px;">🎯 الخطاف الافتتاحي للإعلان (Hook):</div>
+                    <div id="tab-campaign-hook" style="font-size: 0.85rem; color: #E2E8F0; line-height: 1.5; font-style: italic;">
+                      «أنت بتصحى 6 الصبح تلف على 3 سناتر، صوتك بيروح، الملازم بتتصور وتتسرب في الفجالة.. طب ليه تفضل شغال بطريقة 2010 وإحنا في 2026؟»
+                    </div>
+                  </div>
+
+                  <!-- Storyboard Grid -->
+                  <div>
+                    <div style="font-size: 0.82rem; font-weight: 800; color: #CBD5E1; margin-bottom: 8px;">🎬 تسلسل اللقطات السينمائية (Shotcraft Storyboard):</div>
+                    <div id="tab-storyboard-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                      <!-- Populated via JS -->
+                    </div>
+                  </div>
+
+                  <!-- Voiceover Script & Controls -->
+                  <div style="background: #0B0F19; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                      <label style="font-size: 0.8rem; font-weight: 800; color: #F472B6;">🎙️ الاسكريبت الصوتي المكتوب (اللهجة المصرية):</label>
+                      <button type="button" class="btn" onclick="copyTabCampaignScript()" style="background: rgba(255,255,255,0.1); color: #fff; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; border:none; cursor:pointer;">
+                        📋 نسخ النص
+                      </button>
+                    </div>
+                    <textarea id="tab-campaign-script-text" class="presenter-textarea" rows="3" style="width: 100%; font-size: 0.82rem; line-height: 1.5;"></textarea>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 8px;">
+                      <button type="button" class="btn btn-primary" id="btn-tab-voiceover-toggle" onclick="toggleTabVoiceoverSpeech()" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); border:none; color:#fff; font-weight:800; font-size: 0.85rem; padding: 8px 16px; border-radius: 8px; cursor:pointer; display:flex; align-items: center; gap: 6px;">
+                        <span>▶️</span>
+                        <span id="tab-voiceover-btn-text">الاستماع للأداء الصوتي بالذكاء الاصطناعي</span>
+                      </button>
+
+                      <button type="button" class="btn" onclick="transferToPresenterStudio()" style="background: linear-gradient(135deg, #F59E0B, #D97706); border:none; color:#000; font-weight:800; font-size: 0.85rem; padding: 8px 16px; border-radius: 8px; cursor:pointer; display:flex; align-items: center; gap: 6px;">
+                        <span>🎬</span>
+                        <span>توليد الفيديو في استوديو المعلم الرقمي ↗</span>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+
               </div>
 
             </div>
@@ -2964,6 +3104,7 @@
   <!-- Scripts: Core Engine then Demo Layer -->
   <script src="voice-lab-engine.js"></script>
   <script src="presenter-video-engine.js"></script>
+  <script src="shotcraft-marketing-engine.js"></script>
   <script src="app.js?v=20260927_strict_v8"></script>
   
   <!-- MODAL: LIVE TEACHER PHOTO SELECTOR -->
