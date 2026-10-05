@@ -8905,3 +8905,50 @@ if (typeof document !== 'undefined') {
     }, 600);
   });
 }
+
+// ==================== GLOBAL SHOTCRAFT SHOWCASE CONTROLLERS ====================
+function copyCampaignScriptById(campaignId) {
+  if (typeof ShotcraftMarketingEngine === 'undefined') return;
+  const c = ShotcraftMarketingEngine.getCampaignById(campaignId);
+  if (!c) return;
+  const scriptText = ShotcraftMarketingEngine.customizeCampaignScript(
+    campaignId,
+    window.currentTeacherProfile?.name || 'أ/ طارق الشناوي',
+    window.currentTeacherProfile?.subject || 'الفيزياء للثانوية العامة',
+    window.currentTeacherProfile?.phone || '01000000000'
+  );
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(scriptText).then(() => {
+      alert('✅ تم نسخ الاسكريبت الإعلاني المخصص بالكامل:\n\n' + scriptText.slice(0, 120) + '...');
+    });
+  } else {
+    alert('✅ الاسكريبت:\n\n' + scriptText);
+  }
+}
+
+function copyActiveModalScript() {
+  const tabs = document.querySelectorAll('.shotcraft-modal-tab-btn');
+  let activeIdx = 0;
+  tabs.forEach((t, i) => {
+    if (t.style.background && t.style.background.includes('236, 72, 153')) activeIdx = i;
+  });
+  const campaigns = ShotcraftMarketingEngine.getMarketingCampaigns();
+  const c = campaigns[activeIdx] || campaigns[0];
+  copyCampaignScriptById(c.id);
+}
+
+function transferActiveShotcraftToStudio() {
+  if (typeof ShotcraftMarketingEngine !== 'undefined') {
+    ShotcraftMarketingEngine.closeShotcraftVideoModal();
+  }
+  const tabs = document.querySelectorAll('.shotcraft-modal-tab-btn');
+  let activeIdx = 0;
+  tabs.forEach((t, i) => {
+    if (t.style.background && t.style.background.includes('236, 72, 153')) activeIdx = i;
+  });
+  if (typeof transferToPresenterStudio === 'function') {
+    transferToPresenterStudio(activeIdx);
+  } else {
+    switchTeacherTab('tab-video-studio');
+  }
+}
