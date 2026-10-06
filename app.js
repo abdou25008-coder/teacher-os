@@ -9012,3 +9012,11 @@ function filterSquareTable(status) {
     }
   });
 }
+
+
+function scrollToPitchSection(secId) {
+  const el = document.getElementById(secId);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
