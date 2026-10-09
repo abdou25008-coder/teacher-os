@@ -3871,3 +3871,70 @@ body.live-editing-enabled .hero-teacher-portrait-box:hover .photo-edit-overlay {
   line-height: 1.4;
   margin: 0;
 }
+
+/* ==========================================================================
+   MODERN AUTH ENHANCEMENTS: EYE TOGGLE & INLINE VALIDATION
+   ========================================================================== */
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.auth-input-wrapper .m-input {
+  margin-bottom: 0 !important;
+  padding-left: 42px !important;
+}
+.auth-eye-btn {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.15rem;
+  color: #94A3B8;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: color 0.2s, transform 0.15s;
+  z-index: 5;
+}
+.auth-eye-btn:hover {
+  color: #FFFFFF;
+  transform: translateY(-50%) scale(1.1);
+}
+.auth-inline-alert {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  margin-bottom: 14px;
+  display: none;
+  line-height: 1.5;
+  font-weight: 700;
+  text-align: right;
+  direction: rtl;
+}
+.auth-inline-alert.error {
+  display: block !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border: 1px solid #EF4444 !important;
+  color: #FCA5A5 !important;
+  animation: authShake 0.4s ease-in-out;
+}
+.auth-inline-alert.success {
+  display: block !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  border: 1px solid #10B981 !important;
+  color: #6EE7B7 !important;
+}
+@keyframes authShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+

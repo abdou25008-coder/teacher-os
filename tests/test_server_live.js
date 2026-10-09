@@ -7,11 +7,11 @@ const APIGatewayServer = require('../backend/src/server');
 
 async function testServer() {
   const server = new APIGatewayServer();
-  await server.start(3001);
+  await server.start(3099);
 
   function get(path) {
     return new Promise((resolve, reject) => {
-      http.get(`http://localhost:3001${path}`, res => {
+      http.get(`http://localhost:3099${path}`, res => {
         let data = '';
         res.on('data', chunk => data += chunk);
         res.on('end', () => {

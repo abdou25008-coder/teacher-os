@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>Teacher OS - Comprehensive User Flow Audit</title>
+  <script>
+    window.__TEST_LOGS = [];
+    window.__ERRORS = [];
+    window.onerror = function(msg, url, line, col, err) {
+      window.__ERRORS.push({ type: 'error', msg: String(msg), line: line, col: col, stack: err ? String(err.stack) : null });
+    };
+    window.addEventListener('unhandledrejection', function(event) {
+      window.__ERRORS.push({ type: 'unhandledrejection', reason: String(event.reason) });
+    });
+  </script>
+  <script src="voice-lab-engine.js"></script>
+  <script src="presenter-video-engine.js"></script>
+  <script src="shotcraft-marketing-engine.js"></script>
+  <script src="content-protection-engine.js"></script>
+  <script src="app.js"></script>
+  <script src="demo.js"></script>
+</head>
+<body>
+  <div id="test-fixture" style="opacity: 0.1;">
+    <!-- Container for Square UI table -->
+    <table id="square-table">
+      <tbody id="square-projects-tbody">
+        <tr class="square-row"><td colspan="5">Initial Row</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Executive copilot elements -->
+    <input type="text" id="teacher-executive-copilot-input" value="">
+    <div id="teacher-copilot-output-box">Default output</div>
+  </div>
+
+  <div id="test-results-container">RUNNING AUDIT...</div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      const results = [];
+      function assert(name, condition, extra) {
+        results.push({ name: name, passed: !!condition, extra: extra || null });
+      }
+
+      try {
+        // Test 1: Global APIs Existence
+        assert('copyToClipboard is function', typeof window.copyToClipboard === 'function');
+        assert('openNewExamModal is function', typeof window.openNewExamModal === 'function');
+        assert('closeNewExamModal is function', typeof window.closeNewExamModal === 'function');
+        assert('handleSaveNewExam is function', typeof window.handleSaveNewExam === 'function');
+        assert('showDemoToast is function', typeof window.showDemoToast === 'function');
+        assert('switchToDemoRole is function', typeof window.switchToDemoRole === 'function');
+        assert('instantDemoLogin is function', typeof window.instantDemoLogin === 'function');
+
+        // Enterprise API assertions
+        assert('ContentProtectionEngine available', !!window.ContentProtectionEngine);
+        assert('openWatermarkDemoModal is function', typeof window.openWatermarkDemoModal === 'function');
+        assert('openFawryPaymentModal is function', typeof window.openFawryPaymentModal === 'function');
+        assert('dispatchWhatsAppExamResults is function', typeof window.dispatchWhatsAppExamResults === 'function');
+        assert('dispatchWhatsAppAbsenceAlert is function', typeof window.dispatchWhatsAppAbsenceAlert === 'function');
+        assert('initAIReservationWidget is function', typeof window.initAIReservationWidget === 'function');
+
+        // Turnkey Modals assertions
+        assert('openFastQrScannerModal is function', typeof window.openFastQrScannerModal === 'function');
+        assert('openHallOfFameModal is function', typeof window.openHallOfFameModal === 'function');
+        assert('openMultiCenterLedgerModal is function', typeof window.openMultiCenterLedgerModal === 'function');
+
+        // Upgraded Auth API assertions
+        assert('togglePasswordVisibility is function', typeof window.togglePasswordVisibility === 'function');
+        assert('showAuthInlineError is function', typeof window.showAuthInlineError === 'function');
+        assert('clearAuthInlineError is function', typeof window.clearAuthInlineError === 'function');
+
+        // Functional test: Password visibility toggle
+        const testPassInput = document.createElement('input');
+        testPassInput.id = 'test-eye-pass-input';
+        testPassInput.type = 'password';
+        document.body.appendChild(testPassInput);
+        const testEyeBtn = document.createElement('button');
+        window.togglePasswordVisibility('test-eye-pass-input', testEyeBtn);
+        assert('Password visibility toggles to text', testPassInput.type === 'text' && testEyeBtn.textContent === '🙈');
+        window.togglePasswordVisibility('test-eye-pass-input', testEyeBtn);
+        assert('Password visibility toggles back to password', testPassInput.type === 'password' && testEyeBtn.textContent === '👁️');
+        document.body.removeChild(testPassInput);
+
+        // Test 2: Clipboard User Flow (Simulate student/teacher clicking copy)
+        try {
+          window.copyToClipboard('01012345678', 'تم نسخ رقم فودافون كاش بنجاح!');
+          assert('copyToClipboard execution succeeds', true);
+        } catch(e) {
+          assert('copyToClipboard execution succeeds', false, e.message);
+        }
+
+        // Test 3: Toast Notification Rendering
+        window.showDemoToast('اختبار الإشعار السريع المباشر');
+        const toast = document.getElementById('demo-instant-toast');
+        assert('Toast element created in DOM', !!toast && toast.textContent.includes('اختبار الإشعار'));
+
+        // Test 4: Teacher Exam Creation Flow
+        window.openNewExamModal();
+        const examModal = document.getElementById('modal-new-exam');
+        assert('New exam modal created and opened', !!examModal && examModal.style.display === 'flex');
+
+        const titleInput = document.getElementById('new-exam-title');
+        if (titleInput) titleInput.value = 'امتحان الفصل الأول (التيار الكهربي)';
+        
+        const initialRows = document.querySelectorAll('#square-projects-tbody tr').length;
+        window.handleSaveNewExam({ preventDefault: () => {} });
+        const newRows = document.querySelectorAll('#square-projects-tbody tr').length;
+        assert('New exam row injected into projects table', newRows === initialRows + 1);
+        assert('New exam modal closed after save', examModal.style.display === 'none');
+
+        // Test 5: Teacher Executive Copilot Command Execution Flow
+        const copilotInput = document.getElementById('teacher-executive-copilot-input');
+        const copilotOutput = document.getElementById('teacher-copilot-output-box');
+        if (copilotInput) copilotInput.value = 'لخص لي أهم قوانين كيرشوف';
+        
+        if (typeof executeTeacherCopilotCommand === 'function') {
+          executeTeacherCopilotCommand();
+          assert('Executive copilot processes input without crash', true);
+          assert('Copilot input cleared after submission', copilotInput.value === '');
+        }
+
+        // Test 6: Role Switching Flow (Teacher, Student, Parent)
+        window.switchToDemoRole('student');
+        const studentSession = JSON.parse(localStorage.getItem('active_user_session') || '{}');
+        assert('Switched to Student role successfully', studentSession.role === 'STUDENT');
+
+        window.switchToDemoRole('parent');
+        const parentSession = JSON.parse(localStorage.getItem('active_user_session') || '{}');
+        assert('Switched to Parent role successfully', parentSession.role === 'PARENT');
+
+        window.switchToDemoRole('teacher');
+        const teacherSession = JSON.parse(localStorage.getItem('active_user_session') || '{}');
+        assert('Switched to Teacher role successfully', teacherSession.role === 'TEACHER');
+
+        // Test 7: Interactive Engines
+        assert('Voice Lab Engine available', !!window.ImmersiveVoiceLab);
+        assert('Presenter Video Engine available', !!window.PresenterVideoEngine);
+        assert('Shotcraft Marketing Engine available', !!window.ShotcraftMarketingEngine);
+
+      } catch(err) {
+        window.__ERRORS.push({ type: 'audit_exception', msg: err.message, stack: err.stack });
+      }
+
+      const passedCount = results.filter(r => r.passed).length;
+      const failedCount = results.length - passedCount;
+
+      const summary = `AUDIT_SUMMARY: TOTAL=${results.length} PASSED=${passedCount} FAILED=${failedCount} ERRORS=${window.__ERRORS.length}`;
+      document.title = summary;
+
+      document.getElementById('test-results-container').innerHTML = `
+        <div id="audit-summary">${summary}</div>
+        <div id="audit-errors-count">ERRORS: ${window.__ERRORS.length}</div>
+        <pre id="audit-report">${JSON.stringify({ results: results, errors: window.__ERRORS }, null, 2)}</pre>
+      `;
+    });
+  </script>
+</body>
+</html>

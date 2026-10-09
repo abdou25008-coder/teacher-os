@@ -5474,29 +5474,89 @@ function switchTeacherTab(tabId, el) {
    STRICT AUTHENTICATION & PORTFOLIO CMS LOGIC (ZERO DEMO BYPASS)
    ========================================================================== */
 
-// 1. Strict Student & Parent Login Handler
+// =========================================================================
+// MODERN INLINE AUTH & EYE TOGGLE HELPERS
+// =========================================================================
+window.togglePasswordVisibility = function(inputId, btnEl) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (btnEl) btnEl.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    if (btnEl) btnEl.textContent = '👁️';
+  }
+};
+
+window.showAuthInlineError = function(containerId, message) {
+  const el = document.getElementById(containerId);
+  if (!el) {
+    if (typeof window.showDemoToast === 'function') window.showDemoToast('⚠️ ' + message);
+    else alert('⚠️ ' + message);
+    return;
+  }
+  el.className = 'auth-inline-alert error';
+  el.innerHTML = '<span>⚠️ ' + message + '</span>';
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+};
+
+window.clearAuthInlineError = function(containerId) {
+  const el = document.getElementById(containerId);
+  if (el) {
+    el.className = 'auth-inline-alert';
+    el.style.display = 'none';
+    el.innerHTML = '';
+  }
+};
+
+window.handleForgotPasswordHelp = function() {
+  if (typeof window.showDemoToast === 'function') {
+    window.showDemoToast('📲 لاستعادة كلمة المرور، تواصل مع سكرتارية المنصة عبر واتساب: 01099887766');
+  }
+};
+
+// 1. Strict Student & Parent Login Handler (Upgraded)
 function handleStrictStudentParentLogin(event) {
   if (event) event.preventDefault();
+  clearAuthInlineError('sp-auth-error-msg');
 
-  const phone = document.getElementById('sp-login-phone')?.value.trim();
+  const rawInput = document.getElementById('sp-login-phone')?.value.trim();
   const password = document.getElementById('sp-login-password')?.value.trim();
+  const rememberMe = document.getElementById('sp-login-remember')?.checked;
 
-  if (!phone || !password) {
-    alert('⚠️ يرجى إدخال رقم الهاتف المحمول وكلمة المرور.');
+  if (!rawInput || !password) {
+    showAuthInlineError('sp-auth-error-msg', 'يرجى إدخال رقم الهاتف أو كود الطالب، وكلمة المرور.');
     return;
   }
 
-  if (!isValidEgyptianPhone(phone)) {
-    alert('❌ رقم هاتف محمول غير صحيح!\nيجب أن يتكون رقم الهاتف من 11 رقماً ويبدأ بـ (010 أو 011 أو 012 أو 015).');
+  const isAcademicCode = rawInput.toUpperCase().startsWith('STU-') || (!/^\d+$/.test(rawInput) && rawInput.length >= 4);
+
+  // If not code, validate Egyptian phone format
+  if (!isAcademicCode && !isValidEgyptianPhone(rawInput)) {
+    showAuthInlineError('sp-auth-error-msg', 'رقم الهاتف غير صحيح! يجب أن يتكون من 11 رقماً ويبدأ بـ (010 أو 011 أو 012 أو 015)، أو كتابة كود الطالب المطبوع على الكارنيه (STU-XXXXXX).');
     return;
   }
 
   const users = getRegisteredUsers();
-  const matchedUser = users.find(u => u.phone === phone && u.password === password);
+  
+  // Look up by phone OR academic code, and verify by password OR pairing pin
+  const cleanInput = rawInput.toUpperCase();
+  const matchedUser = users.find(u => {
+    const phoneMatch = (u.phone === rawInput);
+    const codeMatch = (u.code && u.code.toUpperCase() === cleanInput);
+    const passMatch = (u.password === password || (u.pairingPin && u.pairingPin === password));
+    return (phoneMatch || codeMatch) && passMatch;
+  });
 
   if (!matchedUser) {
-    alert('❌ فشل تسجيل الدخول!\nرقم الهاتف أو كلمة المرور غير صحيحة أو غير مسجلة لدينا.\n\nيرجى التأكد من بياناتك أو الضغط على زر "إنشاء حساب جديد (لأول مرة)".');
+    showAuthInlineError('sp-auth-error-msg', 'بيانات الدخول غير صحيحة! يرجى التأكد من رقم الهاتف أو الكود وكلمة المرور، أو اضغط على تبويب "إنشاء حساب جديد".');
     return;
+  }
+
+  // Handle Remember Me
+  if (rememberMe) {
+    try { localStorage.setItem('teacher_os_remembered_student_phone', rawInput); } catch(e) {}
   }
 
   // Create Verified Active Session
@@ -5512,6 +5572,10 @@ function handleStrictStudentParentLogin(event) {
 
   localStorage.setItem('active_user_session', JSON.stringify(session));
   closeSheet('modal-student-parent-auth');
+
+  if (typeof window.showDemoToast === 'function') {
+    window.showDemoToast('🎉 أهلاً بك يا ' + matchedUser.name + '! تم الدخول بنجاح.');
+  }
 
   switchToAppWorkspace(matchedUser.role);
 }
@@ -5587,26 +5651,31 @@ function handleStrictStudentParentSignup(event) {
   switchToAppWorkspace(role);
 }
 
-// 3. Strict Teacher Login Handler
+// 3. Strict Teacher Login Handler (Upgraded)
 function handleStrictTeacherLogin(event) {
   if (event) event.preventDefault();
+  clearAuthInlineError('teacher-auth-error-msg');
 
   const phone = document.getElementById('teacher-login-phone')?.value.trim();
   const secret = document.getElementById('teacher-login-secret')?.value.trim();
+  const rememberMe = document.getElementById('teacher-login-remember')?.checked;
 
   if (!phone || !secret) {
-    alert('⚠️ يرجى إدخال رقم هاتف المعلم ورمز الإدارة السري.');
+    showAuthInlineError('teacher-auth-error-msg', 'يرجى إدخال رقم هاتف المعلم ورمز الإدارة السري.');
     return;
   }
 
   const teachers = getRegisteredTeachers();
   const matched = teachers.find(t => t.phone === phone && t.secret === secret);
 
-  // Strict validation: Reject if not matching registered teacher or master credentials
   const isMasterDefault = (phone === '01012345678' && secret === '2027');
   if (!matched && !isMasterDefault) {
-    alert('❌ فشل تسجيل دخول المعلم!\nبيانات الدخول غير صحيحة أو غير مسجلة كمعلم معتمد.\n\nإذا كنت معلماً جديداً، يرجى التبديل لتبويب "تسجيل معلم جديد (لأول مرة)".');
+    showAuthInlineError('teacher-auth-error-msg', 'بيانات دخول المعلم غير صحيحة! يرجى التأكد من رقم الهاتف ورمز الإدارة السري (الرمز الافتراضي: 2027).');
     return;
+  }
+
+  if (rememberMe) {
+    try { localStorage.setItem('teacher_os_remembered_teacher_phone', phone); } catch(e) {}
   }
 
   const teacherName = matched ? matched.name : 'الأستاذ طارق الشناوي';
@@ -5624,6 +5693,10 @@ function handleStrictTeacherLogin(event) {
   document.body.classList.add('teacher-logged-in');
   if (typeof updateTeacherFloatingEditBtn === 'function') updateTeacherFloatingEditBtn();
   closeSheet('modal-teacher-auth');
+
+  if (typeof window.showDemoToast === 'function') {
+    window.showDemoToast('👨‍🏫 مرحباً بعودتك يا أستاذنا العزيز! تم فتح لوحة تحكم المعلم بنجاح.');
+  }
 
   switchToAppWorkspace('TEACHER');
 }
@@ -8121,8 +8194,16 @@ function saveParentAdvisorConfig() {
 }
 
 // Teacher Executive Copilot Handlers
+function getTeacherExecutiveCopilotInput() {
+  const execInput = document.getElementById('teacher-executive-copilot-input');
+  const modalInput = document.getElementById('teacher-copilot-input');
+  if (execInput && execInput.value.trim()) return execInput;
+  if (modalInput && modalInput.value.trim()) return modalInput;
+  return execInput || modalInput;
+}
+
 function executeTeacherCopilotCommand() {
-  const input = document.getElementById('teacher-copilot-input');
+  const input = getTeacherExecutiveCopilotInput();
   const box = document.getElementById('teacher-copilot-output-box');
   if (!input || !box || !window.ImmersiveVoiceLab) return;
   const cmd = input.value.trim();
@@ -8138,7 +8219,7 @@ function executeTeacherCopilotCommand() {
 }
 
 function runTeacherCopilotQuickCommand(cmd) {
-  const input = document.getElementById('teacher-copilot-input');
+  const input = getTeacherExecutiveCopilotInput();
   if (input) input.value = cmd;
   executeTeacherCopilotCommand();
 }
@@ -8149,7 +8230,7 @@ function toggleTeacherCopilotMic() {
 
   const recognition = window.ImmersiveVoiceLab.initSpeechRecognition(
     (transcript) => {
-      const input = document.getElementById('teacher-copilot-input');
+      const input = getTeacherExecutiveCopilotInput();
       if (input) input.value = transcript;
       executeTeacherCopilotCommand();
       if (btn) btn.style.background = 'transparent';
@@ -9020,3 +9101,773 @@ function scrollToPitchSection(secId) {
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
+
+// =========================================================================
+// UNIVERSAL TOAST & CLIPBOARD HELPERS
+// =========================================================================
+if (typeof window.showDemoToast !== 'function') {
+  window.showDemoToast = function(msg) {
+    let toast = document.getElementById('demo-instant-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'demo-instant-toast';
+      toast.style.position = 'fixed';
+      toast.style.top = '16px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.zIndex = '999999';
+      toast.style.background = 'rgba(15, 23, 42, 0.96)';
+      toast.style.color = '#34D399';
+      toast.style.border = '1.5px solid #10B981';
+      toast.style.padding = '10px 22px';
+      toast.style.borderRadius = '30px';
+      toast.style.fontWeight = '800';
+      toast.style.fontSize = '0.88rem';
+      toast.style.boxShadow = '0 10px 30px rgba(0,0,0,0.6)';
+      toast.style.transition = 'all 0.3s ease';
+      toast.style.direction = 'rtl';
+      toast.style.fontFamily = 'Cairo, system-ui, sans-serif';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    toast.style.opacity = '1';
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(function() {
+      toast.style.opacity = '0';
+      setTimeout(function() { toast.style.display = 'none'; }, 300);
+    }, 2800);
+  };
+}
+var showDemoToast = window.showDemoToast;
+
+window.copyToClipboard = function(text, successMsg) {
+  const feedback = successMsg || 'تم النسخ إلى الحافظة بنجاح! 📋';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      if (typeof window.showDemoToast === 'function') {
+        window.showDemoToast(feedback);
+      } else {
+        alert(feedback);
+      }
+    }).catch(function() {
+      fallbackCopy(text, feedback);
+    });
+  } else {
+    fallbackCopy(text, feedback);
+  }
+
+  function fallbackCopy(val, msg) {
+    try {
+      const el = document.createElement('textarea');
+      el.value = val;
+      el.setAttribute('readonly', '');
+      el.style.position = 'absolute';
+      el.style.left = '-9999px';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      if (typeof window.showDemoToast === 'function') {
+        window.showDemoToast(msg);
+      } else {
+        alert(msg);
+      }
+    } catch (err) {
+      prompt('يرجى نسخ النص يدوياً:', val);
+    }
+  }
+};
+var copyToClipboard = window.copyToClipboard;
+
+// =========================================================================
+// SQUARE-UI 4 NEW EXAM & ASSESSMENT MODAL SYSTEM
+// =========================================================================
+window.openNewExamModal = function() {
+  let modal = document.getElementById('modal-new-exam');
+  if (!modal) {
+    const modalDiv = document.createElement('div');
+    modalDiv.id = 'modal-new-exam';
+    modalDiv.className = 'm-sheet-overlay active';
+    modalDiv.style.display = 'flex';
+    modalDiv.onclick = function(e) {
+      if (e.target === modalDiv) window.closeNewExamModal();
+    };
+    modalDiv.innerHTML = `
+      <div class="m-sheet-content" style="max-width: 560px; background: #0F172A; color: #FFFFFF; border: 1.5px solid #3B82F6; border-radius: 16px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); direction: rtl; font-family: Cairo, system-ui, sans-serif;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 18px;">
+          <div>
+            <div style="font-size: 0.76rem; font-weight: 800; color: #60A5FA;">نظام إدارة الامتحانات والاختبارات الذكية (Square Assessment)</div>
+            <h3 style="margin: 4px 0 0 0; font-size: 1.25rem; font-weight: 900; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+              <span>📝 إنشاء وتعيين امتحان جديد</span>
+            </h3>
+          </div>
+          <button type="button" onclick="closeNewExamModal()" style="background: rgba(255,255,255,0.08); border: none; color: #94A3B8; font-size: 1.2rem; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">&times;</button>
+        </div>
+
+        <form id="form-new-exam" onsubmit="handleSaveNewExam(event)" style="display: flex; flex-direction: column; gap: 14px;">
+          <div>
+            <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #CBD5E1; margin-bottom: 5px;">عنوان الامتحان أو الاختبار *</label>
+            <input type="text" id="new-exam-title" required class="m-input" placeholder="مثال: امتحان المراجعة الشاملة — الفصل الرابع (الدوائر المهتزة)" style="width: 100%; box-sizing: border-box; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.15); color: #FFFFFF; padding: 10px 14px; border-radius: 8px; font-size: 0.86rem;">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #CBD5E1; margin-bottom: 5px;">المجموعة / الصف *</label>
+              <select id="new-exam-group" class="m-input" style="width: 100%; box-sizing: border-box; background: #1E293B; border: 1px solid rgba(255, 255, 255, 0.15); color: #FFFFFF; padding: 10px 14px; border-radius: 8px; font-size: 0.84rem;">
+                <option value="3ث — سنتر النخبة (مجموعة A)">3ث — سنتر النخبة (مجموعة A)</option>
+                <option value="3ث — سنتر الأوائل (مجموعة B)">3ث — سنتر الأوائل (مجموعة B)</option>
+                <option value="3ث — أونلاين المحافظات (Zoom)">3ث — أونلاين المحافظات (Zoom)</option>
+                <option value="2ث — فيزياء لغات (Elites)">2ث — فيزياء لغات (Elites)</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #CBD5E1; margin-bottom: 5px;">عدد الطلاب المستهدفين</label>
+              <input type="number" id="new-exam-students" value="380" min="1" class="m-input" style="width: 100%; box-sizing: border-box; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.15); color: #FFFFFF; padding: 10px 14px; border-radius: 8px; font-size: 0.86rem;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #CBD5E1; margin-bottom: 5px;">الدرجة الكلية</label>
+              <input type="number" id="new-exam-total-marks" value="60" min="5" class="m-input" style="width: 100%; box-sizing: border-box; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.15); color: #FFFFFF; padding: 10px 14px; border-radius: 8px; font-size: 0.86rem;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #CBD5E1; margin-bottom: 5px;">مدة الامتحان (بالدقائق)</label>
+              <input type="number" id="new-exam-duration" value="90" min="15" class="m-input" style="width: 100%; box-sizing: border-box; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.15); color: #FFFFFF; padding: 10px 14px; border-radius: 8px; font-size: 0.86rem;">
+            </div>
+          </div>
+
+          <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.84rem; color: #E2E8F0;">
+              <input type="checkbox" id="new-exam-ocr-toggle" checked style="accent-color: #2563EB; width: 17px; height: 17px;">
+              <span>⚡ تفعيل التصحيح الذاتي التلقائي بنموذج OCR البابل شيت</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.84rem; color: #E2E8F0;">
+              <input type="checkbox" id="new-exam-whatsapp-toggle" checked style="accent-color: #10B981; width: 17px; height: 17px;">
+              <span>📲 إرسال إشعار فوري لولي الأمر عبر واتساب فور اعتماد الدرجة</span>
+            </label>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+            <button type="button" onclick="closeNewExamModal()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #CBD5E1; padding: 9px 18px; border-radius: 8px; font-weight: 700; font-size: 0.84rem; cursor: pointer;">إلغاء</button>
+            <button type="submit" style="background: #2563EB; border: none; color: #FFFFFF; padding: 9px 22px; border-radius: 8px; font-weight: 800; font-size: 0.86rem; cursor: pointer; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);">
+              <span>💾 حفظ وتعيين الامتحان</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    `;
+    document.body.appendChild(modalDiv);
+    modal = modalDiv;
+  } else {
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+  }
+};
+
+window.closeNewExamModal = function() {
+  const modal = document.getElementById('modal-new-exam');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
+};
+
+window.handleSaveNewExam = function(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const titleInput = document.getElementById('new-exam-title');
+  const groupInput = document.getElementById('new-exam-group');
+  const studentsInput = document.getElementById('new-exam-students');
+  const title = (titleInput && titleInput.value.trim()) ? titleInput.value.trim() : 'امتحان فيزياء جديد';
+  const group = groupInput ? groupInput.value : '3ث — سنتر النخبة';
+  const students = (studentsInput && studentsInput.value) ? studentsInput.value : '380';
+
+  const tbody = document.getElementById('square-projects-tbody');
+  if (tbody) {
+    const newRow = document.createElement('tr');
+    newRow.className = 'square-row active';
+    newRow.style.borderBottom = '1px solid rgba(255, 255, 255, 0.05)';
+    newRow.style.color = '#FFFFFF';
+    newRow.innerHTML = `
+      <td style="padding: 12px 18px;"><input type="checkbox" checked style="accent-color: #2563EB;"></td>
+      <td style="padding: 12px 18px; font-weight: 700;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.1rem;">📝</span>
+          <div>
+            <div>${title}</div>
+            <span style="font-size: 0.72rem; color: #94A3B8;">${group}</span>
+          </div>
+        </div>
+      </td>
+      <td style="padding: 12px 18px; color: #CBD5E1;">أ/ طارق الشناوي</td>
+      <td style="padding: 12px 18px;"><span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #93C5FD;">${students} طالب</span></td>
+      <td style="padding: 12px 18px;"><span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399;">تم النشر بنجاح 🟢</span></td>
+      <td style="padding: 12px 18px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 80px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden;">
+            <div style="width: 10%; height: 100%; background: #34D399;"></div>
+          </div>
+          <span style="font-size: 0.75rem; color: #94A3B8;">10%</span>
+        </div>
+      </td>
+      <td style="padding: 12px 18px; text-align: left;">
+        <button type="button" onclick="alert('فتح تصحيح الامتحان')" style="background: rgba(37, 99, 235, 0.2); border: 1px solid rgba(37, 99, 235, 0.4); color: #93C5FD; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">لوحة التصحيح</button>
+      </td>
+    `;
+    tbody.insertBefore(newRow, tbody.firstChild);
+  }
+
+  window.closeNewExamModal();
+  if (typeof window.showDemoToast === 'function') {
+    window.showDemoToast('✅ تم إنشاء وتعيين الامتحان بنجاح وتوليد كود الـ OCR!');
+  } else {
+    alert('✅ تم إنشاء وتعيين الامتحان بنجاح وتوليد كود الـ OCR!');
+  }
+};
+var openNewExamModal = window.openNewExamModal;
+var closeNewExamModal = window.closeNewExamModal;
+var handleSaveNewExam = window.handleSaveNewExam;
+
+// =========================================================================
+// ENTERPRISE SUITE: DRM WATERMARK, FAWRY PAYMENTS, CLOUD WHATSAPP & AI BOT
+// =========================================================================
+
+// 1. DRM Watermarking UI
+window.openWatermarkDemoModal = function() {
+  let modal = document.getElementById('modal-drm-watermark-demo');
+  if (!modal) {
+    const div = document.createElement('div');
+    div.id = 'modal-drm-watermark-demo';
+    div.className = 'm-sheet-overlay active';
+    div.style.display = 'flex';
+    div.onclick = function(e) { if (e.target === div) div.style.display = 'none'; };
+    div.innerHTML = `
+      <div class="m-sheet-content" style="max-width: 600px; background: #0F172A; color: #FFFFFF; border: 2px solid #EF4444; border-radius: 16px; padding: 24px; direction: rtl; font-family: Cairo, system-ui, sans-serif; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 16px;">
+          <div>
+            <div style="font-size: 0.74rem; font-weight: 800; color: #F87171;">درع مكافحة القرصنة وتسريب الحصص (Teacher OS DRM Shield)</div>
+            <h3 style="margin: 2px 0 0 0; font-size: 1.2rem; font-weight: 900; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+              <span>🛡️ نظام العلامة المائية المتحركة ومكافحة تصوير الشاشة</span>
+            </h3>
+          </div>
+          <button type="button" onclick="document.getElementById('modal-drm-watermark-demo').style.display='none'" style="background: rgba(255,255,255,0.08); border: none; color: #94A3B8; font-size: 1.2rem; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">&times;</button>
+        </div>
+
+        <div id="drm-preview-stage" class="protected-video-stage" style="position: relative; width: 100%; height: 200px; background: #000000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.15); margin-bottom: 16px;">
+          <div style="text-align: center; color: #64748B;">
+            <div style="font-size: 2.2rem; margin-bottom: 6px;">🎬</div>
+            <div style="font-size: 0.84rem; color: #94A3B8;">مسرح الفيديو التعليمي المحمي (محمي ضد برامج التحميل وتصوير الشاشة)</div>
+            <div style="font-size: 0.72rem; color: #34D399; margin-top: 4px;">✅ العلامة المائية المتحركة نشطة الآن وتتحرك عشوائياً</div>
+          </div>
+        </div>
+
+        <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; margin-bottom: 16px; font-size: 0.8rem; color: #CBD5E1; line-height: 1.6;">
+          <div style="font-weight: 800; color: #FCD34D; margin-bottom: 6px;">💡 كيف يحمي النظام محتوى المعلم؟</div>
+          • يطبع اسم الطالب، وكوده الأكاديمي، ورقم هاتفه بشكل عشوائي متحرك كل 4 ثوانٍ.<br>
+          • في حال محاولة تصوير الشاشة أو فحص الكود (DevTools/PrintScreen)، تسود الشاشة تلقائياً.<br>
+          • عند تحميل أي ملزمة أو مذكرة PDF، يتم دمغ بيانات ترخيص الطالب على كل صفحة.
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" onclick="testPDFWatermarkDownload()" style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4); color: #C4B5FD; padding: 9px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
+            <span>📄 تجربة دمغ مذكرة PDF</span>
+          </button>
+          <button type="button" onclick="document.getElementById('modal-drm-watermark-demo').style.display='none'" style="background: #2563EB; border: none; color: #FFFFFF; padding: 9px 20px; border-radius: 8px; font-size: 0.84rem; font-weight: 800; cursor: pointer;">
+            <span>فهمت، الدرع نشط ✅</span>
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(div);
+    modal = div;
+  } else {
+    modal.style.display = 'flex';
+  }
+
+  if (window.ContentProtectionEngine) {
+    window.ContentProtectionEngine.attachWatermark('drm-preview-stage', {
+      name: 'أحمد محمود رضوان',
+      code: 'STU-99214',
+      phone: '010****5678'
+    });
+  }
+};
+
+window.testPDFWatermarkDownload = function() {
+  if (typeof window.showDemoToast === 'function') {
+    window.showDemoToast('📄 جاري توليد نسخة الـ PDF ودمغ ترخيص الطالب المائي على كافة الصفحات...');
+  }
+  setTimeout(function() {
+    if (typeof window.showDemoToast === 'function') {
+      window.showDemoToast('✅ تم دمغ المذكرة بكود الطالب (STU-99214) وحمايتها ضد التسريب!');
+    }
+  }, 1000);
+};
+
+// 2. Fawry & Paymob Payment Modal
+window.openFawryPaymentModal = function(planName, amount) {
+  const plan = planName || 'اشتراك شهر أكتوبر (الفيزياء)';
+  const fee = amount || 600;
+  const fawryCode = Math.floor(10000000 + Math.random() * 90000000).toString();
+
+  let modal = document.getElementById('modal-fawry-payment');
+  if (!modal) {
+    const div = document.createElement('div');
+    div.id = 'modal-fawry-payment';
+    div.className = 'm-sheet-overlay active';
+    div.style.display = 'flex';
+    div.onclick = function(e) { if (e.target === div) div.style.display = 'none'; };
+    div.innerHTML = `
+      <div class="m-sheet-content" style="max-width: 520px; background: #0F172A; color: #FFFFFF; border: 2px solid #F59E0B; border-radius: 16px; padding: 24px; direction: rtl; font-family: Cairo, system-ui, sans-serif; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 16px;">
+          <div>
+            <div style="font-size: 0.74rem; font-weight: 800; color: #FCD34D;">بوابة الدفع الإلكتروني المباشر (Fawry & Paymob)</div>
+            <h3 style="margin: 2px 0 0 0; font-size: 1.25rem; font-weight: 900; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+              <span>🏪 سداد الاشتراك عبر فوري باي</span>
+            </h3>
+          </div>
+          <button type="button" onclick="document.getElementById('modal-fawry-payment').style.display='none'" style="background: rgba(255,255,255,0.08); border: none; color: #94A3B8; font-size: 1.2rem; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">&times;</button>
+        </div>
+
+        <div style="background: rgba(245, 158, 11, 0.1); border: 1.5px dashed #F59E0B; border-radius: 12px; padding: 18px; text-align: center; margin-bottom: 18px;">
+          <div style="font-size: 0.8rem; color: #FCD34D; font-weight: 700; margin-bottom: 4px;">رقم السداد المرجعي (كود فوري)</div>
+          <div id="fawry-ref-code-display" style="font-size: 2.2rem; font-weight: 900; color: #FFFFFF; letter-spacing: 4px; font-family: monospace; margin: 6px 0;">${fawryCode}</div>
+          <div style="font-size: 0.78rem; color: #94A3B8;">صالح لمدة 48 ساعة • خدمة فوري رقم 788</div>
+        </div>
+
+        <div style="background: rgba(30, 41, 59, 0.7); border-radius: 10px; padding: 14px; margin-bottom: 16px; font-size: 0.82rem; color: #CBD5E1; line-height: 1.7;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: #94A3B8;">الباقة المطلوبة:</span>
+            <strong id="fawry-plan-display" style="color: #FFFFFF;">${plan}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: #94A3B8;">المبلغ الإجمالي:</span>
+            <strong id="fawry-amount-display" style="color: #34D399; font-size: 1.05rem;">${fee} ج.م</strong>
+          </div>
+          <div style="font-size: 0.74rem; color: #94A3B8; margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px;">
+            طريقة السداد: توجه لأقرب سوبرماركت أو كشك به ماكينة فوري، واطلب "فوري باي" أو كود خدمة 788 وأدخل الرقم أعلاه.
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="button" onclick="copyToClipboard('${fawryCode}', 'تم نسخ كود فوري بنجاح! 📋')" class="tech-pill" style="flex: 1; padding: 10px; text-align: center; cursor: pointer; border-radius: 8px;">
+            <span>📋 نسخ كود فوري</span>
+          </button>
+          <button type="button" onclick="simulateFawryWebhookSuccess('${fawryCode}')" style="flex: 1.2; background: #10B981; border: none; color: #FFFFFF; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+            <span>⚡ محاكاة السداد والتفعيل الفوري</span>
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(div);
+    modal = div;
+  } else {
+    document.getElementById('fawry-ref-code-display').textContent = fawryCode;
+    document.getElementById('fawry-plan-display').textContent = plan;
+    document.getElementById('fawry-amount-display').textContent = fee + ' ج.م';
+    modal.style.display = 'flex';
+  }
+};
+
+window.simulateFawryWebhookSuccess = function(fawryCode) {
+  const modal = document.getElementById('modal-fawry-payment');
+  if (modal) modal.style.display = 'none';
+
+  if (typeof window.showDemoToast === 'function') {
+    window.showDemoToast('🔔 تم استلام إشعار سداد فوري الآلي (Webhook) وتفعيل الاشتراك بنجاح! 🎉');
+  }
+
+  try {
+    const session = JSON.parse(localStorage.getItem('active_user_session') || '{}');
+    session.subscription_status = 'ACTIVE';
+    localStorage.setItem('active_user_session', JSON.stringify(session));
+  } catch(e) {}
+};
+
+// 3. WhatsApp Background Dispatcher UI Triggers
+window.dispatchWhatsAppExamResults = function() {
+  if (typeof window.showDemoToast === 'function') {
+    window.showDemoToast('🚀 جارٍ إرسال كشوف الدرجات والترتيب لـ 320 ولي أمر عبر واتساب السحابي...');
+  }
+  setTimeout(function() {
+    if (typeof window.showDemoToast === 'function') {
+      window.showDemoToast('✅ اكتمل الإرسال: تم تسليم 320 بطاقة تقرير امتحانية لأولياء الأمور بنجاح 100%!');
+    }
+  }, 1200);
+};
+
+window.dispatchWhatsAppAbsenceAlert = function() {
+  if (typeof window.showDemoToast === 'function') {
+    window.showDemoToast('📲 تم إرسال إخطارات الغياب الفورية عبر واتساب لأولياء أمور الطلاب المتغيبين!');
+  }
+};
+
+// 4. 24/7 AI Lead & Reservation Bot Floating Widget
+window.initAIReservationWidget = function() {
+  if (document.getElementById('teacher-os-ai-bot-widget')) return;
+
+  const widget = document.createElement('div');
+  widget.id = 'teacher-os-ai-bot-widget';
+  widget.style.position = 'fixed';
+  widget.style.bottom = '20px';
+  widget.style.right = '20px';
+  widget.style.zIndex = '99999';
+  widget.style.direction = 'rtl';
+  widget.style.fontFamily = 'Cairo, system-ui, sans-serif';
+
+  widget.innerHTML = `
+    <!-- Floating Button -->
+    <button type="button" id="btn-toggle-ai-bot" onclick="toggleAIReservationChat()" style="display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #10B981, #059669); color: #FFFFFF; border: none; padding: 10px 18px; border-radius: 30px; font-weight: 800; font-size: 0.86rem; cursor: pointer; box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45); transition: transform 0.2s ease;">
+      <span style="font-size: 1.15rem;">💬</span>
+      <span>حجز واستفسار 24/7</span>
+      <span style="background: #FFFFFF; color: #059669; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; font-weight: 900;">AI</span>
+    </button>
+
+    <!-- Chat Modal -->
+    <div id="ai-bot-chat-box" style="display: none; position: absolute; bottom: 55px; right: 0; width: 340px; background: #0F172A; border: 1.5px solid #10B981; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); overflow: hidden; flex-direction: column;">
+      <div style="background: linear-gradient(135deg, #10B981, #059669); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; color: #FFFFFF;">
+        <div>
+          <div style="font-weight: 800; font-size: 0.9rem;">المساعد الذكي للحجز والاستفسار ⚡</div>
+          <div style="font-size: 0.7rem; opacity: 0.9;">أكاديمية أ/ طارق الشناوي (فيزياء 3ث)</div>
+        </div>
+        <button type="button" onclick="toggleAIReservationChat()" style="background: transparent; border: none; color: #FFFFFF; font-size: 1.2rem; cursor: pointer;">&times;</button>
+      </div>
+
+      <div id="ai-bot-messages" style="padding: 14px; max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem;">
+        <div style="background: #1E293B; color: #E2E8F0; padding: 10px 14px; border-radius: 12px 12px 12px 2px; line-height: 1.5;">
+          أهلاً بك! 👋 أنا مساعدك الآلي لحجز المقاعد والاستفسار عن المواعيد والأسعار على مدار 24 ساعة.
+          اختر سؤالك أو اكتب استفسارك:
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px 14px;">
+        <button type="button" onclick="sendQuickBotMessage('مواعيد وسناتر المستر')" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #93C5FD; font-size: 0.72rem; padding: 4px 8px; border-radius: 6px; cursor: pointer;">📍 المواعيد والسناتر</button>
+        <button type="button" onclick="sendQuickBotMessage('أسعار الاشتراكات')" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #FCD34D; font-size: 0.72rem; padding: 4px 8px; border-radius: 6px; cursor: pointer;">💰 أسعار الاشتراكات</button>
+        <button type="button" onclick="sendQuickBotMessage('أريد حجز مقعد جديد')" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #34D399; font-size: 0.72rem; padding: 4px 8px; border-radius: 6px; cursor: pointer;">📝 حجز مقعد</button>
+      </div>
+
+      <div style="display: flex; border-top: 1px solid rgba(255,255,255,0.08); padding: 8px;">
+        <input type="text" id="ai-bot-user-input" placeholder="اكتب سؤالك هنا..." style="flex: 1; background: #1E293B; border: none; color: #FFFFFF; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; outline: none;" onkeydown="if(event.key==='Enter') handleUserBotSend()">
+        <button type="button" onclick="handleUserBotSend()" style="background: #10B981; border: none; color: #FFFFFF; padding: 0 14px; border-radius: 8px; margin-right: 6px; cursor: pointer; font-weight: 700; font-size: 0.8rem;">إرسال</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(widget);
+};
+
+window.toggleAIReservationChat = function() {
+  const box = document.getElementById('ai-bot-chat-box');
+  if (!box) return;
+  box.style.display = (box.style.display === 'flex' ? 'none' : 'flex');
+};
+
+window.sendQuickBotMessage = function(text) {
+  const input = document.getElementById('ai-bot-user-input');
+  if (input) input.value = text;
+  window.handleUserBotSend();
+};
+
+window.handleUserBotSend = function() {
+  const input = document.getElementById('ai-bot-user-input');
+  const container = document.getElementById('ai-bot-messages');
+  if (!input || !container) return;
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  const userBubble = document.createElement('div');
+  userBubble.style.cssText = 'background: #2563EB; color: #FFFFFF; padding: 8px 12px; border-radius: 12px 12px 2px 12px; align-self: flex-start; max-width: 85%;';
+  userBubble.textContent = text;
+  container.appendChild(userBubble);
+  container.scrollTop = container.scrollHeight;
+
+  setTimeout(function() {
+    let botReply = '';
+    const q = text.toLowerCase();
+    if (q.includes('موعد') || q.includes('مواعيد') || q.includes('سنتر') || q.includes('مكان') || q.includes('فين')) {
+      botReply = '📍 مواعيد السناتر الحالية:\n• سنتر النخبة (الدقي): الأحد والأربعاء 4:00 عصراً (متبقي 14 مقعد).\n• سنتر الأوائل (مدينة نصر): الإثنين والخميس 6:00 مساءً.\n• كورس الأونلاين (زووم مباشر): الجمعة 8 مساءً.';
+    } else if (q.includes('سعر') || q.includes('بكام') || q.includes('اشتراك') || q.includes('مصاريف')) {
+      botReply = '💰 اشتراكات أكاديمية الفيزياء:\n• السنتر الحضوري: 600 ج.م شهرياً (تشمل 8 حصص + امتحانات بابل شيت).\n• الأونلاين التفاعلي: 450 ج.م شهرياً.\n• باقة المذكرات الشاملة: 180 ج.م.';
+    } else if (q.includes('حجز') || q.includes('احجز') || q.includes('تسجيل')) {
+      botReply = '🎉 ممتاز! تم تسجيل رغبتك بالحجز، وسيقوم مسؤول الحجز بالتواصل معك لتأكيد مكانك وإرسال كود فوري للسداد. يمكنك أيضاً التحويل عبر فودافون كاش: 01099887766.';
+    } else {
+      botReply = 'أهلاً بك يا بطل! يسعدنا انضمامك لأكاديمية أ/ طارق الشناوي. يمكنك سؤالي عن السناتر، الأسعار، أو حجز مقعدك بالاسم والمجموعة.';
+    }
+
+    const botBubble = document.createElement('div');
+    botBubble.style.cssText = 'background: #1E293B; color: #E2E8F0; padding: 10px 14px; border-radius: 12px 12px 12px 2px; align-self: flex-end; max-width: 88%; line-height: 1.5; white-space: pre-wrap;';
+    botBubble.textContent = botReply;
+    container.appendChild(botBubble);
+    container.scrollTop = container.scrollHeight;
+  }, 400);
+};
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(window.initAIReservationWidget, 500);
+  });
+}
+
+// =========================================================================
+// TURNKEY MODULES: FAST QR SCANNER, HALL OF FAME & MULTI-CENTER LEDGER
+// =========================================================================
+
+// 1. Fast QR Attendance Scanner for Assistants
+window.openFastQrScannerModal = function() {
+  let modal = document.getElementById('modal-fast-qr-scanner');
+  if (!modal) {
+    const div = document.createElement('div');
+    div.id = 'modal-fast-qr-scanner';
+    div.className = 'm-sheet-overlay active';
+    div.style.display = 'flex';
+    div.onclick = function(e) { if (e.target === div) div.style.display = 'none'; };
+    div.innerHTML = `
+      <div class="m-sheet-content" style="max-width: 520px; background: #0F172A; color: #FFFFFF; border: 2px solid #10B981; border-radius: 16px; padding: 24px; direction: rtl; font-family: Cairo, system-ui, sans-serif; box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 16px;">
+          <div>
+            <div style="font-size: 0.74rem; font-weight: 800; color: #34D399;">بوابة مساعد السنتر (Door Attendance)</div>
+            <h3 style="margin: 2px 0 0 0; font-size: 1.25rem; font-weight: 900; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+              <span>📱 ماسح باركود وكارنيهات الحضور السريع</span>
+            </h3>
+          </div>
+          <button type="button" onclick="document.getElementById('modal-fast-qr-scanner').style.display='none'" style="background: rgba(255,255,255,0.08); border: none; color: #94A3B8; font-size: 1.2rem; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">&times;</button>
+        </div>
+
+        <div style="position: relative; width: 100%; height: 180px; background: #020617; border: 2px dashed #10B981; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 16px;">
+          <div style="font-size: 2.8rem; margin-bottom: 6px;">📷</div>
+          <div style="font-size: 0.85rem; color: #6EE7B7; font-weight: 700;">كاميرا فحص الكارنيه جاهزة (عدسة السنتر)</div>
+          <div style="font-size: 0.72rem; color: #94A3B8; margin-top: 4px;">وجه الكاميرا نحو باركود كارنيه الطالب أو اكتب الكود بالأسفل</div>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+          <input type="text" id="qr-scan-input-code" value="STU-884210" placeholder="اكتب كود الطالب (STU-XXXXXX)" style="flex: 1; background: #1E293B; border: 1.5px solid rgba(255,255,255,0.2); color: #FFFFFF; padding: 10px 14px; border-radius: 10px; font-weight: 800; text-align: center; font-size: 1rem; outline: none;">
+          <button type="button" onclick="handleSimulatedBadgeScan()" style="background: #10B981; border: none; color: #FFFFFF; padding: 10px 20px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.88rem; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+            <span>⚡ مسح واعتماد</span>
+          </button>
+        </div>
+
+        <div id="qr-scan-result-card" style="display: none; background: rgba(16, 185, 129, 0.15); border: 1.5px solid #10B981; border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="color: #6EE7B7; font-size: 0.95rem;">✅ تم تسجيل الحضور واعتماد الدخول</strong>
+            <span style="background: #10B981; color: #FFFFFF; font-size: 0.68rem; padding: 2px 8px; border-radius: 10px; font-weight: 900;">مدفوع ومفعل 🟢</span>
+          </div>
+          <div style="font-size: 0.82rem; color: #CBD5E1; line-height: 1.6;">
+            <div>الطالب: <strong style="color: #FFFFFF;">أحمد محمود رضوان</strong> (<span style="color: #93C5FD;">STU-884210</span>)</div>
+            <div>المجموعة: <span style="color: #FCD34D;">سنتر النخبة (الدقي) — الجمعة 4:00 م</span></div>
+            <div style="font-size: 0.74rem; color: #34D399; margin-top: 4px;">📲 تم إرسال إشعار وصول فوري لولي الأمر عبر واتساب.</div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: #94A3B8;">
+          <span>إجمالي حضور اليوم في السنتر: <strong style="color: #FFFFFF;">142 طالب</strong></span>
+          <button type="button" onclick="document.getElementById('modal-fast-qr-scanner').style.display='none'" style="background: rgba(255,255,255,0.08); border: none; color: #CBD5E1; padding: 6px 14px; border-radius: 6px; cursor: pointer;">إغلاق</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(div);
+    modal = div;
+  } else {
+    modal.style.display = 'flex';
+  }
+};
+
+window.handleSimulatedBadgeScan = function() {
+  const code = document.getElementById('qr-scan-input-code')?.value.trim() || 'STU-884210';
+  const card = document.getElementById('qr-scan-result-card');
+  if (card) {
+    card.style.display = 'block';
+  }
+  if (typeof window.showDemoToast === 'function') {
+    window.showDemoToast('✅ تم تسجيل حضور الطالب (' + code + ') وإرسال إشعار واتساب لولي الأمر!');
+  }
+};
+
+// 2. Hall of Fame Leaderboard Modal
+window.openHallOfFameModal = function() {
+  let modal = document.getElementById('modal-hall-of-fame');
+  if (!modal) {
+    const div = document.createElement('div');
+    div.id = 'modal-hall-of-fame';
+    div.className = 'm-sheet-overlay active';
+    div.style.display = 'flex';
+    div.onclick = function(e) { if (e.target === div) div.style.display = 'none'; };
+    div.innerHTML = `
+      <div class="m-sheet-content" style="max-width: 620px; background: #0F172A; color: #FFFFFF; border: 2px solid #F59E0B; border-radius: 16px; padding: 24px; direction: rtl; font-family: Cairo, system-ui, sans-serif; box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 16px;">
+          <div>
+            <div style="font-size: 0.74rem; font-weight: 800; color: #FCD34D;">لوحة الشرف والتفوق الأكاديمي (Hall of Fame)</div>
+            <h3 style="margin: 2px 0 0 0; font-size: 1.25rem; font-weight: 900; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+              <span>🏆 أوائل الثانوية العامة — أكاديمية الفيزياء (أكتوبر 2026)</span>
+            </h3>
+          </div>
+          <button type="button" onclick="document.getElementById('modal-hall-of-fame').style.display='none'" style="background: rgba(255,255,255,0.08); border: none; color: #94A3B8; font-size: 1.2rem; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">&times;</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(15,23,42,0.8)); border: 1.5px solid #F59E0B; border-radius: 12px; padding: 12px 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 1.6rem;">🥇</span>
+              <div>
+                <strong style="font-size: 0.95rem; color: #FFFFFF;">أحمد محمود رضوان</strong>
+                <div style="font-size: 0.74rem; color: #FCD34D;">سنتر النخبة (الدقي) • دقة الحل 99.2%</div>
+              </div>
+            </div>
+            <div style="text-align: left;">
+              <div style="font-size: 1.1rem; font-weight: 900; color: #34D399;">59.5 / 60</div>
+              <span style="background: #F59E0B; color: #000; font-size: 0.65rem; padding: 2px 6px; border-radius: 8px; font-weight: 900;">2,840 نقطة</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(30,41,59,0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 1.4rem;">🥈</span>
+              <div>
+                <strong style="font-size: 0.9rem; color: #FFFFFF;">سارة أسامة الجوهري</strong>
+                <div style="font-size: 0.72rem; color: #94A3B8;">سنتر الأوائل (مدينة نصر)</div>
+              </div>
+            </div>
+            <div style="text-align: left;">
+              <div style="font-size: 1rem; font-weight: 800; color: #34D399;">59.0 / 60</div>
+              <span style="background: rgba(255,255,255,0.1); color: #E2E8F0; font-size: 0.65rem; padding: 2px 6px; border-radius: 8px;">2,710 نقطة</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(30,41,59,0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 1.4rem;">🥉</span>
+              <div>
+                <strong style="font-size: 0.9rem; color: #FFFFFF;">كريم أشرف هلال</strong>
+                <div style="font-size: 0.72rem; color: #94A3B8;">كورس الأونلاين التفاعلي (زووم)</div>
+              </div>
+            </div>
+            <div style="text-align: left;">
+              <div style="font-size: 1rem; font-weight: 800; color: #34D399;">58.5 / 60</div>
+              <span style="background: rgba(255,255,255,0.1); color: #E2E8F0; font-size: 0.65rem; padding: 2px 6px; border-radius: 8px;">2,650 نقطة</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" onclick="generateAndShareHonorCertificate()" style="background: linear-gradient(135deg, #F59E0B, #D97706); border: none; color: #FFFFFF; padding: 10px 20px; border-radius: 8px; font-weight: 800; font-size: 0.84rem; cursor: pointer; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);">
+            <span>🎓 إصدار ومشاركة شهادة التقدير الرقمية (Social Share)</span>
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(div);
+    modal = div;
+  } else {
+    modal.style.display = 'flex';
+  }
+};
+
+window.generateAndShareHonorCertificate = function() {
+  if (typeof window.showDemoToast === 'function') {
+    window.showDemoToast('🎉 تم توليد شهادة التقدير الرقمية المعتمدة (CERT-884210) وجاهزة للمشاركة على واتساب وفيسبوك!');
+  }
+};
+
+// 3. Multi-Center Financial Ledger & Commission Split Modal
+window.openMultiCenterLedgerModal = function() {
+  let modal = document.getElementById('modal-multicenter-ledger');
+  if (!modal) {
+    const div = document.createElement('div');
+    div.id = 'modal-multicenter-ledger';
+    div.className = 'm-sheet-overlay active';
+    div.style.display = 'flex';
+    div.onclick = function(e) { if (e.target === div) div.style.display = 'none'; };
+    div.innerHTML = `
+      <div class="m-sheet-content" style="max-width: 680px; background: #0F172A; color: #FFFFFF; border: 2px solid #3B82F6; border-radius: 16px; padding: 24px; direction: rtl; font-family: Cairo, system-ui, sans-serif; box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 16px;">
+          <div>
+            <div style="font-size: 0.74rem; font-weight: 800; color: #60A5FA;">دفتر الحسابات والإقرارات الشهرية (Business OS)</div>
+            <h3 style="margin: 2px 0 0 0; font-size: 1.25rem; font-weight: 900; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+              <span>📊 تصفية أرباح ونسب السناتر (شهر أكتوبر 2026)</span>
+            </h3>
+          </div>
+          <button type="button" onclick="document.getElementById('modal-multicenter-ledger').style.display='none'" style="background: rgba(255,255,255,0.08); border: none; color: #94A3B8; font-size: 1.2rem; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">&times;</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 18px;">
+          <div style="background: rgba(30,41,59,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px; text-align: center;">
+            <div style="font-size: 0.72rem; color: #94A3B8;">إجمالي إيراد السناتر</div>
+            <div style="font-size: 1.2rem; font-weight: 900; color: #FFFFFF; margin-top: 4px;">879,000 ج.م</div>
+          </div>
+          <div style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 12px; padding: 14px; text-align: center;">
+            <div style="font-size: 0.72rem; color: #FCA5A5;">عمولات السناتر والمصروفات</div>
+            <div style="font-size: 1.2rem; font-weight: 900; color: #EF4444; margin-top: 4px;">- 222,200 ج.م</div>
+          </div>
+          <div style="background: rgba(16,185,129,0.15); border: 1.5px solid #10B981; border-radius: 12px; padding: 14px; text-align: center;">
+            <div style="font-size: 0.72rem; color: #6EE7B7;">صافي ربح المعلم</div>
+            <div style="font-size: 1.25rem; font-weight: 900; color: #34D399; margin-top: 4px;">656,800 ج.م</div>
+          </div>
+        </div>
+
+        <div style="background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; margin-bottom: 16px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;">
+            <thead>
+              <tr style="background: rgba(30,41,59,0.6); color: #94A3B8; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                <th style="padding: 10px 12px;">السنتر / الفرع</th>
+                <th style="padding: 10px 12px;">الطلاب</th>
+                <th style="padding: 10px 12px;">الإجمالي</th>
+                <th style="padding: 10px 12px;">نسبة السنتر</th>
+                <th style="padding: 10px 12px;">صافي المعلم</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 10px 12px; font-weight: 700;">سنتر النخبة (الدقي)</td>
+                <td style="padding: 10px 12px;">420 طالب</td>
+                <td style="padding: 10px 12px;">252,000 ج.م</td>
+                <td style="padding: 10px 12px; color: #FCA5A5;">25% (63,000)</td>
+                <td style="padding: 10px 12px; color: #34D399; font-weight: 800;">189,000 ج.م</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 10px 12px; font-weight: 700;">سنتر الأوائل (مدينة نصر)</td>
+                <td style="padding: 10px 12px;">310 طالب</td>
+                <td style="padding: 10px 12px;">186,000 ج.م</td>
+                <td style="padding: 10px 12px; color: #FCA5A5;">25% (46,500)</td>
+                <td style="padding: 10px 12px; color: #34D399; font-weight: 800;">139,500 ج.م</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 10px 12px; font-weight: 700;">الأونلاين التفاعلي (زووم)</td>
+                <td style="padding: 10px 12px;">540 طالب</td>
+                <td style="padding: 10px 12px;">243,000 ج.م</td>
+                <td style="padding: 10px 12px; color: #FCA5A5;">10% (24,300)</td>
+                <td style="padding: 10px 12px; color: #34D399; font-weight: 800;">218,700 ج.م</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 12px; font-weight: 700;">مبيعات المذكرات وبنوك الأسئلة</td>
+                <td style="padding: 10px 12px;">1,100 نسخة</td>
+                <td style="padding: 10px 12px;">198,000 ج.م</td>
+                <td style="padding: 10px 12px; color: #FCA5A5;">5% (9,900)</td>
+                <td style="padding: 10px 12px; color: #34D399; font-weight: 800;">188,100 ج.م</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" onclick="exportAccountingBalanceSheet()" style="background: #2563EB; border: none; color: #FFFFFF; padding: 10px 20px; border-radius: 8px; font-weight: 800; font-size: 0.84rem; cursor: pointer; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);">
+            <span>📑 تصدير الإقرار المالي وقسيمة الأرباح (PDF/Excel)</span>
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(div);
+    modal = div;
+  } else {
+    modal.style.display = 'flex';
+  }
+};
+
+window.exportAccountingBalanceSheet = function() {
+  if (typeof window.showDemoToast === 'function') {
+    window.showDemoToast('📊 تم تصدير تقرير التصفية المالية لشهر أكتوبر 2026 بنجاح! 💾');
+  }
+};
+
+
+

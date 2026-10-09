@@ -218,6 +218,15 @@ window.instantDemoLogin = instantDemoLogin;
 window.switchToDemoRole = switchToDemoRole;
 window.openSalesPitchModal = openSalesPitchModal;
 window.resetDemoState = resetDemoState;
+window.showDemoToast = showDemoToast;
+if (typeof copyToClipboard !== 'undefined') window.copyToClipboard = copyToClipboard;
+if (typeof openWatermarkDemoModal !== 'undefined') window.openWatermarkDemoModal = openWatermarkDemoModal;
+if (typeof openFawryPaymentModal !== 'undefined') window.openFawryPaymentModal = openFawryPaymentModal;
+if (typeof dispatchWhatsAppExamResults !== 'undefined') window.dispatchWhatsAppExamResults = dispatchWhatsAppExamResults;
+if (typeof dispatchWhatsAppAbsenceAlert !== 'undefined') window.dispatchWhatsAppAbsenceAlert = dispatchWhatsAppAbsenceAlert;
+if (typeof openFastQrScannerModal !== 'undefined') window.openFastQrScannerModal = openFastQrScannerModal;
+if (typeof openHallOfFameModal !== 'undefined') window.openHallOfFameModal = openHallOfFameModal;
+if (typeof openMultiCenterLedgerModal !== 'undefined') window.openMultiCenterLedgerModal = openMultiCenterLedgerModal;
 
 // Auto boot into demo mode on load
 document.addEventListener('DOMContentLoaded', () => {

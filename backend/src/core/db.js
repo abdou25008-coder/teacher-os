@@ -39,7 +39,13 @@ class DatabaseAdapter {
       post_interactions: new Map(),
       post_comments: new Map(),
       teacher_follows: new Map(),
-      teacher_directory: new Map()
+      teacher_directory: new Map(),
+      payment_gateway_orders: new Map(),
+      whatsapp_dispatch_logs: new Map(),
+      crm_student_leads: new Map(),
+      attendance_scans: new Map(),
+      certificates: new Map(),
+      financial_settlements: new Map()
     };
     this.indices = {
       user_by_phone: new Map(),

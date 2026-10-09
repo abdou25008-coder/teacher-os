@@ -70,7 +70,10 @@
           </button>
         </div>
 
-        <div class="pitch-header-actions">
+        <div class="pitch-header-actions" style="display: flex; align-items: center; gap: 8px;">
+          <a href="index.html" class="btn-pitch-cta" style="text-decoration: none; border: 1px solid rgba(139, 92, 246, 0.4); background: rgba(139, 92, 246, 0.15); color: #C4B5FD; display: inline-flex; align-items: center; gap: 6px;">
+            <span>🎓 بورتفوليو المعلم الحي ↗</span>
+          </a>
           <button type="button" class="btn-pitch-cta primary" onclick="switchToDemoRole('portfolio')">
             <span>معاينة البورتفوليو والمتجر ➔</span>
           </button>
@@ -2645,7 +2648,7 @@
 
                   <!-- Copilot Input & Mic Bar -->
                   <div style="display: flex; gap: 8px; margin-top: 10px;">
-                    <input type="text" id="teacher-copilot-input" class="m-input" placeholder="اطلب أي مهمة من المساعد..." style="margin-bottom: 0; font-size: 0.84rem;" onkeydown="if(event.key==='Enter') executeTeacherCopilotCommand()">
+                    <input type="text" id="teacher-executive-copilot-input" class="m-input" placeholder="اطلب أي مهمة من المساعد..." style="margin-bottom: 0; font-size: 0.84rem;" onkeydown="if(event.key==='Enter') executeTeacherCopilotCommand()">
                     <button type="button" id="btn-copilot-mic" class="btn btn-outline" onclick="toggleTeacherCopilotMic()" style="border-color: #8B5CF6; color: #C4B5FD; padding: 0 14px;" title="التحدث بالصوت مع المساعد">
                       <span>🎙️</span>
                     </button>
@@ -3636,14 +3639,27 @@
           🔒 يرجى إدخال رقم هاتفك المسجل مسبقاً وكلمة المرور الخاصة بك للدخول لمنصتك.
         </div>
 
+        <div id="sp-auth-error-msg" class="auth-inline-alert"></div>
+
         <form onsubmit="handleStrictStudentParentLogin(event)">
-          <label class="m-input-label" style="color: #E2E8F0;">رقم الهاتف المحمول (مصر - 11 رقماً):</label>
-          <input type="tel" id="sp-login-phone" class="m-input" placeholder="010XXXXXXXX أو 011/012/015" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff; direction: ltr; text-align: left; font-size: 1rem;">
+          <label class="m-input-label" style="color: #E2E8F0;">رقم الهاتف المحمول أو كود الطالب الأكاديمي:</label>
+          <input type="text" id="sp-login-phone" class="m-input" placeholder="010XXXXXXXX أو كود الطالب STU-XXXXXX" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff; direction: ltr; text-align: left; font-size: 1rem;">
 
-          <label class="m-input-label" style="color: #E2E8F0;">كلمة المرور الخاصة بحسابك:</label>
-          <input type="password" id="sp-login-password" class="m-input" placeholder="اكتب كلمة المرور" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff; font-size: 1rem;">
+          <label class="m-input-label" style="color: #E2E8F0;">كلمة المرور أو كود ربط ولي الأمر:</label>
+          <div class="auth-input-wrapper">
+            <input type="password" id="sp-login-password" class="m-input" placeholder="اكتب كلمة المرور أو كود الربط" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff; font-size: 1rem;">
+            <button type="button" class="auth-eye-btn" onclick="togglePasswordVisibility('sp-login-password', this)" title="إظهار / إخفاء">👁️</button>
+          </div>
 
-          <button type="submit" class="btn btn-primary btn-block" style="margin-top: 12px; min-height: 48px; font-size: 1rem; font-weight: 800;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin: 8px 0 12px 0; font-size: 0.8rem;">
+            <label style="display: flex; align-items: center; gap: 8px; color: #CBD5E1; cursor: pointer;">
+              <input type="checkbox" id="sp-login-remember" checked style="accent-color: #2563EB; width: 16px; height: 16px;">
+              <span>تذكر بيانات دخولي على هذا الجهاز</span>
+            </label>
+            <a href="javascript:void(0)" onclick="handleForgotPasswordHelp()" style="color: #60A5FA; text-decoration: none;">نسيت كلمة المرور؟</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top: 6px; min-height: 48px; font-size: 1rem; font-weight: 800;">
             <span>تسجيل الدخول للمنصة ➔</span>
           </button>
         </form>
@@ -3719,8 +3735,12 @@
             <input type="text" id="sp-signup-parent-link" class="m-input" placeholder="مثال: LNK-1029" style="background: rgba(15,23,42,0.9); border-color: #FCD34D; color: #fff; text-align: center; letter-spacing: 1px; font-weight: 800;">
           </div>
 
+          <div id="sp-signup-error-msg" class="auth-inline-alert"></div>
           <label class="m-input-label" style="color: #E2E8F0;">إنشاء كلمة مرور للحساب:</label>
-          <input type="password" id="sp-signup-password" class="m-input" placeholder="اكتب كلمة مرور قوية من 4 خانات على الأقل" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff;">
+          <div class="auth-input-wrapper">
+            <input type="password" id="sp-signup-password" class="m-input" placeholder="اكتب كلمة مرور قوية من 4 خانات على الأقل" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff;">
+            <button type="button" class="auth-eye-btn" onclick="togglePasswordVisibility('sp-signup-password', this)" title="إظهار / إخفاء">👁️</button>
+          </div>
 
           <button type="submit" class="btn btn-primary btn-block" style="margin-top: 12px; min-height: 48px; font-size: 1rem; font-weight: 800;">
             <span>تأكيد إنشاء الحساب والانضمام للمنصة ➔</span>
@@ -3787,14 +3807,27 @@
           🔒 هذه البوابة مخصصة حصرياً للمعلم لإدارة المجموعات، بنوك الأسئلة، والتحكم في نشر المذكرات.
         </div>
 
+        <div id="teacher-auth-error-msg" class="auth-inline-alert"></div>
+
         <form onsubmit="handleStrictTeacherLogin(event)">
           <label class="m-input-label" style="color: #E2E8F0;">رقم هاتف المعلم المسجل به:</label>
           <input type="tel" id="teacher-login-phone" class="m-input" placeholder="010XXXXXXXX" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff; direction: ltr; text-align: left; font-size: 1rem;">
 
           <label class="m-input-label" style="color: #E2E8F0;">رمز الإدارة السري أو كلمة المرور:</label>
-          <input type="password" id="teacher-login-secret" class="m-input" placeholder="اكتب رمز الإدارة السري" required style="background: rgba(15,23,42,0.9); border-color: rgba(139,92,246,0.4); color: #fff; letter-spacing: 2px; font-size: 1rem;">
+          <div class="auth-input-wrapper">
+            <input type="password" id="teacher-login-secret" class="m-input" placeholder="اكتب رمز الإدارة السري" required style="background: rgba(15,23,42,0.9); border-color: rgba(139,92,246,0.4); color: #fff; letter-spacing: 2px; font-size: 1rem;">
+            <button type="button" class="auth-eye-btn" onclick="togglePasswordVisibility('teacher-login-secret', this)" title="إظهار / إخفاء">👁️</button>
+          </div>
 
-          <button type="submit" class="btn btn-hero-primary btn-block" style="margin-top: 12px; min-height: 50px; font-size: 1rem; font-weight: 800;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin: 8px 0 12px 0; font-size: 0.8rem;">
+            <label style="display: flex; align-items: center; gap: 8px; color: #CBD5E1; cursor: pointer;">
+              <input type="checkbox" id="teacher-login-remember" checked style="accent-color: #8B5CF6; width: 16px; height: 16px;">
+              <span>تذكر جلسة المعلم الإدارية</span>
+            </label>
+            <span style="color: #A78BFA; font-size: 0.74rem;">(الرمز الافتراضي: 2027)</span>
+          </div>
+
+          <button type="submit" class="btn btn-hero-primary btn-block" style="margin-top: 6px; min-height: 50px; font-size: 1rem; font-weight: 800;">
             <span>🔐 تأكيد الدخول للوحة تحكم المعلم ➔</span>
           </button>
         </form>
@@ -3827,7 +3860,10 @@
           <input type="text" id="teacher-reg-center" class="m-input" placeholder="مثال: أكاديمية أوائل الجمهورية - القاهرة" style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff;">
 
           <label class="m-input-label" style="color: #E2E8F0;">تعيين رمز الإدارة السري أو كلمة المرور:</label>
-          <input type="password" id="teacher-reg-password" class="m-input" placeholder="رمز الإدارة الخاص بك (مثال: 2027)" required style="background: rgba(15,23,42,0.9); border-color: rgba(139,92,246,0.4); color: #fff; letter-spacing: 2px;">
+          <div class="auth-input-wrapper">
+            <input type="password" id="teacher-reg-password" class="m-input" placeholder="رمز الإدارة الخاص بك (مثال: 2027)" required style="background: rgba(15,23,42,0.9); border-color: rgba(139,92,246,0.4); color: #fff; letter-spacing: 2px;">
+            <button type="button" class="auth-eye-btn" onclick="togglePasswordVisibility('teacher-reg-password', this)" title="إظهار / إخفاء">👁️</button>
+          </div>
 
           <button type="submit" class="btn btn-hero-primary btn-block" style="margin-top: 14px; min-height: 50px; font-size: 1rem; font-weight: 800;">
             <span>🚀 تفعيل حساب المعلم والدخول لمنصة الإدارة فوراً ➔</span>
@@ -4238,36 +4274,6 @@
     </button>
   </div>
 
-    <button type="button" class="demo-role-btn active" id="demo-btn-teacher" onclick="switchToDemoRole('teacher')">
-      <span>👨‍🏫</span>
-      <span>لوحة المعلم والمدير</span>
-    </button>
-
-    <button type="button" class="demo-role-btn" id="demo-btn-student" onclick="switchToDemoRole('student')">
-      <span>🎓</span>
-      <span>بوابة الطالب (أحمد)</span>
-    </button>
-
-    <button type="button" class="demo-role-btn" id="demo-btn-parent" onclick="switchToDemoRole('parent')">
-      <span>👨‍👩‍👧</span>
-      <span>بوابة ولي الأمر</span>
-    </button>
-
-    <button type="button" class="demo-role-btn" id="demo-btn-portfolio" onclick="switchToDemoRole('portfolio')">
-      <span>🌐</span>
-      <span>البورتفوليو والمتجر</span>
-    </button>
-
-    <button type="button" class="demo-pitch-btn" onclick="openSalesPitchModal()">
-      <span>💡</span>
-      <span>نقاط القوة البيعية</span>
-    </button>
-
-    <button type="button" class="demo-reset-btn" onclick="resetDemoState()" title="إعادة تعيين البيانات للحالة الافتراضية">
-      <span>🔄 إعادة ضبط</span>
-    </button>
-  </div>
-
   <!-- MODAL: SALES PITCH & MARKETING HIGHLIGHTS -->
   <div id="modal-sales-pitch" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-sales-pitch')">
     <div class="m-sheet-content" style="max-height: 95vh; background: #0F172A; color: #FFFFFF; border: 2px solid #F59E0B;">
@@ -4354,6 +4360,7 @@
   <script src="voice-lab-engine.js"></script>
   <script src="presenter-video-engine.js"></script>
   <script src="shotcraft-marketing-engine.js"></script>
+  <script src="content-protection-engine.js"></script>
   <script src="app.js?v=20260927_strict_v8"></script>
   <script src="demo.js?v=20260927_strict_v8"></script>
 

@@ -21,7 +21,9 @@ const testFiles = [
   'test_branding_and_secure_parent_link.js',
   'test_immersive_voice_lab.js',
   'test_presenter_video_studio.js',
-  'test_shotcraft_marketing_suite.js'
+  'test_shotcraft_marketing_suite.js',
+  'test_enterprise_security_payments_dispatcher.js',
+  'test_fast_qr_gamification_ledger.js'
 ];
 
 console.log('================================================================');
@@ -45,7 +47,7 @@ for (const testFile of testFiles) {
 
 if (allPassed) {
   console.log('\n================================================================');
-  console.log('🏆 ALL 16 SUITES OF TEACHER OS VERIFIED & PASSING WITH 100% SUCCESS!');
+  console.log('🏆 ALL 18 SUITES OF TEACHER OS VERIFIED & PASSING WITH 100% SUCCESS!');
   console.log('================================================================');
   process.exit(0);
 } else {
