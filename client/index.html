@@ -2975,8 +2975,28 @@
         <button class="m-sheet-close" onclick="closeSheet('modal-student-parent-auth')" style="background: rgba(255,255,255,0.1); color: #fff;">✕</button>
       </div>
 
+      <!-- 0. ONE-CLICK GOOGLE SIGN-IN GATEWAY -->
+      <div style="margin: 14px 0 10px 0;">
+        <button type="button" class="btn btn-block" onclick="handleGoogleOneClickAuth('STUDENT_PARENT')" style="background: #FFFFFF; color: #1F2937; border: 1px solid #E5E7EB; border-radius: 12px; font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.15s ease;">
+          <svg width="20" height="20" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          <span>المتابعة السريعة بحساب Google</span>
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div style="display: flex; align-items: center; gap: 12px; margin: 12px 0 14px 0;">
+        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.12);"></div>
+        <span style="font-size: 0.74rem; color: #94A3B8; font-weight: 700;">أو عبر الهاتف والكود الأكاديمي</span>
+        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.12);"></div>
+      </div>
+
       <!-- High-Contrast Prominent Mode Switcher -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(15,23,42,0.9); border: 2px solid rgba(139,92,246,0.3); border-radius: 14px; padding: 6px; margin: 16px 0 14px 0;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(15,23,42,0.9); border: 2px solid rgba(139,92,246,0.3); border-radius: 14px; padding: 6px; margin: 0 0 14px 0;">
         <button type="button" class="btn" id="sp-tab-login-btn" onclick="setStudentParentAuthMode('login')" style="background: #2563EB; color: #FFFFFF; border-radius: 10px; font-weight: 900; font-size: 0.9rem; border: none; min-height: 42px;">
           🔑 تسجيل الدخول (عندي حساب سابق)
         </button>
@@ -3131,8 +3151,28 @@
         <button class="m-sheet-close" onclick="closeSheet('modal-teacher-auth')" style="background: rgba(255,255,255,0.1); color: #fff;">✕</button>
       </div>
 
+      <!-- 0. ONE-CLICK GOOGLE SIGN-IN FOR TEACHER -->
+      <div style="margin: 14px 0 10px 0;">
+        <button type="button" class="btn btn-block" onclick="handleGoogleOneClickAuth('TEACHER')" style="background: #FFFFFF; color: #1F2937; border: 1px solid #E5E7EB; border-radius: 12px; font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+          <svg width="20" height="20" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          <span>دخول المعلم السريع بحساب Google</span>
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div style="display: flex; align-items: center; gap: 12px; margin: 12px 0 14px 0;">
+        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.12);"></div>
+        <span style="font-size: 0.74rem; color: #94A3B8; font-weight: 700;">أو عبر هاتف المعلم ورمز الإدارة</span>
+        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.12);"></div>
+      </div>
+
       <!-- High-Contrast Teacher Mode Switcher -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(15,23,42,0.9); border: 2px solid rgba(139,92,246,0.3); border-radius: 14px; padding: 6px; margin: 16px 0 14px 0;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(15,23,42,0.9); border: 2px solid rgba(139,92,246,0.3); border-radius: 14px; padding: 6px; margin: 0 0 14px 0;">
         <button type="button" class="btn" id="teacher-tab-login-btn" onclick="setTeacherAuthMode('login')" style="background: #8B5CF6; color: #FFFFFF; border-radius: 10px; font-weight: 900; font-size: 0.9rem; border: none; min-height: 42px;">
           🔐 تسجيل دخول المعلم
         </button>
@@ -3220,7 +3260,94 @@
 
     </div>
   </div>
-<div id="sheet-add-student" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'sheet-add-student')">
+
+  <!-- ==========================================================================
+       MODAL: GOOGLE PROFILE CUSTOMIZATION & TEACHER LINKING ONBOARDING
+       ========================================================================== -->
+  <div id="modal-google-onboarding" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'modal-google-onboarding')">
+    <div class="m-sheet-content" style="max-height: 95vh; background: #0F172A; color: #FFFFFF; border: 2px solid #3B82F6; overflow-y: auto; max-width: 540px;">
+      <div class="m-sheet-handle" style="background: #3B82F6;"></div>
+      <div class="m-sheet-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(59, 130, 246, 0.2); border: 1px solid #3B82F6; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+            ⚙️
+          </div>
+          <div>
+            <h3 class="m-sheet-title" style="color: #FFFFFF; font-size: 1.15rem; margin-top: 2px;">
+              تخصيص ملفك الشخصي وربط الحساب
+            </h3>
+            <div style="font-size: 0.76rem; color: #93C5FD; font-weight: 700;">خطوة سريعة لمرة واحدة لإعداد حسابك الأكاديمي</div>
+          </div>
+        </div>
+        <button class="m-sheet-close" onclick="closeSheet('modal-google-onboarding')" style="background: rgba(255,255,255,0.1); color: #fff;">✕</button>
+      </div>
+
+      <!-- User Google Badge -->
+      <div style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 12px; margin: 16px 0; display: flex; align-items: center; gap: 12px;">
+        <div id="ob-avatar-wrap" style="width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 2px solid #60A5FA; flex-shrink: 0; background: #1E293B; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+          <img id="ob-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div style="flex: 1; min-width: 0;">
+          <div id="ob-google-name" style="font-weight: 900; font-size: 0.96rem; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">مستخدم Google</div>
+          <div id="ob-google-email" style="font-size: 0.78rem; color: #93C5FD; direction: ltr; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">user@gmail.com</div>
+          <div style="margin-top: 4px; display: flex; gap: 6px;">
+            <span class="badge" style="background: rgba(16,185,129,0.2); color: #34D399; font-size: 0.68rem; border: 1px solid rgba(16,185,129,0.4);">موثق عبر Google ✅</span>
+          </div>
+        </div>
+      </div>
+
+      <form onsubmit="handleSaveGoogleOnboarding(event)">
+        <!-- Role Selection -->
+        <label class="m-input-label" style="color: #E2E8F0;">نوع الحساب:</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px;">
+          <button type="button" class="btn" id="ob-role-student-btn" onclick="selectOnboardingRole('STUDENT')" style="background: #2563EB; color: #fff; border-radius: 10px; font-weight: 800; font-size: 0.82rem; border: none; min-height: 40px;">
+            🎓 طالب
+          </button>
+          <button type="button" class="btn" id="ob-role-parent-btn" onclick="selectOnboardingRole('PARENT')" style="background: rgba(255,255,255,0.06); color: #94A3B8; border-radius: 10px; font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(255,255,255,0.1); min-height: 40px;">
+            👨‍👩‍👧 ولي أمر
+          </button>
+          <button type="button" class="btn" id="ob-role-teacher-btn" onclick="selectOnboardingRole('TEACHER')" style="background: rgba(255,255,255,0.06); color: #94A3B8; border-radius: 10px; font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(255,255,255,0.1); min-height: 40px;">
+            👨‍🏫 معلم
+          </button>
+        </div>
+        <input type="hidden" id="ob-selected-role" value="STUDENT">
+
+        <!-- Display Name -->
+        <label class="m-input-label" style="color: #E2E8F0;">الاسم المعتمد في المنصة (ثلاثي):</label>
+        <input type="text" id="ob-full-name" class="m-input" placeholder="اكتب اسمك ثلاثياً" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff; margin-bottom: 10px;">
+
+        <!-- Phone Number -->
+        <label class="m-input-label" style="color: #E2E8F0;">رقم الهاتف المحمول (لتنبيهات الواتساب):</label>
+        <input type="tel" id="ob-phone-number" class="m-input" placeholder="010XXXXXXXX" required style="background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.18); color: #fff; direction: ltr; text-align: left; margin-bottom: 10px;">
+
+        <!-- Student Grade Field -->
+        <div id="ob-student-grade-box">
+          <label class="m-input-label" style="color: #E2E8F0;">الصف الدراسي:</label>
+          <select id="ob-grade-select" class="m-input" style="background: #1E293B; border-color: rgba(255,255,255,0.18); color: #fff; margin-bottom: 10px;">
+            <option value="GRADE_12_SEC3">الصف الثالث الثانوي (3ث)</option>
+            <option value="GRADE_11_SEC2">الصف الثاني الثانوي (2ث)</option>
+            <option value="GRADE_10_SEC1">الصف الأول الثانوي (1ث)</option>
+          </select>
+        </div>
+
+        <!-- TEACHER LINKING ID / PIN (KEY FEATURE) -->
+        <div id="ob-teacher-linking-box" style="background: rgba(139, 92, 246, 0.1); border: 2px dashed rgba(139, 92, 246, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label class="m-input-label" style="color: #C4B5FD; margin: 0; font-weight: 800;">🔑 كود ربط المعلم أو المركز (Teacher ID / PIN):</label>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D; font-size: 0.68rem;">مميز وخاص</span>
+          </div>
+          <div style="font-size: 0.74rem; color: #94A3B8; margin-bottom: 8px;">أدخل كود المعلم الصغير (مثل TCH-2026 أو 2027) لربط حسابك بمجموعته ومذكراته فورياً. إذا تركته فارغاً سيتم ربطك بالمنصة العامة تلقائياً.</div>
+          <input type="text" id="ob-teacher-link-code" class="m-input" placeholder="مثال: TCH-2026 أو 2027" style="background: rgba(15,23,42,0.9); border-color: #8B5CF6; color: #FFFFFF; text-align: center; font-weight: 900; letter-spacing: 2px; font-size: 1.05rem;">
+        </div>
+
+        <button type="submit" class="btn btn-hero-primary btn-block" style="margin-top: 8px; min-height: 48px; font-size: 1rem; font-weight: 900;">
+          <span>🚀 حفظ الملف والدخول للمنصة فوراً ➔</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="sheet-add-student" class="m-sheet-overlay" onclick="handleOverlayClick(event, 'sheet-add-student')">
     <div class="m-sheet-content">
       <div class="m-sheet-handle"></div>
       <div class="m-sheet-header">

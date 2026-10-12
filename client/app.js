@@ -5775,6 +5775,207 @@ function handleStrictTeacherSignup(event) {
   switchToAppWorkspace('TEACHER');
 }
 
+// =========================================================================
+// GOOGLE ONE-CLICK AUTHENTICATION & PROFILE CUSTOMIZATION WORKFLOW
+// =========================================================================
+let tempGoogleUser = null;
+
+window.handleGoogleOneClickAuth = function(targetModal = 'STUDENT_PARENT') {
+  closeSheet('modal-student-parent-auth');
+  closeSheet('modal-teacher-auth');
+
+  // Simulated Google identity with realistic profile details
+  const googleAccounts = [
+    { name: 'محمد أحمد علي', email: 'mohamed.ahmed.student@gmail.com', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80' },
+    { name: 'سارة محمود إبراهيم', email: 'sara.mahmoud.edu@gmail.com', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80' },
+    { name: 'عمر خالد توفيق', email: 'omar.khaled.sci@gmail.com', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80' }
+  ];
+  const chosen = googleAccounts[Math.floor(Math.random() * googleAccounts.length)];
+
+  tempGoogleUser = {
+    googleId: 'g_' + Date.now(),
+    name: chosen.name,
+    email: chosen.email,
+    avatar: chosen.avatar,
+    targetIntent: targetModal
+  };
+
+  // Check if user already exists
+  const users = getRegisteredUsers();
+  const existingUser = users.find(u => u.email === tempGoogleUser.email || (u.googleId && u.googleId === tempGoogleUser.googleId));
+
+  if (existingUser) {
+    const session = {
+      role: existingUser.role,
+      name: existingUser.name,
+      phone: existingUser.phone,
+      email: existingUser.email,
+      grade: existingUser.grade || 'GRADE_12_SEC3',
+      studentCode: existingUser.code,
+      pairingPin: existingUser.pairingPin,
+      teacherId: existingUser.teacherId || 'TCH-2026',
+      loggedInAt: new Date().toISOString()
+    };
+    localStorage.setItem('active_user_session', JSON.stringify(session));
+    if (typeof window.showDemoToast === 'function') {
+      window.showDemoToast(`🌐 تم الدخول السريع عبر Google: أهلاً بك يا ${existingUser.name}!`);
+    } else {
+      alert(`🌐 تم تسجيل الدخول بحساب Google: ${existingUser.name}`);
+    }
+    switchToAppWorkspace(existingUser.role);
+    return;
+  }
+
+  // New Google user -> Customize profile & link teacher
+  const obName = document.getElementById('ob-google-name');
+  const obEmail = document.getElementById('ob-google-email');
+  const obAvatar = document.getElementById('ob-avatar-img');
+  const obFullName = document.getElementById('ob-full-name');
+
+  if (obName) obName.innerText = tempGoogleUser.name;
+  if (obEmail) obEmail.innerText = tempGoogleUser.email;
+  if (obAvatar) obAvatar.src = tempGoogleUser.avatar;
+  if (obFullName) obFullName.value = tempGoogleUser.name;
+
+  const defaultRole = targetModal === 'TEACHER' ? 'TEACHER' : 'STUDENT';
+  selectOnboardingRole(defaultRole);
+
+  openSheet('modal-google-onboarding');
+};
+
+window.selectOnboardingRole = function(role) {
+  const hiddenRole = document.getElementById('ob-selected-role');
+  if (hiddenRole) hiddenRole.value = role;
+
+  const btnStudent = document.getElementById('ob-role-student-btn');
+  const btnParent = document.getElementById('ob-role-parent-btn');
+  const btnTeacher = document.getElementById('ob-role-teacher-btn');
+  const gradeBox = document.getElementById('ob-student-grade-box');
+  const linkingBox = document.getElementById('ob-teacher-linking-box');
+
+  [btnStudent, btnParent, btnTeacher].forEach(b => {
+    if (b) {
+      b.style.background = 'rgba(255,255,255,0.06)';
+      b.style.color = '#94A3B8';
+      b.style.border = '1px solid rgba(255,255,255,0.1)';
+    }
+  });
+
+  if (role === 'STUDENT' && btnStudent) {
+    btnStudent.style.background = '#2563EB';
+    btnStudent.style.color = '#FFFFFF';
+    btnStudent.style.border = 'none';
+    if (gradeBox) gradeBox.style.display = 'block';
+    if (linkingBox) linkingBox.style.display = 'block';
+  } else if (role === 'PARENT' && btnParent) {
+    btnParent.style.background = '#8B5CF6';
+    btnParent.style.color = '#FFFFFF';
+    btnParent.style.border = 'none';
+    if (gradeBox) gradeBox.style.display = 'none';
+    if (linkingBox) linkingBox.style.display = 'block';
+  } else if (role === 'TEACHER' && btnTeacher) {
+    btnTeacher.style.background = '#10B981';
+    btnTeacher.style.color = '#FFFFFF';
+    btnTeacher.style.border = 'none';
+    if (gradeBox) gradeBox.style.display = 'none';
+    if (linkingBox) linkingBox.style.display = 'none';
+  }
+};
+
+window.handleSaveGoogleOnboarding = function(event) {
+  if (event) event.preventDefault();
+
+  const role = (document.getElementById('ob-selected-role')?.value || 'STUDENT').toUpperCase();
+  const name = document.getElementById('ob-full-name')?.value.trim();
+  const phone = document.getElementById('ob-phone-number')?.value.trim();
+  const grade = document.getElementById('ob-grade-select')?.value || 'GRADE_12_SEC3';
+  const teacherLinkCode = (document.getElementById('ob-teacher-link-code')?.value.trim() || 'TCH-2026').toUpperCase();
+
+  if (!name || name.split(' ').filter(w => w.length > 0).length < 2) {
+    alert('⚠️ يرجى كتابة الاسم ثنائياً أو ثلاثياً بالكامل.');
+    return;
+  }
+
+  if (!isValidEgyptianPhone(phone)) {
+    alert('❌ رقم الهاتف غير صحيح!\nيجب أن يتكون من 11 رقماً ويبدأ بـ (010 أو 011 أو 012 أو 015).');
+    return;
+  }
+
+  const academicCode = 'STU-' + Math.floor(100000 + Math.random() * 900000);
+  const pairingPin = 'LNK-' + Math.floor(1000 + Math.random() * 9000);
+
+  const newUserData = {
+    id: 'usr-g-' + Date.now(),
+    googleId: tempGoogleUser ? tempGoogleUser.googleId : 'g_' + Date.now(),
+    email: tempGoogleUser ? tempGoogleUser.email : 'user@gmail.com',
+    avatar: tempGoogleUser ? tempGoogleUser.avatar : '',
+    name: name,
+    phone: phone,
+    role: role,
+    grade: grade,
+    code: academicCode,
+    pairingPin: pairingPin,
+    teacherId: teacherLinkCode,
+    registeredVia: 'GOOGLE_OAUTH',
+    createdAt: new Date().toISOString()
+  };
+
+  if (role === 'TEACHER') {
+    const teachers = getRegisteredTeachers();
+    const newTeacher = {
+      id: 'tch-' + Date.now(),
+      googleId: newUserData.googleId,
+      email: newUserData.email,
+      phone: phone,
+      secret: '2027',
+      name: name,
+      subject: 'الفيزياء للثانوية العامة',
+      teacherPin: 'TCH-2026'
+    };
+    teachers.push(newTeacher);
+    localStorage.setItem('teacher_os_registered_teachers', JSON.stringify(teachers));
+  } else {
+    const users = getRegisteredUsers();
+    users.push(newUserData);
+    localStorage.setItem('teacher_os_registered_users', JSON.stringify(users));
+
+    try {
+      let enrolled = JSON.parse(localStorage.getItem('teacher_os_students_roster') || '[]');
+      enrolled.push({
+        id: newUserData.id,
+        full_name: name,
+        academic_code: academicCode,
+        grade_level: grade,
+        group_name: 'مجموعة المتابعة الذكية (' + teacherLinkCode + ')',
+        parent_phone: phone,
+        attendance_rate_pct: 100,
+        subscription_status: 'ساري',
+        teacher_id: teacherLinkCode
+      });
+      localStorage.setItem('teacher_os_students_roster', JSON.stringify(enrolled));
+    } catch (e) {}
+  }
+
+  const session = {
+    role: role,
+    name: name,
+    phone: phone,
+    email: newUserData.email,
+    grade: grade,
+    studentCode: academicCode,
+    pairingPin: pairingPin,
+    teacherId: teacherLinkCode,
+    isMasterAdmin: (role === 'TEACHER'),
+    loggedInAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('active_user_session', JSON.stringify(session));
+  closeSheet('modal-google-onboarding');
+
+  alert(`🎉 تم تخصيص ملفك بنجاح وربطك بالمعلم [${teacherLinkCode}]!\nكودك الأكاديمي المعتمد هو: ${academicCode}`);
+  switchToAppWorkspace(role);
+};
+
 // 5. Portfolio CMS Studio Handler
 function handleSavePortfolioCMS(event) {
   if (event) event.preventDefault();
